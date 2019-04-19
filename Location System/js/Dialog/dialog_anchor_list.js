@@ -52,22 +52,22 @@ $(function () {
         allFields.removeClass("ui-state-error");
         var valid = true,
             anchor_array = [],
-            count_total_anchors = 0,
+            count_total_anchors = 0;
 
-            for (var i = 0; i < $(id).length; i++) {
-                valid = valid && checkLength(main_id.eq(i), "mapScale", 0, 5);
-                valid = valid && checkLength(main_x.eq(i), "mapScale", 0, 10);
-                valid = valid && checkLength(main_y.eq(i), "mapScale", 0, 10);
-                anchor_array.push({
-                    "anchor_id": main_id.eq(i).val(),
-                    "anchor_type": "main",
-                    "set_x": main_x.eq(i).val(),
-                    "set_y": main_y.eq(i).val()
-                });
-                count_total_anchors++
-            }
+        for (i = 0; i < main_id.length; i++) {
+            valid = valid && checkLength(main_id.eq(i), "mapScale", 0, 5);
+            valid = valid && checkLength(main_x.eq(i), "mapScale", 0, 10);
+            valid = valid && checkLength(main_y.eq(i), "mapScale", 0, 10);
+            anchor_array.push({
+                "anchor_id": main_id.eq(i).val(),
+                "anchor_type": "main",
+                "set_x": main_x.eq(i).val(),
+                "set_y": main_y.eq(i).val()
+            });
+            count_total_anchors++
+        }
 
-        for (var j = 0; j < $(id).length; j++) {
+        for (j = 0; j < id.length; j++) {
             valid = valid && checkLength(id.eq(i), "mapScale", 0, 5);
             valid = valid && checkLength(x.eq(i), "mapScale", 0, 10);
             valid = valid && checkLength(y.eq(i), "mapScale", 0, 10);
