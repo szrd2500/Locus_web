@@ -1,13 +1,12 @@
 var command_name = [];
 
 function setCommand(name) {
-    if (name == "add") {
+    if (name == "add")
         command_name = ["AddStaff"];
-    } else if (name == "edit") {
+    else if (name == "edit")
         command_name = ["DeleteStaff", "AddStaff"];
-    } else {
+    else
         return;
-    }
 }
 
 $(function () {

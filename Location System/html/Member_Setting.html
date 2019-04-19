@@ -15,6 +15,9 @@
     <!-- Add icon library -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <!--jOrgChart-->
+    <link rel="stylesheet" type="text/css" href="../css/jOrgChart/jquery.orgchart.css">
+    <link rel="stylesheet" type="text/css" href="../css/j_orgchart_mini.css">
     <!--編寫css-->
     <link rel="stylesheet" type="text/css" href="../css/member_typesetting.css">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap_collapsible_navbar.css">
@@ -125,6 +128,7 @@
                                 <th>工號</th>
                                 <th>名稱</th>
                                 <th>部門</th>
+                                <th>職稱</th>
                                 <th>用戶類型</th>
                                 <th>門禁</th>
                                 <th>時段</th>
@@ -157,6 +161,8 @@
         <script type="text/javascript" src="../js/Dialog/dialog_setting.js"></script>
         <script type="text/javascript" src="../js/Dialog/dialog_member_setting.js"></script>
         <script type="text/javascript" src="../js/Dialog/dialog_member_multi.js"></script>
+        <script type="text/javascript" src="../js/jOrgChart/jquery.orgchart.js"></script>
+        <script type="text/javascript" src="../js/Dialog/dialog_tree_chart.js"></script>
         <!-- Hidden Dialog -->
         <div id="dialog_edit_member" title="Edit Person Infomation">
             <form>
@@ -189,14 +195,12 @@
                                             <input type="text" id="main_name" style="width:70%;">
                                         </p>
                                         <p><label for="main_department" style="margin-right:48px;">部門</label>
-                                            <!--<select id="main_department"></select>-->
-                                            <input type="text" id="main_department" readonly />
-                                            <button id="btn_select_dept"></button>
+                                            <input type="text" id="main_department" style="width:50%;" readonly />
+                                            <input type="button" id="btn_select_dept" value="選擇" />
                                         </p>
                                         <p><label for="main_jobTitle" style="margin-right:48px;">職稱</label>
-                                            <!--<select id="main_jobTitle"></select>-->
-                                            <input type="text" id="main_jobTitle" readonly />
-                                            <button id="btn_select_title"></button>
+                                            <input type="text" id="main_jobTitle" style="width:50%;" readonly />
+                                            <input type="button" id="btn_select_title" value="選擇" />
                                         </p>
                                         <p><label for="main_type" style="margin-right:19px;">用戶類型</label>
                                             <select id="main_type"></select>
@@ -328,6 +332,18 @@
                             <td><select id="multi_edit_value"></select></td>
                         </tr>
                     </table>
+                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                </fieldset>
+            </form>
+        </div>
+        <div id="dialog_tree_chart" title="select dept">
+            <form>
+                <fieldset style="text-align: center;">
+                    <div id="chart-container"></div>
+                    <div id="edit-panel">
+                        <label class="selected-node-group">selected node:</label>
+                        <input type="text" id="selected-node" class="selected-node-group" readonly>
+                    </div>
                     <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
                 </fieldset>
             </form>

@@ -19,6 +19,14 @@ $(function () {
     $("#multi_edit").click(function () {
         multiEditData();
     });
+    $("#btn_select_dept").click(function () {
+        createChart("dept");
+        $("#dialog_tree_chart").dialog("open");
+    });
+    $("#btn_select_title").click(function () {
+        createChart("jobTitle");
+        $("#dialog_tree_chart").dialog("open");
+    });
 });
 
 
@@ -29,8 +37,6 @@ var dotTypeArr = ["部門", "職稱", "用戶類型", "自訂"];
 var statusArr = ["無", "在職", "已離職"];
 var genderArr = ["男", "女"];
 var educationArr = ["小學", "國中", "高中", "專科", "大學", "研究所"];
-
-
 
 
 function UpdateMemberList() {
@@ -56,6 +62,7 @@ function UpdateMemberList() {
                             "<td>" + number + "</td>" +
                             "<td>" + memberArray[i].Name + "</td>" +
                             "<td>" + memberArray[i].department + "</td>" +
+                            "<td>" + memberArray[i].jobTitle + "</td>" +
                             "<td>" + memberArray[i].type + "</td>" +
                             "<td>" + "" + "</td>" +
                             "<td>" + "" + "</td>" +
@@ -96,8 +103,8 @@ function editMemberData(number) {
                     $("#main_card_id").val(revInfo.card_id);
                     $("#main_number").val(revInfo.number);
                     $("#main_name").val(revInfo.Name);
-                    $("#main_department").html(createOptions(deptArr, revInfo.department));
-                    $("#main_jobTitle").html(createOptions(titleArr, revInfo.jobTitle));
+                    $("#main_department").val(revInfo.department);
+                    $("#main_jobTitle").val(revInfo.jobTitle);
                     $("#main_type").html(createOptions(typeArr, revInfo.type));
                     $("#main_picture_thumbnail").attr("href", revInfo.photo);
                     $("#main_picture_img").attr("src", revInfo.photo);
@@ -144,8 +151,8 @@ function addMemberData() {
     $("#main_card_id").val("");
     $("#main_number").val("");
     $("#main_name").val("");
-    $("#main_department").html(createOptions(deptArr, ""));
-    $("#main_jobTitle").html(createOptions(titleArr, ""));
+    $("#main_department").val("");
+    $("#main_jobTitle").val("");
     $("#main_type").html(createOptions(typeArr, ""));
     $("#main_picture_thumbnail").attr("href", "");
     $("#main_picture_img").attr("src", "");

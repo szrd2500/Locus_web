@@ -1,21 +1,26 @@
+var chart_type = "";
+
 function createChart(type) {
+    chart_type = type;
     $("#chart-container").html("");
+    var requestArray = {},
+        datascource = {};
     if (type == "dept") {
-        var requestArray = {
+        requestArray = {
             "Command_Type": ["Read"],
             "Command_Name": ["GetDepartment_relation"]
         };
-        var datascource = {
+        datascource = {
             'name': 'Company',
             'id': '0',
             'color': '#929292' //top
         };
     } else if (type == "jobTitle") {
-        var requestArray = {
+        requestArray = {
             "Command_Type": ["Read"],
             "Command_Name": ["GetJobTitle_relation"]
         };
-        var datascource = {
+        datascource = {
             'name': 'JobTitle',
             'id': '0',
             'color': '#929292' //top
@@ -23,6 +28,7 @@ function createChart(type) {
     } else {
         return;
     }
+
     var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
@@ -57,7 +63,7 @@ function createChart(type) {
 
 $(function () {
     var dialog, form,
-        select_node = $("#selected-node");
+        select_node = $('#selected-node');
     //tips = $( ".validateTips" );
 
     function SendResult() {
@@ -65,7 +71,13 @@ $(function () {
         var valid = true;
         valid = valid && checkLength(select_node, "not null", 0, 20);
         if (valid) {
-            main_jobTitle.val(select_node.val());
+            datascource = {};
+            if (chart_type == "dept")
+                $("#main_department").val(select_node.val());
+            else if (chart_type == "jobTitle")
+                $("#main_jobTitle").val(select_node.val());
+            else
+                return;
             dialog.dialog("close");
         }
         return valid;
