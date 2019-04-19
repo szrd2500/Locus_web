@@ -16,7 +16,7 @@ $(function () {
         autoOpen: false
     });
 
-    drawPosition(default_color, '10'); //預設的點顏色
+    drawPosition(default_color, size); //預設的點顏色
     $("#edit_dot_color").css('background-color', default_color);
     $("#edit_dot_color").val(default_color);
     $("#edit_dot_color").change(function () { //設定change事件
