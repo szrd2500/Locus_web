@@ -20,10 +20,11 @@
     <link rel="stylesheet" type="text/css" href="../css/bootstrap_collapsible_navbar.css">
     <link rel="stylesheet" type="text/css" href="../css/jquery_right_side_nav.css">
     <link rel="stylesheet" type="text/css" href="../css/alarm_sideBar.css">
-    <link rel="stylesheet" type="text/css" href="../css/index_typesetting.css">
+    <link rel="stylesheet" type="text/css" href="../css/index_style.css">
     <script type="text/javascript" src="../js/navbar_setting.js"></script>
     <script type="text/javascript" src="../js/sideBar.js"></script>
     <script type="text/javascript" src="../js/canvas_request.js"></script>
+    <script type="text/javascript" src="../js/sidebar_search.js"></script>
     <script type="text/javascript">
         //多階下拉清單按鈕
         $(document).ready(function () {
@@ -200,10 +201,10 @@
                             </ul>
                             <div id="sidebarRightTabContent" class="tab-content">
                                 <div class="tab-pane fade in active" id="sidebar_right_member">
-                                    <div style="overflow:auto; height: 600px; margin: 10px 5px 0px 0px;">
+                                    <div class="sidebar-table" style="max-height: 650px;">
                                         <table id="table_rightbar_member_list" class="ui-widget ui-widget-content">
                                             <thead>
-                                                <tr class="ui-widget-header ">
+                                                <tr class="ui-widget-header">
                                                     <th style="width: 10px;">Items</th>
                                                     <th>Display ID</th>
                                                     <th>Name</th>
@@ -215,11 +216,11 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="sidebar_right_alarm">
-                                    <div style="overflow:auto; height: 600px; width: 300px; margin: 10px 10px 0px 0px;">
+                                    <div class="sidebar-table" style="max-height: 650px;">
                                         <div style="width: 800px;">
                                             <table id="table_rightbar_alarm_list" class="ui-widget ui-widget-content">
                                                 <thead>
-                                                    <tr class="ui-widget-header ">
+                                                    <tr class="ui-widget-header">
                                                         <th style="width: 10px;">Items</th>
                                                         <th style="width: 60px;">ID</th>
                                                         <th>Alarm Status</th>
@@ -237,36 +238,40 @@
                                     <label>搜尋類型 : </label>
                                     <select id="search_select_type">
                                         <option value="group" selected="selected">群組</option>
-                                        <option value="id">ID</option>
-                                        <option value="name">名稱</option>
+                                        <option value="tag_id">標籤編號</option>
+                                        <option value="id">工號</option>
                                     </select>
                                     <br>
                                     <label>輸入資料 : </label>
                                     <input type="text" id="search_input_target">
-                                    <br>
-                                    <label>時間 : </label>
-                                    <br>
-                                    <div style="margin-left: 10px;">
-                                        <label>開始 : </label>
-                                        <input type="date" id="start_date">
-                                        <label>時 : </label>
-                                        <input type="text" id="start_time" style="width: 30px;">
-                                        <br>
-                                        <label>結束 : </label>
-                                        <input type="date" id="end_date">
-                                        <label>時 : </label>
-                                        <input type="text" id="end_time" style="width: 30px;">
-                                        <br>
-                                    </div>
                                     <br><br>
                                     <div style="text-align: center;">
-                                        <input type="button" id="search_start" value="搜尋" onclick="">
+                                        <input type="button" id="search_start" value="搜尋">
+                                    </div>
+                                    <br><br>
+                                    <div class="sidebar-table" style="max-height: 500px;">
+                                        <div style="width: 800px;">
+                                            <table id="table_sidebar_search" class="ui-widget ui-widget-content">
+                                                <thead>
+                                                    <tr class="ui-widget-header">
+                                                        <th>標籤編號</th>
+                                                        <th>工號</th>
+                                                        <th>名稱</th>
+                                                        <th>部門</th>
+                                                        <th>用戶類型</th>
+                                                        <th>門禁</th>
+                                                        <th>時段</th>
+                                                        <th>定位</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <button class="button_arrow"><img
-                                src="https://c2.staticflickr.com/6/5635/31065147822_9b6e31ab5f_o.png"></button>
+                        <button class="button_arrow"><i class='fas fa-angle-double-left'></i></button>
                     </aside>
                 </div>
             </div>

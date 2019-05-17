@@ -379,14 +379,16 @@ function restoreCanvas() {
         ctx.restore();
         ctx.save();
         isFitWindow = false; //目前狀態:原比例
-        document.getElementById("btn_restore").innerHTML = "符合視窗大小 <i class=\"fas fa-expand\" ></i >";
+        document.getElementById("btn_restore").innerHTML = $.i18n.prop('fit_window') +
+            "&nbsp;<i class=\"fas fa-expand\" ></i >";
     } else { //依比例拉伸(Fit in Window)
         if ((serverImg.width / serverImg.height) > (cvsBlock_width / cvsBlock_height)) //原圖比例寬邊較長
             fitZoom = cvsBlock_width / serverImg.width;
         else
             fitZoom = cvsBlock_height / serverImg.height;
         isFitWindow = true; //目前狀態:依比例拉伸
-        document.getElementById("btn_restore").innerHTML = "恢復原比例 <i class=\"fas fa-compress\" ></i >";
+        document.getElementById("btn_restore").innerHTML = $.i18n.prop('restore_scale') +
+            "&nbsp;<i class=\"fas fa-compress\" ></i >";
     }
     $(function () {
         $("#canvas").css("margin-left", 0 + "px").css("margin-top", 0 + "px");
@@ -944,7 +946,8 @@ function StartClick() {
     if (canvasImg.isPutImg) {
         if (!isStart) {
             isStart = true;
-            document.getElementById("btn_start").innerHTML = "Stop <i class=\"fas fa-pause\" ></i >";
+            document.getElementById("btn_start").innerHTML = $.i18n.prop('stop') +
+                "&nbsp;<i class=\"fas fa-pause\"></i>";
             requestArray.Value = "Start";
             //設定計時器
             //pageTimer["timer1"] = setInterval("autoSendRequest()", delaytime);
@@ -955,7 +958,8 @@ function StartClick() {
         } else {
             isStart = false;
             requestArray.Value = "Stop";
-            document.getElementById("btn_start").innerHTML = "Start <i class=\"fas fa-play\" ></i >";
+            document.getElementById("btn_start").innerHTML = $.i18n.prop('start') +
+                "&nbsp;<i class=\"fas fa-play\"></i>";
             for (var each in pageTimer) {
                 //clearInterval(pageTimer[each]);
                 clearTimeout(pageTimer[each]);
