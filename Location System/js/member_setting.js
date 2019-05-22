@@ -75,11 +75,12 @@ $(function () {
     $("#main_picture_upload").change(function () {
         var file = this.files[0];
         var valid = checkExt(this.value);
+        //console.log(file.size / 1024);
+        valid = valid && checkImageSize(file); //" KB"
         if (valid)
             transBase64(file);
         else
             return;
-        //$("#main_picture_img").attr("src", convertTobase64(file));
         //var src = URL.createObjectURL(file);
         //$("#main_picture_thumbnail").attr("href", src);
     });
@@ -174,7 +175,10 @@ function editMemberData(number) {
                 $("#main_jobTitle").val(revInfo.jobTitle);
                 $("#hidden_jobTitle").val(revInfo.jobTitle_id);
                 $("#main_type").html(createOptions(userTypeArr, revInfo.type));
-                getOneMemberPhoto(number);
+                if (revInfo.file_ext == "" || revInfo.photo == "")
+                    $("#main_picture_img").attr("src", "");
+                else
+                    $("#main_picture_img").attr("src", "data:image/" + revInfo.file_ext + ";base64," + revInfo.photo);
                 $("#main_select_tag_color").html(createOptions(dotTypeArr, revInfo.color_type));
                 selectTagColor(); //依照畫點依據的內容代入已設定的顏色，未設定則採用預設顏色
                 var color_type_index = $("#main_select_tag_color").children('option:selected').index();
@@ -252,6 +256,14 @@ function checkExt(fileName) {
     var fileExt = fileName.substring(fileName.lastIndexOf('.'));
     if (validExts.indexOf(fileExt) < 0) {
         alert("檔案類型錯誤，可接受的副檔名有：" + validExts.toString());
+        return false;
+    } else
+        return true;
+}
+
+function checkImageSize(file) {
+    if (file.size / 1024 > 1024) {
+        alert("檔案大小超過1MB，請重新選擇圖檔!");
         return false;
     } else
         return true;

@@ -92,9 +92,9 @@ function readImage(files) {
     }
 }
 
-function setMap(map_path, map_scale) { //接收Server發送的地圖資料並導入
+function setMap(map_url, map_scale) { //接收Server發送的地圖資料並導入
     map_scale = typeof (map_scale) != 'undefined' && map_scale != "" ? map_scale : 1;
-    serverImg.src = '../image/map/' + getFileName(map_path);
+    serverImg.src = map_url;
     serverImg.onload = function () {
         cvsBlock.style.background = "none";
         canvasImg.isPutImg = true;
