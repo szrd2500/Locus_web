@@ -9,19 +9,16 @@ function loadMap() {
         "Command_Type": ["Read"],
         "Command_Name": ["GetMaps"]
     };
-    var xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
+    var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (revObj.success > 0) {
-                mapArray = revObj.Values;
+                mapArray = [];
+                mapArray = revObj.Values.slice(0); //利用抽離全部陣列完成陣列拷貝;
                 for (i = 0; i < mapArray.length; i++) {
                     var map = "map_id_" + mapArray[i].map_id;
-                    var src = "../image/map/" + getFileName(mapArray[i].map_path);
+                    var src = "data:image/" + mapArray[i].map_file_ext + ";base64," + mapArray[i].map_file;
                     var img_size = adjustImageSize(src);
                     $("#maps_gallery").append("<div class=\"thumbnail\">" +
                         "<div class=\"image_block\">" +
@@ -29,32 +26,16 @@ function loadMap() {
                         "<img src=\"" + src + "\"" +
                         " width=\"" + img_size.width + "\" height=\"" + img_size.height + "\">" +
                         "</a></div>" +
-                        "<div class=\"caption\"><table>" +
-                        "<tr><th>" +
-                        "File name:" +
-                        "</th><th>" +
-                        "<span name=\"" + map + "\">" + getFileName(mapArray[i].map_path) + "</span><br>" +
-                        "</th><th></th></tr>" +
-                        "<tr><th>" +
-                        "ID:" +
-                        "</th><th>" +
-                        "<span name=\"" + map + "\">" + mapArray[i].map_id + "</span><br>" +
-                        "</th><th>" +
-                        "<button class='btn btn-primary' onclick=\"setMapById(\'" + mapArray[i].map_id + "\')\">設定</button>" +
-                        "</th></tr>" +
-                        "<tr><th>" +
-                        "Name:" +
-                        "</th><th>" +
-                        "<span name=\"" + map + "\">" + mapArray[i].map_name + "</span>" +
-                        "</th><th></th></tr>" +
-                        "</table></div>" +
+                        "<div class=\"caption\"><table style='width:200px;'><tr>" +
+                        "<th>Name:</th>" +
+                        "<th><span name=\"" + map + "\">" + mapArray[i].map_name + "</span></th>" +
+                        "<th><button class='btn btn-primary' onclick=\"setMapById(\'" + mapArray[i].map_id + "\')\">設定</button></th>" +
+                        "</tr></table></div>" +
                         "</div>");
                 }
             }
         }
     };
-    xmlHttp.open("POST", "sql", true);
-    xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(requestArray));
 }
 
@@ -69,7 +50,6 @@ function setMapById(id) { //點擊設定:開啟設定視窗
         $("#map_info_id").val(mapArray[index].map_id);
         $("#map_info_name").val(mapArray[index].map_name);
         $("#map_info_scale").val(scale);
-        $("#map_info_path").text(urlData);
         setMap(urlData, scale);
         //在設定好地圖後，導入Anchors
         getAnchors(mapArray[index].map_id);
@@ -84,7 +64,6 @@ function newMap() {
     $("#map_info_id").val(""); //清空Map Information
     $("#map_info_name").val("");
     $("#map_info_scale").val("");
-    $("#map_info_path").text("");
     clearAnchorList();
     clearGroupList();
     clearAnchorGroup();
@@ -95,9 +74,7 @@ function newMap() {
 
 function setNewMap(map_id) { //新增地圖
     var map = "map_id_" + map_id;
-    //var file = input.files[0];
-    var file = $("#map_info_path").text();
-    var src = "../image/map/" + file; //URL.createObjectURL(file);
+    var src = $("menu_load_map").files[0];
     var img_size = adjustImageSize(src);
     $("#maps_gallery").append("<div class=\"thumbnail\">" +
         "<div class=\"image_block\">" +
@@ -105,25 +82,11 @@ function setNewMap(map_id) { //新增地圖
         "<img src=\"" + src + "\"" +
         " width=\"" + img_size.width + "\" height=\"" + img_size.height + "\">" +
         "</a></div>" +
-        "<div class=\"caption\"><table>" +
-        "<tr><th>" +
-        "File name:" +
-        "</th><th>" +
-        "<span name=\"" + map + "\">" + file + "</span><br>" +
-        "</th><th></th></tr>" +
-        "<tr><th>" +
-        "ID:" +
-        "</th><th>" +
-        "<span name=\"" + map + "\">" + $("#map_info_id").val() + "</span><br>" +
-        "</th><th>" +
-        "<button class='btn btn-primary'>設定</button>" +
-        "</th></tr>" +
-        "<tr><th>" +
-        "Name:" +
-        "</th><th>" +
-        "<span name=\"" + map + "\">" + $("#map_info_name").val() + "</span>" +
-        "</th><th></th></tr>" +
-        "</table></div>" +
+        "<div class=\"caption\"><table style='width:200px;'><tr>" +
+        "<th>Name:</th>" +
+        "<th><span name=\"" + map + "\">" + $("#map_info_name").val() + "</span></th>" +
+        "<th><button class='btn btn-primary' onclick=\"setMapById(\'" + map_id + "\')\">設定</button></th>" +
+        "</tr></table></div>" +
         "</div>");
 }
 
@@ -149,31 +112,32 @@ function adjustImageSize(src) {
     };
 }
 
-function getFileName(src) {
-    var pos1 = src.lastIndexOf("\\");
-    var pos2 = src.lastIndexOf("/");
-    var pos = -1;
-    if (pos1 < 0) pos = pos2;
-    else pos = pos1;
-    return src.substring(pos + 1);
+function transBase64(file) {
+    //file transform base64
+    if (file) {
+        var FR = new FileReader();
+        FR.readAsDataURL(file);
+        FR.onloadend = function (e) {
+            var base64data = e.target.result;
+            loadImage(base64data);
+        };
+    }
 }
 
-function createJsonXmlHttp(url) {
-    var newXmlHttp = null;
-    try { // Firefox, Opera 8.0+, Safari
-        newXmlHttp = new XMLHttpRequest();
-    } catch (e) { //Internet Explorer
-        try {
-            newXmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-            newXmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-    }
-    if (newXmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
-    newXmlHttp.open("POST", url, true);
-    newXmlHttp.setRequestHeader("Content-type", "application/json");
-    return newXmlHttp;
+function checkExt(fileName) {
+    var validExts = new Array(".png", ".jpg", ".jpeg"); // 可接受的副檔名
+    var fileExt = fileName.substring(fileName.lastIndexOf('.'));
+    if (validExts.indexOf(fileExt) < 0) {
+        alert("檔案類型錯誤，可接受的副檔名有：" + validExts.toString());
+        return false;
+    } else
+        return true;
+}
+
+function checkImageSize(file) {
+    if (file.size / 1048576 > 1) {
+        alert("檔案大小超過1MB，請重新選擇圖檔!");
+        return false;
+    } else
+        return true;
 }

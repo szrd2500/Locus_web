@@ -23,14 +23,15 @@
     <script type="text/javascript" src="../js/navbar_setting.js"></script>
     <script type="text/javascript" src="../js/map_setting.js"></script>
     <script type="text/javascript" src="../js/group_setting.js"></script>
+    <script type="text/javascript" src="../js/show_all_group.js"></script>
+    <script type="text/javascript" src="../js/show_all_anchor.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script type="text/javascript" src="../js/Dialog/dialog_map_setting.js"></script>
     <script type="text/javascript" src="../js/Dialog/dialog_map_draw.js"></script>
+    <script type="text/javascript" src="../js/Dialog/dialog_map_setting.js"></script>
     <script type="text/javascript" src="../js/Dialog/dialog_anchor_list.js"></script>
     <script type="text/javascript" src="../js/Dialog/dialog_anchor_group.js"></script>
     <script type="text/javascript" src="../js/Dialog/dialog_group_list.js"></script>
-
 </head>
 
 <body>
@@ -60,9 +61,6 @@
                                 </li>
                                 <li><a href="../Anchor_Setting.html">
                                         <img src="../image/anchor_setting.png">Anchor設定</a>
-                                </li>
-                                <li><a href="../Tag_Setting.html">
-                                        <img src="../image/tag_setting.png">Tag設定</a>
                                 </li>
                                 <li><a href="../Alarm_Setting.html">
                                         <img src="../image/alarm_setting.png">Alarm設定</a>
@@ -98,23 +96,97 @@
         </div>
 
         <!-- Web Content -->
-        <div class="row" style="display:flex;">
-            <div class="col-lg-2" id="left_navbar">
-                <nav class="navbar navbar-default">
-                    <div class="container-fluid">
-                        <ul class="nav navbar-nav">
-                            <li class="active"><a href="#">地圖設定</a></li>
-                            <li><a href="../Group_Setting.html">群組設定</a></li>
-                        </ul>
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#tab_map_setting">地圖設定</a></li>
+            <li><a data-toggle="tab" href="#tab_group_setting">群組設定</a></li>
+            <li><a data-toggle="tab" href="#tab_anchor_setting">Anchor設定</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="tab_map_setting" class="tab-pane fade in active">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="maps_gallery"></div>
+                        <label for="add_new_map" class="custom-file-download">
+                            <div class="new_map_block"></div>New Map <i class="far fa-images"></i>
+                        </label>
+                        <input id="add_new_map" type="button" onclick="newMap();" class="btn-hidden" />
                     </div>
-                </nav>
+                </div>
             </div>
-            <div class="col-lg-10">
-                <div id="maps_gallery"></div>
-                <label for="add_new_map" class="custom-file-download">
-                    <div class="new_map_block"></div>New Map<i class="far fa-images"></i>
-                </label>
-                <input id="add_new_map" type="button" onclick="newMap();" class="btn-hidden" />
+            <div id="tab_group_setting" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <span>
+                            <label for="btn_add_all_group" id="label_add_all_group" class="btn-add" title="Add group">
+                                <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
+                            <input id="btn_add_all_group" type="button" class="btn-hidden" />
+                            <label for="btn_delete_all_group" id="label_delete_all_group" class="btn-delete"
+                                title="Delete group"><i class="fas fa-minus-square" style='font-size:20px;'></i></label>
+                            <input id="btn_delete_all_group" type="button" class="btn-hidden" />
+                        </span>
+                        <table id="table_all_group" class="table-line">
+                            <thead>
+                                <tr class="ui-widget-header">
+                                    <th>Item</th>
+                                    <th>Group ID</th>
+                                    <th>Group Name</th>
+                                    <th>Main Anchor</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="tab_anchor_setting" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <span>
+                            <!--Add-->
+                            <label for="btn_add_all_anchor" id="label_add_all_anchor" class="btn-add"
+                                title="Add anchor">
+                                <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
+                            <input id="btn_add_all_anchor" type="button" class="btn-hidden" />
+                            <!--Delete-->
+                            <label for="btn_delete_all_anchor" id="label_delete_all_anchor" class="btn-delete"
+                                title="Delete anchor"><i class="fas fa-minus-square"
+                                    style='font-size:20px;'></i></label>
+                            <input id="btn_delete_all_anchor" type="button" class="btn-hidden" />
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <table id="table_all_main_anchor" class="table-line">
+                            <thead>
+                                <tr class="ui-widget-header">
+                                    <th>Item</th>
+                                    <th>Main Anchor ID</th>
+                                    <th>X</th>
+                                    <th>Y</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <br><br>
+                    </div>
+                    <div class="col-lg-6">
+                        <table id="table_all_anchor" class="table-line">
+                            <thead>
+                                <tr class="ui-widget-header">
+                                    <th>Item</th>
+                                    <th>Anchor ID</th>
+                                    <th>X</th>
+                                    <th>Y</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -133,8 +205,8 @@
                         </div>
                         <div style="height:40px;">
                             <span style="float:left;">
-                                X:<input type="text" id="x" style="max-width:100px; border:none;" readonly>
-                                Y:<input type="text" id="y" style="max-width:100px; border:none;" readonly>
+                                X:<label id="x" style="width:100px;"></label>
+                                Y:<label id="y" style="width:100px;"></label>
                             </span>
                             <nav class="sidebar-menu" style="margin-left:322px;">
                                 <ul class="nav">
@@ -143,10 +215,10 @@
                                             <i class="far fa-image" style='font-size:20px;'></i></label>
                                         <input id="menu_load_map" type="file" accept="image/*" /></li>
                                     <!--Restore Size-->
-                                    <li><label for="menu_restore" id="label_restore" class="btn-sidebar"
+                                    <li><label for="menu_resize" id="label_resize" class="btn-sidebar"
                                             title="Restore original size">
                                             <i class="fas fa-expand" style='font-size:20px;'></i></label>
-                                        <input id="menu_restore" type="button" class="btn-hidden" /></li>
+                                        <input id="menu_resize" type="button" class="btn-hidden" /></li>
                                     <!--Map Info-->
                                     <li><label for="menu_map_info" id="label_map_info" class="btn-sidebar"
                                             title="Map Information">
@@ -197,8 +269,8 @@
                                 </tr>
                             </table>
                         </div>
-                        <div id="block_anchor_list" class="block-list">
-                            <span>
+                        <div id="block_anchor_list">
+                            <span style="margin: 0px 0px 0px 10px">
                                 <!--Add Pos-->
                                 <label for="btn_anchor_position" id="label_anchor_position" class="btn-add-pos"
                                     title="Start anchor position"><i class="fas fa-map-marked-alt"
@@ -214,32 +286,34 @@
                                         style='font-size:20px;'></i></label>
                                 <input id="btn_delete_anchor" type="button" class="btn-hidden" />
                             </span>
-                            <table id="table_main_anchor_list" class="table-line">
-                                <thead>
-                                    <tr class="ui-widget-header">
-                                        <th>Item</th>
-                                        <th>Main Anchor ID</th>
-                                        <th>X</th>
-                                        <th>Y</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                            <br>
-                            <table id="table_anchor_list" class="table-line">
-                                <thead>
-                                    <tr class="ui-widget-header">
-                                        <th>Item</th>
-                                        <th>Anchor ID</th>
-                                        <th>X</th>
-                                        <th>Y</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                            <div class="block-list">
+                                <table id="table_main_anchor_list" class="table-line">
+                                    <thead>
+                                        <tr class="ui-widget-header">
+                                            <th>Item</th>
+                                            <th>Main Anchor ID</th>
+                                            <th>X</th>
+                                            <th>Y</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                                <br>
+                                <table id="table_anchor_list" class="table-line">
+                                    <thead>
+                                        <tr class="ui-widget-header">
+                                            <th>Item</th>
+                                            <th>Anchor ID</th>
+                                            <th>X</th>
+                                            <th>Y</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div id="block_group_list" class="block-list">
-                            <span>
+                        <div id="block_group_list">
+                            <span style="margin: 0px 0px 0px 10px">
                                 <label for="btn_add_group" id="label_add_group" class="btn-add" title="Add group">
                                     <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
                                 <input id="btn_add_group" type="button" class="btn-hidden" />
@@ -248,20 +322,22 @@
                                         style='font-size:20px;'></i></label>
                                 <input id="btn_delete_group" type="button" class="btn-hidden" />
                             </span>
-                            <table id="table_group_list" class="table-line">
-                                <thead>
-                                    <tr class="ui-widget-header ">
-                                        <th>Item</th>
-                                        <th>Group ID</th>
-                                        <th>Group Name</th>
-                                        <th>Main Anchor</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                            <div class="block-list">
+                                <table id="table_group_list" class="table-line">
+                                    <thead>
+                                        <tr class="ui-widget-header ">
+                                            <th>Item</th>
+                                            <th>Group ID</th>
+                                            <th>Group Name</th>
+                                            <th>Main Anchor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div id="block_anchor_group" class="block-list">
-                            <span>
+                        <div id="block_anchor_group">
+                            <span style="margin: 0px 0px 0px 10px">
                                 <label for="btn_add_anchor_group" id="label_add_anchor_group" class="btn-add"
                                     title="Add anchor group">
                                     <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
@@ -271,20 +347,22 @@
                                         style='font-size:20px;'></i></label>
                                 <input id="btn_delete_anchor_group" type="button" class="btn-hidden" />
                             </span>
-                            <table id="table_anchor_group" class="table-line">
-                                <thead>
-                                    <tr class="ui-widget-header">
-                                        <th>Item</th>
-                                        <th>Group</th>
-                                        <th>Main Anchor</th>
-                                        <th>Anchor</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                            <div class="block-list">
+                                <table id="table_anchor_group" class="table-line">
+                                    <thead>
+                                        <tr class="ui-widget-header">
+                                            <th style="min-width: 60px;">Item</th>
+                                            <th>Group</th>
+                                            <th>Main Anchor</th>
+                                            <th>Anchor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div id="block_map_group" class="block-list">
-                            <span>
+                        <div id="block_map_group">
+                            <span style="margin: 0px 0px 0px 10px">
                                 <label for="btn_add_map_group" id="label_add_map_group" class="btn-add"
                                     title="Add map group">
                                     <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
@@ -296,15 +374,17 @@
                                 <input id="btn_delete_map_group" type="button" class="btn-hidden"
                                     onclick="removeMapGroup()" />
                             </span>
-                            <table id="table_map_group" class="table-line">
-                                <thead>
-                                    <tr class="ui-widget-header">
-                                        <th>Item</th>
-                                        <th style="min-width:150px;">Map Groups</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                            <div class="block-list">
+                                <table id="table_map_group" class="table-line">
+                                    <thead>
+                                        <tr class="ui-widget-header">
+                                            <th>Item</th>
+                                            <th style="min-width:150px;">Map Groups</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </fieldset>
@@ -320,15 +400,17 @@
                         <option value="main">Main Anchor</option>
                     </select>
                     <br><br>
-                    <label for="anchor_id">Anchor ID:</label>
+                    <label>Anchor ID:</label>
                     <input type="text" id="anchor_id" value="" style="max-width:100px;">(0 ~ 65535)
                     <br><br>
-                    <label for="anchor_x">X:</label>
+                    <label>X:</label>
                     <input type="text" id="anchor_x" value="" style="max-width:100px;">
                     <br><br>
-                    <label for="anchor_y">Y:</label>
+                    <label>Y:</label>
                     <input type="text" id="anchor_y" value="" style="max-width:100px;">
                     <br><br>
+                    <label>Group:</label>
+                    <div id="anchor_group_black"></div>
                     <!-- Allow form submission with keyboard without duplicating the dialog button -->
                     <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
                 </fieldset>

@@ -7,17 +7,21 @@ function hiddenBlock() {
     $(".sidebar-menu .btn-sidebar").css('background-color', 'rgb(57, 143, 255)');
 }
 
-
 $(function () {
     hiddenBlock();
     $("#block_info").show();
     $("#label_map_info").css('background-color', 'rgb(40, 108, 197)');
 
     $("#menu_load_map").on("change", function () {
-        loadImage($(this).prop('files')[0]);
-        //readImage($(this).prop('files'));
+        var file = this.files[0];
+        var valid = checkExt(this.value);
+        valid = valid && checkImageSize(file);
+        if (valid)
+            transBase64(file);
+        else
+            return;
     });
-    $("#menu_restore").on("click", restoreCanvas);
+    $("#menu_resize").on("click", resizeCanvas);
     $("#menu_map_info").on("click", function () {
         hiddenBlock();
         $("#block_info").show();
@@ -182,7 +186,8 @@ $(function () {
                 "Value": {
                     "map_id": mapinfo_id.val(),
                     "map_name": mapinfo_name.val(),
-                    "map_path": $("#map_info_path").text(),
+                    "map_file": "",
+                    "map_file_ext": "png",
                     "map_scale": mapinfo_scale.val(),
                 }
             });

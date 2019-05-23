@@ -49,7 +49,7 @@ function setupCanvas() {
     canvas.addEventListener("mousewheel", handleMouseWheel, false);
     cvsBlock.addEventListener("mousewheel", handleMouseWheel, false); // mousewheel duplicates dblclick function
     cvsBlock.addEventListener("DOMMouseScroll", handleMouseWheel, false); // for Firefox
-    
+
     $(function () {
         $("#map_info_scale").on("change", function () {
             canvasImg.scale = $(this).val();
@@ -57,39 +57,6 @@ function setupCanvas() {
             draw();
         });
     });
-}
-
-function readImage(files) {
-    //測試丟出base64的資料
-    if (files && files[0]) {
-        var FR = new FileReader();
-        FR.onload = function (e) {
-            //e.target.result = base64 format picture
-            var oReq = new XMLHttpRequest();
-            if (oReq == null) {
-                alert("Browser does not support HTTP Request");
-                return;
-            }
-            oReq.open("POST", "requestImage", true);
-            oReq.responseType = "blob";
-            oReq.onreadystatechange = function () {
-                if (oReq.readyState == oReq.DONE) {
-                    var blob = oReq.response;
-                    loadImage(blob);
-                    var reader = new FileReader();
-                    reader.readAsDataURL(blob);
-                    reader.onloadend = function () {
-                        var base64data = reader.result;
-                        console.log(base64data);
-                        //console.log(base64data.substr(base64data.indexOf(',') + 1));
-                    }
-                }
-            }
-            oReq.send(e.target.result); //e.target.result
-        };
-        FR.readAsBinaryString(files[0]);
-        //FR.readAsDataURL(files[0]);
-    }
 }
 
 function setMap(map_url, map_scale) { //接收Server發送的地圖資料並導入
@@ -136,8 +103,8 @@ function resetCanvas_Anchor() {
     anchorArray = [];
 }
 
-function loadImage(file) { //新增或更換地圖
-    var src = URL.createObjectURL(file);
+function loadImage(dataUrl) { //新增或更換地圖
+    var src = dataUrl;
     serverImg.src = src;
     serverImg.onload = function () {
         cvsBlock.style.background = "none";
@@ -164,7 +131,6 @@ function loadImage(file) { //新增或更換地圖
             setCanvas(src, serverImg.width * fitZoom, cvs_height);
         }
         draw();
-        $("#map_info_path").text(getFileName($("#menu_load_map").val()));
     };
 }
 
@@ -192,7 +158,7 @@ function setSize() {
     }
 }
 
-function restoreCanvas() {
+function resizeCanvas() {
     xleftView = 0;
     ytopView = 0;
     Zoom = zoomOriginal;
@@ -201,8 +167,8 @@ function restoreCanvas() {
         ctx.restore();
         ctx.save();
         isFitWindow = false; //目前狀態:原比例 
-        document.getElementById("label_restore").innerHTML = "<i class=\"fas fa-compress\" style='font-size:20px;'></i>";
-        document.getElementById("label_restore").title = "Fit in window";
+        document.getElementById("label_resize").innerHTML = "<i class=\"fas fa-compress\" style='font-size:20px;'></i>";
+        document.getElementById("label_resize").title = "Fit in window";
     } else { //依比例拉伸(Fit in Window)
         var cvs_width = parseFloat($("#mapBlock").css("width")) - 2;
         var cvs_height = parseFloat($("#mapBlock").css("height")) - 2;
@@ -211,8 +177,8 @@ function restoreCanvas() {
         else
             fitZoom = cvs_height / serverImg.height;
         isFitWindow = true; //目前狀態:依比例拉伸
-        document.getElementById("label_restore").innerHTML = "<i class=\"fas fa-expand\" style='font-size:20px;'></i>";
-        document.getElementById("label_restore").title = "Restore the original size";
+        document.getElementById("label_resize").innerHTML = "<i class=\"fas fa-expand\" style='font-size:20px;'></i>";
+        document.getElementById("label_resize").title = "Restore the original size";
     }
     draw();
 }
@@ -274,8 +240,8 @@ function handleMouseMove(event) {
     if (canvasImg.isPutImg) {
         lastX = loc.x;
         lastY = loc.y;
-        document.getElementById('x').value = (lastX * Zoom / fitZoom * canvasImg.scale).toFixed(2); //parseInt(lastX * Zoom / fitZoom);
-        document.getElementById('y').value = (lastY * Zoom / fitZoom * canvasImg.scale).toFixed(2); //parseInt(lastY * Zoom / fitZoom);
+        document.getElementById('x').innerText = (lastX * Zoom / fitZoom * canvasImg.scale).toFixed(2); //parseInt(lastX * Zoom / fitZoom);
+        document.getElementById('y').innerText = (lastY * Zoom / fitZoom * canvasImg.scale).toFixed(2); //parseInt(lastY * Zoom / fitZoom);
     }
 }
 
@@ -299,11 +265,7 @@ function getAnchors(map_id) {
             "map_id": map_id
         }
     };
-    var xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
+    var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
@@ -334,8 +296,6 @@ function getAnchors(map_id) {
             }
         }
     };
-    xmlHttp.open("POST", "sql", true);
-    xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(requestArray));
 }
 
@@ -406,8 +366,8 @@ function handleAnchorPosition() {
     $(function () {
         $("#anchor_type").val("");
         $("#anchor_id").val("");
-        $("#anchor_x").val($("#x").val());
-        $("#anchor_y").val($("#y").val());
+        $("#anchor_x").val($("#x").text());
+        $("#anchor_y").val($("#y").text());
         $("#dialog_add_new_anchor").dialog("open");
     });
 }
