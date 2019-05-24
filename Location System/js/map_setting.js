@@ -27,7 +27,7 @@ function loadMap() {
                         " width=\"" + img_size.width + "\" height=\"" + img_size.height + "\">" +
                         "</a></div>" +
                         "<div class=\"caption\"><table style='width:200px;'><tr>" +
-                        "<th>Name:</th>" +
+                        "<th>Map Name:</th>" +
                         "<th><span name=\"" + map + "\">" + mapArray[i].map_name + "</span></th>" +
                         "<th><button class='btn btn-primary' onclick=\"setMapById(\'" + mapArray[i].map_id + "\')\">設定</button></th>" +
                         "</tr></table></div>" +
@@ -52,7 +52,7 @@ function setMapById(id) { //點擊設定:開啟設定視窗
         $("#map_info_scale").val(scale);
         setMap(urlData, scale);
         //在設定好地圖後，導入Anchors
-        getAnchors(mapArray[index].map_id);
+        getAnchors();
         $("#dialog_map_setting").dialog("open");
     } else {
         return;
@@ -83,7 +83,7 @@ function setNewMap(map_id) { //新增地圖
         " width=\"" + img_size.width + "\" height=\"" + img_size.height + "\">" +
         "</a></div>" +
         "<div class=\"caption\"><table style='width:200px;'><tr>" +
-        "<th>Name:</th>" +
+        "<th>Map Name:</th>" +
         "<th><span name=\"" + map + "\">" + $("#map_info_name").val() + "</span></th>" +
         "<th><button class='btn btn-primary' onclick=\"setMapById(\'" + map_id + "\')\">設定</button></th>" +
         "</tr></table></div>" +

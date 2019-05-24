@@ -216,11 +216,7 @@ function getAnchors(map_id) {
             "map_id": map_id
         }
     };
-    var xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
+    var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
@@ -249,8 +245,6 @@ function getAnchors(map_id) {
             }
         }
     };
-    xmlHttp.open("POST", "sql", true);
-    xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(requestArray));
     Map_id = map_id;
 }
@@ -260,11 +254,7 @@ function getGroups(anchorList) {
         "Command_Type": ["Read"],
         "Command_Name": ["GetGroup_Anchors"]
     };
-    var xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
+    var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
@@ -274,8 +264,6 @@ function getGroups(anchorList) {
             }
         }
     };
-    xmlHttp.open("POST", "sql", true);
-    xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(requestArray));
 }
 
@@ -284,11 +272,7 @@ function getGroupList(anchorList) {
         "Command_Type": ["Read"],
         "Command_Name": ["GetGroups"]
     };
-    var xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
+    var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
@@ -302,8 +286,6 @@ function getGroupList(anchorList) {
             }
         }
     };
-    xmlHttp.open("POST", "sql", true);
-    xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(requestArray));
 }
 
@@ -312,11 +294,7 @@ function getMapGroup(groupArray) {
         "Command_Type": ["Read"],
         "Command_Name": ["GetMaps_Groups"]
     };
-    var xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
+    var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
@@ -329,18 +307,7 @@ function getMapGroup(groupArray) {
             }
         }
     };
-    xmlHttp.open("POST", "sql", true);
-    xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(requestArray));
-}
-
-function getFileName(src) {
-    var pos1 = src.lastIndexOf("\\");
-    var pos2 = src.lastIndexOf("/");
-    var pos = -1;
-    if (pos1 < 0) pos = pos2;
-    else pos = pos1;
-    return src.substring(pos + 1);
 }
 
 function setCanvas(img_src, width, height) {

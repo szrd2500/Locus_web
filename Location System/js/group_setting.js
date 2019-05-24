@@ -34,8 +34,8 @@ function updateGroupArray() {
     var groupArray = [];
     var g_id = document.getElementsByName("grouplist_id");
     g_id.forEach(function (element) {
-        if (element.value != "" && typeof (element.value) != 'undefined')
-            groupArray.push(element.value);
+        if (element.innerText != "" && typeof (element.innerText) != 'undefined')
+            groupArray.push(element.innerText);
     });
     return groupArray;
 }
@@ -45,9 +45,9 @@ function catchGroupList() {
     var g_id = document.getElementsByName("grouplist_id");
     var m_id = document.getElementsByName("grouplist_main_anchor");
     g_id.forEach(function (element, index) {
-        if (element.value != "" && typeof (element.value) != 'undefined')
+        if (element.innerText != "" && typeof (element.innerText) != 'undefined')
             groupListArray.push({
-                group_id: element.value,
+                group_id: element.innerText,
                 main_anchor_id: m_id[index].value
             });
     });
@@ -105,7 +105,7 @@ function updateMapGroupList() {
     for (i = 0; i < anc_group.length; i++)
         allGroups.push(anc_group[i].value); //取出所有綁定到anchor的group_id放進陣列
     for (j = 0; j < main_anc_group.length; j++)
-        allGroups.push(main_anc_group[j].value); //取出所有綁定到main_anchor的group_id放進陣列
+        allGroups.push(main_anc_group[j].innerText); //取出所有綁定到main_anchor的group_id放進陣列
     var update = {};
     allGroups.forEach(function (item) {
         update[item] = update[item] ? update[item] + 1 : 1; //過濾掉重複的group_id放進Object(key)

@@ -33,9 +33,8 @@ function inputGroupList(mainAnchorIDArr) {
                     $("#table_group_list tbody").append("<tr id=\"" + tr_id + "\"><td>" +
                         "<input type=\"checkbox\" name=\"chkbox_group_list\" value=\"" + count_grouplist + "\"" +
                         " onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_grouplist +
-                        "</td><td>" +
-                        "<input type=\"text\" name=\"grouplist_id\" value=\"" + info.group_id +
-                        "\" style=\"max-width:50px;\" />" +
+                        //"</td><td>" +
+                        //"<label name=\"grouplist_id\">" + info.group_id + "</label>" +
                         "</td><td>" +
                         "<input type=\"text\" name=\"grouplist_name\" value=\"" + info.group_name +
                         "\" style=\"max-width:80px;\" />" +
@@ -106,9 +105,8 @@ $(function () {
             $("#table_group_list tbody").append("<tr id=\"" + tr_id + "\"><td>" +
                 "<input type=\"checkbox\" name=\"chkbox_group_list\" value=\"" + count_grouplist + "\"" +
                 " onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_grouplist +
-                "</td><td>" +
-                "<input type=\"text\" name=\"grouplist_id\" value=\"" + add_grouplist_id.val() +
-                "\" style=\"max-width:50px;\" />" +
+                //"</td><td>" +
+                //"<label name=\"grouplist_id\">" + add_grouplist_id.val() + "</label>" +
                 "</td><td>" +
                 "<input type=\"text\" name=\"grouplist_name\" value=\"" + add_grouplist_name.val() +
                 "\" style=\"max-width:80px;\" />" +

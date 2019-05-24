@@ -23,8 +23,6 @@
     <script type="text/javascript" src="../js/navbar_setting.js"></script>
     <script type="text/javascript" src="../js/map_setting.js"></script>
     <script type="text/javascript" src="../js/group_setting.js"></script>
-    <script type="text/javascript" src="../js/show_all_group.js"></script>
-    <script type="text/javascript" src="../js/show_all_anchor.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="../js/Dialog/dialog_map_draw.js"></script>
@@ -96,97 +94,13 @@
         </div>
 
         <!-- Web Content -->
-        <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#tab_map_setting">地圖設定</a></li>
-            <li><a data-toggle="tab" href="#tab_group_setting">群組設定</a></li>
-            <li><a data-toggle="tab" href="#tab_anchor_setting">Anchor設定</a></li>
-        </ul>
-        <div class="tab-content">
-            <div id="tab_map_setting" class="tab-pane fade in active">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div id="maps_gallery"></div>
-                        <label for="add_new_map" class="custom-file-download">
-                            <div class="new_map_block"></div>New Map <i class="far fa-images"></i>
-                        </label>
-                        <input id="add_new_map" type="button" onclick="newMap();" class="btn-hidden" />
-                    </div>
-                </div>
-            </div>
-            <div id="tab_group_setting" class="tab-pane fade">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <span>
-                            <label for="btn_add_all_group" id="label_add_all_group" class="btn-add" title="Add group">
-                                <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
-                            <input id="btn_add_all_group" type="button" class="btn-hidden" />
-                            <label for="btn_delete_all_group" id="label_delete_all_group" class="btn-delete"
-                                title="Delete group"><i class="fas fa-minus-square" style='font-size:20px;'></i></label>
-                            <input id="btn_delete_all_group" type="button" class="btn-hidden" />
-                        </span>
-                        <table id="table_all_group" class="table-line">
-                            <thead>
-                                <tr class="ui-widget-header">
-                                    <th>Item</th>
-                                    <th>Group ID</th>
-                                    <th>Group Name</th>
-                                    <th>Main Anchor</th>
-                                    <th>Edit</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div id="tab_anchor_setting" class="tab-pane fade">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <span>
-                            <!--Add-->
-                            <label for="btn_add_all_anchor" id="label_add_all_anchor" class="btn-add"
-                                title="Add anchor">
-                                <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
-                            <input id="btn_add_all_anchor" type="button" class="btn-hidden" />
-                            <!--Delete-->
-                            <label for="btn_delete_all_anchor" id="label_delete_all_anchor" class="btn-delete"
-                                title="Delete anchor"><i class="fas fa-minus-square"
-                                    style='font-size:20px;'></i></label>
-                            <input id="btn_delete_all_anchor" type="button" class="btn-hidden" />
-                        </span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <table id="table_all_main_anchor" class="table-line">
-                            <thead>
-                                <tr class="ui-widget-header">
-                                    <th>Item</th>
-                                    <th>Main Anchor ID</th>
-                                    <th>X</th>
-                                    <th>Y</th>
-                                    <th>Edit</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <br><br>
-                    </div>
-                    <div class="col-lg-6">
-                        <table id="table_all_anchor" class="table-line">
-                            <thead>
-                                <tr class="ui-widget-header">
-                                    <th>Item</th>
-                                    <th>Anchor ID</th>
-                                    <th>X</th>
-                                    <th>Y</th>
-                                    <th>Edit</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div id="maps_gallery"></div>
+                <label for="add_new_map" class="custom-file-download">
+                    <div class="new_map_block"></div>New Map <i class="far fa-images"></i>
+                </label>
+                <input id="add_new_map" type="button" onclick="newMap();" class="btn-hidden" />
             </div>
         </div>
     </div>
@@ -208,7 +122,11 @@
                                 X:<label id="x" style="width:100px;"></label>
                                 Y:<label id="y" style="width:100px;"></label>
                             </span>
-                            <nav class="sidebar-menu" style="margin-left:322px;">
+                        </div>
+                    </div>
+                    <div style="height:490px; float:left;">
+                        <div style="margin: 0px 0px 40px 10px;">
+                            <nav class="sidebar-menu">
                                 <ul class="nav">
                                     <!--Load Map-->
                                     <li><label for="menu_load_map" class="btn-sidebar" title="load new map">
@@ -227,47 +145,34 @@
                                     <!--Anchor List-->
                                     <li><label for="menu_anchor_list" id="label_anchor_list" class="btn-sidebar"
                                             title="Anchor List">
-                                            <i class="fas fa-file-alt" style='font-size:20px;'></i></label>
+                                            <i class="fas fa-map-pin" style='font-size:20px;'></i></label>
                                         <input id="menu_anchor_list" type="button" class="btn-hidden" /></li>
                                     <!--Group List-->
                                     <li><label for="menu_group_list" id="label_group_list" class="btn-sidebar"
                                             title="Group Setting">
-                                            <i class="far fa-edit" style='font-size:20px;'></i></label>
+                                            <i class="fas fa-draw-polygon" style='font-size:20px;'></i></label>
                                         <input id="menu_group_list" type="button" class="btn-hidden" /></li>
                                     <!--Anchor Group-->
                                     <li><label for="menu_anchor_group" id="label_anchor_group" class="btn-sidebar"
                                             title="Anchor Group">
-                                            <i class="fas fa-draw-polygon" style='font-size:20px;'></i></label>
-                                        <input id="menu_anchor_group" type="button" class="btn-hidden" /></li>
-                                    <!--Map Group-->
-                                    <li><label for="menu_map_group" id="label_map_group" class="btn-sidebar"
-                                            title="Map Group">
                                             <i class="far fa-object-ungroup" style='font-size:20px;'></i></label>
-                                        <input id="menu_map_group" type="button" class="btn-hidden" /></li>
+                                        <input id="menu_anchor_group" type="button" class="btn-hidden" /></li>
+                                    <!--Map Group
+                                                    <li><label for="menu_map_group" id="label_map_group" class="btn-sidebar"
+                                                            title="Map Group">
+                                                            <i class="far fa-object-ungroup" style='font-size:20px;'></i></label>
+                                                        <input id="menu_map_group" type="button" class="btn-hidden" /></li>-->
                                 </ul>
                             </nav>
                         </div>
-                    </div>
-                    <div style="height:490px; float:left;">
-                        <div id="block_info" style="margin-left:40px;">
-                            <table>
-                                <tr>
-                                    <th><label>File:&nbsp;</label></th>
-                                    <th><label id="map_info_path"></label></th>
-                                </tr>
-                                <tr>
-                                    <td><label>ID:&nbsp;</label></td>
-                                    <td><input type="text" id="map_info_id" style="width:100%;" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label>Name:&nbsp;</label></td>
-                                    <td><input type="text" id="map_info_name" style="width:100%;" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label>Scale:&nbsp;&nbsp;1:</label></td>
-                                    <td><input type="text" id="map_info_scale" style="width:100%;" /></td>
-                                </tr>
-                            </table>
+
+                        <div id="block_info" style="margin-left:10px; padding: 20px;">
+                            <input type="hidden" id="map_info_id" />
+                            <label>Map Name:&nbsp;</label>
+                            <input type="text" id="map_info_name" style="width:100px;" />
+                            <br><br>
+                            <label>Map Scale:&nbsp;&nbsp;&nbsp;1 : </label>
+                            <input type="text" id="map_info_scale" style="width:100px;" />
                         </div>
                         <div id="block_anchor_list">
                             <span style="margin: 0px 0px 0px 10px">
@@ -327,7 +232,7 @@
                                     <thead>
                                         <tr class="ui-widget-header ">
                                             <th>Item</th>
-                                            <th>Group ID</th>
+                                            <!--<th>Group ID</th>-->
                                             <th>Group Name</th>
                                             <th>Main Anchor</th>
                                         </tr>
@@ -361,7 +266,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div id="block_map_group">
+                        <!--<div id="block_map_group">
                             <span style="margin: 0px 0px 0px 10px">
                                 <label for="btn_add_map_group" id="label_add_map_group" class="btn-add"
                                     title="Add map group">
@@ -385,7 +290,7 @@
                                     <tbody></tbody>
                                 </table>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </fieldset>
             </form>
@@ -394,23 +299,34 @@
         <div id="dialog_add_new_anchor" title="Add New Anchor">
             <form>
                 <fieldset style="text-align: left;">
-                    <label for="anchor_type">Anchor Type:</label>
+                    <label for="anchor_type">Anchor Type : </label>
                     <select id="anchor_type">
                         <option value="" selected="selected">Anchor</option>
                         <option value="main">Main Anchor</option>
                     </select>
                     <br><br>
-                    <label>Anchor ID:</label>
-                    <input type="text" id="anchor_id" value="" style="max-width:100px;">(0 ~ 65535)
-                    <br><br>
-                    <label>X:</label>
+                    <label>Anchor ID : </label>
+                    <input type="text" id="anchor_id" value="" style="max-width:100px;">
+                    <label id="anchor_id_alert"></label>
+                    <br>(0 ~ 65535)<br><br>
+                    <label>X : </label>
                     <input type="text" id="anchor_x" value="" style="max-width:100px;">
                     <br><br>
-                    <label>Y:</label>
+                    <label>Y : </label>
                     <input type="text" id="anchor_y" value="" style="max-width:100px;">
                     <br><br>
-                    <label>Group:</label>
-                    <div id="anchor_group_black"></div>
+                    <div id="anchor_input_group">
+                        <label>Group ID : </label>
+                        <input type="text" id="anchor_input_group_id" value="" style="max-width:100px;">
+                        <label id="group_id_alert"></label>
+                        <br>(0 ~ 65535)<br><br>
+                        <label>Group Name : </label>
+                        <input type="text" id="anchor_input_group_name" value="" style="max-width:100px;">
+                    </div>
+                    <div id="anchor_select_group">
+                        <label>Group ID : </label>
+                        <select id="anchor_select_group_id"></select>
+                    </div>
                     <!-- Allow form submission with keyboard without duplicating the dialog button -->
                     <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
                 </fieldset>
@@ -420,14 +336,14 @@
         <div id="dialog_add_group_list" title="Add Group List">
             <form>
                 <fieldset style="text-align: left;">
-                    <label for="add_grouplist_id">Group ID:</label>
+                    <label for="add_grouplist_id">Group ID : </label>
                     <input type="text" id="add_grouplist_id" value="" style="max-width:100px;">
                     (1 ~ 65535)
                     <br><br>
-                    <label for="add_grouplist_name">Group Name:</label>
+                    <label for="add_grouplist_name">Group Name : </label>
                     <input type="text" id="add_grouplist_name" value="" style="max-width:100px;">
                     <br><br>
-                    <label for="add_grouplist_main_anchor">Main Anchor ID:</label>
+                    <label for="add_grouplist_main_anchor">Main Anchor ID : </label>
                     <select id="add_grouplist_main_anchor"></select>
                     <br><br>
                     <!-- Allow form submission with keyboard without duplicating the dialog button -->

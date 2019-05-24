@@ -56,12 +56,12 @@ $(function () {
         $("#block_anchor_group").show();
         $("#label_anchor_group").css('background-color', 'rgb(40, 108, 197)');
     });
-    $("#menu_map_group").on("click", function () {
+    /*$("#menu_map_group").on("click", function () {
         updateMapGroupList();
         hiddenBlock();
         $("#block_map_group").show();
         $("#label_map_group").css('background-color', 'rgb(40, 108, 197)');
-    });
+    });*/
     $("#btn_anchor_position").on("click", startAnchorPosition);
 
 
@@ -115,7 +115,7 @@ $(function () {
             return;
         }
 
-        valid = valid && checkLength(mapinfo_id, "Please enter the ID of this map.", 1, 5);
+        valid = valid && checkLength(mapinfo_id, "Please enter the ID of this map.", 1, 50);
         valid = valid && checkLength(mapinfo_name, "Please enter the name of this map.", 1, 50);
         valid = valid && checkLength(mapinfo_scale, "Please enter the scale of this map.", 1, 3);
 
@@ -146,11 +146,10 @@ $(function () {
         }
 
         for (k = 0; k < group_id_row.length; k++) {
-            valid = valid && checkLength(group_id_row.eq(k), "GroupList", 1, 5);
             //valid = valid && checkLength(group_name_row.eq(i), "GroupList", 1, 10);
             valid = valid && checkLength(main_anchor_row.eq(k), "GroupList", 1, 5);
             grouplist_array.push({
-                "group_id": group_id_row.eq(k).val(),
+                "group_id": group_id_row.eq(k).text(),
                 "group_name": group_name_row.eq(k).val(),
                 "main_anchor_id": main_anchor_row.eq(k).val()
             });

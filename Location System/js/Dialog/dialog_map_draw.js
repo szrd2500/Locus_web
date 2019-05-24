@@ -184,6 +184,9 @@ function resizeCanvas() {
 }
 
 function handleMouseWheel(event) {
+    window.event ? window.event.cancelBubble = true : event.stopPropagation();
+    if (event.preventDefault)
+        event.preventDefault();
     var targetX = lastX;
     var targetY = lastY;
     var x = targetX + xleftView; // View coordinates
@@ -257,7 +260,8 @@ function getPointOnCanvas(x, y) {
 }
 
 
-function getAnchors(map_id) {
+function getAnchors() {
+    var map_id = $("#map_info_id").val();
     var requestArray = {
         "Command_Type": ["Read"],
         "Command_Name": ["GetAnchors"],
@@ -368,6 +372,7 @@ function handleAnchorPosition() {
         $("#anchor_id").val("");
         $("#anchor_x").val($("#x").text());
         $("#anchor_y").val($("#y").text());
+        setDropdown_Group();
         $("#dialog_add_new_anchor").dialog("open");
     });
 }

@@ -22,6 +22,9 @@ td {
 /* 網頁內的輸入框 */
 label,
 input {
+    font-weight: bold;
+    font-family: 'Microsoft JhengHei', 'sans-serif';
+    font-size: 14px;
     display: inline-block;
 }
 
@@ -218,7 +221,7 @@ h1 {
 
 .block-list {
     overflow: auto;
-    height: 450px;
+    height: 430px;
     max-width: 330px;
     margin: 0px 0px 0px 10px;
 }
