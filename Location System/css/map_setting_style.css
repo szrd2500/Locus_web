@@ -26,6 +26,7 @@ input {
     font-family: 'Microsoft JhengHei', 'sans-serif';
     font-size: 14px;
     display: inline-block;
+    background-color: transparent;
 }
 
 input[type="text"] {
@@ -161,6 +162,17 @@ h1 {
     color: rgb(147, 192, 96);
 }
 
+.btn-edit {
+    cursor: pointer;
+    color: rgb(0, 172, 135);
+    margin: auto;
+}
+
+.btn-edit:hover {
+    color: rgb(158, 180, 162)
+}
+
+
 .sidebar-menu {
     height: 50px;
     float: right;
@@ -224,4 +236,8 @@ h1 {
     height: 430px;
     max-width: 330px;
     margin: 0px 0px 0px 10px;
+}
+
+.changeBgColor {
+    background-color: rgb(187, 234, 250);
 }

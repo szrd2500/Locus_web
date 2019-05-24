@@ -21,11 +21,12 @@ function updateAncGroupArr() {
     var g_id = document.getElementsByName("anchorgroup_group_id");
     var a_id = document.getElementsByName("anchorgroup_anchor_id");
     g_id.forEach(function (element, index) {
-        if (element.value != "" && typeof (element.value) != 'undefined')
+        if (element.value != "" && typeof (element.value) != 'undefined') {
             anchorGroupArray.push({
                 group_id: element.value,
                 anchor_id: a_id[index].value
             });
+        }
     });
     return anchorGroupArray;
 }
@@ -45,55 +46,16 @@ function catchGroupList() {
     var g_id = document.getElementsByName("grouplist_id");
     var m_id = document.getElementsByName("grouplist_main_anchor");
     g_id.forEach(function (element, index) {
-        if (element.innerText != "" && typeof (element.innerText) != 'undefined')
+        if (element.innerText != "" && typeof (element.innerText) != 'undefined') {
             groupListArray.push({
                 group_id: element.innerText,
                 main_anchor_id: m_id[index].value
             });
+        }
     });
     return groupListArray;
 }
 
-
-var count_map_group = 0;
-
-function inputMapGroupList() {
-    var requestArray = {
-        "Command_Type": ["Read"],
-        "Command_Name": ["GetMaps_Groups"]
-    };
-    var xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
-    xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            var revObj = JSON.parse(this.responseText);
-            var mapGroups = revObj.Values;
-            if (revObj.success > 0) {
-                $("#table_map_group tbody").empty(); //先重置表格
-                count_map_group = 0;
-                for (i = 0; i < mapGroups.length; i++) {
-                    count_map_group++;
-                    var tr_id = "tr_map_group_" + count_map_group;
-                    $("#table_map_group tbody").append("<tr id=\"" + tr_id + "\"><td>" +
-                        "<input type=\"checkbox\" name=\"chkbox_map_group\" value=\"" + count_map_group + "\"" +
-                        " onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_map_group +
-                        "</td><td>" +
-                        "<input type=\"text\" name=\"mapgroup_group_id\" value=\"" + mapGroups[i].group_id + "\" />" +
-                        "</td></tr>");
-                }
-            } else {
-                alert("獲取MapGroup失敗，請再試一次!");
-                return;
-            }
-        }
-    };
-    xmlHttp.open("POST", "sql", true);
-    xmlHttp.setRequestHeader("Content-type", "application/json");
-    xmlHttp.send(JSON.stringify(requestArray));
-}
 
 
 //取出不重複的參考網址
@@ -111,42 +73,8 @@ function updateMapGroupList() {
         update[item] = update[item] ? update[item] + 1 : 1; //過濾掉重複的group_id放進Object(key)
     });
     const result = Object.keys(update);
-    $("#table_map_group tbody").empty(); //先重置列表
-    count_map_group = 0;
-    for (i = 0; i < result.length; i++) {
-        count_map_group++;
-        var tr_id = "tr_map_group_" + count_map_group;
-        $("#table_map_group tbody").append("<tr id=\"" + tr_id + "\"><td>" +
-            "<input type=\"checkbox\" name=\"chkbox_map_group\" value=\"" + count_map_group + "\"" +
-            " onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_map_group +
-            "</td><td>" +
-            "<input type=\"text\" name=\"mapgroup_group_id\" value=\"" + result[i] + "\" />" +
-            "</td></tr>");
-    } //更新完畢
 }
 
-function addMapGroup() {
-    count_map_group++;
-    var tr_id = "tr_map_group_" + count_map_group;
-    $("#table_map_group tbody").append("<tr id=\"" + tr_id + "\"><td>" +
-        "<input type=\"checkbox\" name=\"chkbox_map_group\" value=\"" + count_map_group + "\"" +
-        " onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_map_group +
-        "</td><td>" +
-        "<input type=\"text\" name=\"mapgroup_group_id\" />" +
-        "</td></tr>");
-}
-
-function removeMapGroup() {
-    var checkboxs = document.getElementsByName("chkbox_map_group");
-    var arr = [];
-    for (j in checkboxs) {
-        if (checkboxs[j].checked)
-            arr.push(checkboxs[j].value);
-    }
-    arr.forEach(function (v) {
-        $("#tr_map_group_" + v).remove();
-    });
-}
 
 
 function selectColumn(id) {

@@ -8,15 +8,15 @@ function clearAnchorGroup() {
 }
 
 function inputAnchorGroup(anchors) {
+    var map_id = $("#map_info_id").val();
     var requestArray = {
         "Command_Type": ["Read"],
-        "Command_Name": ["GetGroup_Anchors"]
+        "Command_Name": ["GetAnchorsInMap"],
+        "Value": {
+            "map_id": map_id
+        }
     };
-    var xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
+    var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
@@ -31,21 +31,23 @@ function inputAnchorGroup(anchors) {
                         anchorIDArr.push(element.id);
                 });
                 clearAnchorGroup();
+
+
                 anchor_groups.forEach(info => {
                     count_group++;
                     var tr_id = "tr_anchor_group_" + count_group;
                     $("#table_anchor_group tbody").append("<tr id=\"" + tr_id + "\"><td>" +
-                        "<input type=\"checkbox\" name=\"chkbox_anchorgroup\" value=\"" + count_group + "\"" +
+                        "<input type=\"checkbox\" name=\"anchorgroup_group_id\" value=\"" + info.group_id + "\"" +
                         " onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_group +
                         "</td><td>" +
-                        "<input type=\"text\" name=\"anchorgroup_group_id\" value=\"" + info.group_id +
-                        "\" style=\"max-width:70px;\" onchange=\"draw()\" />" +
-                        "</td><td name=\"anchorgroup_main_anchor_id\">" +
-                        info.main_anchor_id +
+                        "<input type=\"text\" name=\"anchorgroup_group_name\" value=\"" + info.group_name +
+                        "\" style=\"max-width:50px;\" readonly/>" +
                         "</td><td>" +
-                        "<select name=\"anchorgroup_anchor_id\" onchange=\"draw()\">" +
-                        makeOptions(anchorIDArr, info.anchor_id) +
-                        "</select>" +
+                        "<input type=\"text\" name=\"anchorgroup_main_anchor_id\" value=\"" + info.main_anchor_id +
+                        "\" style=\"max-width:70px;\" readonly/>" +
+                        "</td><td>" +
+                        "<input type=\"text\" name=\"anchorgroup_anchor_id\" value=\"" + info.anchor_id +
+                        "\" style=\"max-width:70px;\" readonly/>" +
                         "</td></tr>");
                 });
                 inputGroupList(mainAnchorIDArr);
@@ -55,8 +57,6 @@ function inputAnchorGroup(anchors) {
             }
         }
     };
-    xmlHttp.open("POST", "sql", true);
-    xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(requestArray));
 }
 
@@ -118,10 +118,10 @@ $(function () {
             count_group++;
             var tr_id = "tr_anchor_group_" + count_group;
             $("#table_anchor_group tbody").append("<tr id=\"" + tr_id + "\"><td>" +
-                "<input type=\"checkbox\" name=\"chkbox_anchorgroup\" value=\"" + count_group + "\"" +
+                "<input type=\"checkbox\" name=\"anchorgroup_group_id\" value=\"" + count_group + "\"" +
                 " onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_group +
                 "</td><td>" +
-                "<input type=\"text\" name=\"anchorgroup_group_id\" value=\"" + add_group.val() +
+                "<input type=\"text\" name=\"anchorgroup_group_name\" value=\"" + add_group.val() +
                 "\" style=\"max-width:70px;\" onchange=\"draw()\" />" +
                 "</td><td name=\"anchorgroup_main_anchor_id\">" +
                 add_main_anchor.text() +

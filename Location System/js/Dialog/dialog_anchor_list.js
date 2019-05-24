@@ -2,6 +2,8 @@ var count_main_anchor_list = 0;
 var count_anchor_list = 0;
 var allAnchorArray = [];
 var allGroupsArray = [];
+var anchorsInfoArray = [];
+var groupListArray = [];
 
 function clearAnchorList() {
     $("#table_main_anchor_list tbody").empty(); //重置表格
@@ -13,67 +15,54 @@ function clearAnchorList() {
 function inputAnchorList(anchorList) {
     clearAnchorList();
     allAnchorArray = [];
+    anchorsInfoArray = [];
+    anchorsInfoArray = anchorList.slice(0); //利用抽離全部陣列完成陣列拷貝
     for (var i = 0; i < anchorList.length; i++) {
         if (anchorList[i].anchor_type == "main") {
             count_main_anchor_list++;
             var tr_id = "tr_main_anchor_list_" + count_main_anchor_list;
             $("#table_main_anchor_list tbody").append("<tr id=\"" + tr_id + "\"><td>" +
-                "<input type=\"checkbox\" name=\"chkbox_main_anchor\" value=\"" + tr_id + "\"" +
-                " onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_main_anchor_list +
+                "<input type=\"text\" name=\"list_main_anchor_id\" value=\"" + anchorList[i].anchor_id + "\" style=\"max-width:60px;\" readonly/>" +
                 "</td><td>" +
-                "<input type=\"text\" name=\"list_main_anchor_id\" value=\"" + anchorList[i].anchor_id + "\" style=\"max-width:100px;\" onchange=\"catchAnchors()\" />" +
+                "<input type=\"text\" name=\"list_main_anchor_x\" value=\"" + anchorList[i].set_x + "\" style=\"max-width:60px;\" readonly/>" +
                 "</td><td>" +
-                "<input type=\"text\" name=\"list_main_anchor_x\" value=\"" + anchorList[i].set_x + "\" style=\"max-width:60px;\" onchange=\"catchAnchors()\" />" +
+                "<input type=\"text\" name=\"list_main_anchor_y\" value=\"" + anchorList[i].set_y + "\" style=\"max-width:60px;\" readonly/>" +
                 "</td><td>" +
-                "<input type=\"text\" name=\"list_main_anchor_y\" value=\"" + anchorList[i].set_y + "\" style=\"max-width:60px;\" onchange=\"catchAnchors()\" />" +
+                "<label for=\"btn_edit_anchor_" + i + "\" class='btn-edit' title='Edit the anchor'>" +
+                "<i class='fas fa-edit' style='font-size:18px;'></i></label><input id=\"btn_edit_anchor_" + i + "\" type='button'" +
+                " class='btn-hidden' onclick=\"editAnchorList(\'" + anchorList[i].anchor_id + "\')\" />" +
+                "<label for=\"btn_delete_main_anchor_" + i + "\"  class='btn-delete' style='margin-left:10px;' title='Delete the anchor'>" +
+                "<i class='fas fa-trash-alt' style='font-size:18px;'></i></label><input id=\"btn_delete_main_anchor_" + i + "\" type='button'" +
+                " class='btn-hidden' onclick=\"deleteMainAnchor(\'" + anchorList[i].anchor_id + "\')\" />" +
                 "</td></tr>");
         } else {
             count_anchor_list++;
             var tr_id = "tr_anchor_list_" + count_anchor_list;
             $("#table_anchor_list tbody").append("<tr id=\"" + tr_id + "\"><td>" +
-                "<input type=\"checkbox\" name=\"chkbox_anchor\" value=\"" + tr_id + "\"" +
-                " onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_anchor_list +
+                "<input type=\"text\" name=\"list_anchor_id\" value=\"" + anchorList[i].anchor_id + "\" style=\"max-width:60px;\" readonly/>" +
                 "</td><td>" +
-                "<input type=\"text\" name=\"list_anchor_id\" value=\"" + anchorList[i].anchor_id + "\" style=\"max-width:100px;\" onchange=\"catchAnchors()\" />" +
+                "<input type=\"text\" name=\"list_anchor_x\" value=\"" + anchorList[i].set_x + "\" style=\"max-width:60px;\" readonly/>" +
                 "</td><td>" +
-                "<input type=\"text\" name=\"list_anchor_x\" value=\"" + anchorList[i].set_x + "\" style=\"max-width:60px;\" onchange=\"catchAnchors()\" />" +
+                "<input type=\"text\" name=\"list_anchor_y\" value=\"" + anchorList[i].set_y + "\" style=\"max-width:60px;\" readonly/>" +
                 "</td><td>" +
-                "<input type=\"text\" name=\"list_anchor_y\" value=\"" + anchorList[i].set_y + "\" style=\"max-width:60px;\" onchange=\"catchAnchors()\" />" +
+                "<label for=\"btn_edit_anchor_" + i + "\" class='btn-edit' title='Edit the anchor'>" +
+                "<i class='fas fa-edit' style='font-size:18px;'></i></label><input id=\"btn_edit_anchor_" + i + "\" type='button'" +
+                " class='btn-hidden' onclick=\"editAnchorList(\'" + anchorList[i].anchor_id + "\')\" />" +
+                "<label for=\"btn_delete_anchor_" + i + "\" class='btn-delete' style='margin-left:10px;' title='Delete anchor'>" +
+                "<i class='fas fa-trash-alt' style='font-size:18px;'></i></label><input id=\"btn_delete_anchor_" + i + "\" type='button'" +
+                " class='btn-hidden' onclick=\"deleteAnchor(\'" + anchorList[i].anchor_id + "\')\" />" +
                 "</td></tr>");
         }
         allAnchorArray.push(anchorList[i].anchor_id);
     }
 }
 
-function DeleteAnchorList() {
-    var deleteArray = [];
-    var chk_main_anchor = document.getElementsByName("chkbox_main_anchor");
-    var chk_anchor = document.getElementsByName("chkbox_anchor");
-    for (i in chk_main_anchor) {
-        if (chk_main_anchor[i].checked)
-            deleteArray.push(chk_main_anchor[i].value);
-    }
-    for (j in chk_anchor) {
-        if (chk_anchor[j].checked)
-            deleteArray.push(chk_anchor[j].value);
-    }
-    if (deleteArray.length == 0) {
-        alert("請至少勾選一個anchor，才能進行刪除!");
-        return;
-    }
-    /*deleteArray.forEach(v => {
-        $("#" + v).remove();
-    });
-    catchAnchors(); //遍歷AnchorList每一格，放入Array中，再畫點
-    */
+function deleteMainAnchor(id) {
     var request = {
-        "Command_Type": ["Write"],
-        "Command_Name": ["AddListAnchor"],
+        "Command_Type": ["Read"],
+        "Command_Name": ["DeleteAnchor_Info"],
         "Value": [{
-            "anchor_type": anchor_type.val(),
-            "anchor_id": anchor_id.val(),
-            "set_x": anchor_x.val(),
-            "set_y": anchor_y.val()
+            "anchor_id": id
         }]
     };
     var xmlHttp = createJsonXmlHttp("sql");
@@ -81,11 +70,111 @@ function DeleteAnchorList() {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (revObj.success > 0) {
-
+                getGroupList();
+                groupListArray.forEach(element => {
+                    if (element.main_anchor_id == id) {
+                        var deleteRequest = {
+                            "Command_Type": ["Read"],
+                            "Command_Name": ["EditGroup_Info"],
+                            "Value": {
+                                "group_id": element.group_id,
+                                "group_name": element.group_name,
+                                "main_anchor_id": "-1",
+                                "mode": element.group_name,
+                                "mode_value": element.group_name,
+                                "fence": element.group_name
+                            }
+                        };
+                        var deleteXmlHttp = createJsonXmlHttp("sql");
+                        deleteXmlHttp.onreadystatechange = function () {
+                            if (deleteXmlHttp.readyState == 4 || deleteXmlHttp.readyState == "complete") {
+                                var revObj = JSON.parse(this.responseText);
+                                if (revObj.success > 0) {
+                                    getAnchors();
+                                }
+                            }
+                        };
+                        deleteXmlHttp.send(JSON.stringify(deleteRequest));
+                    }
+                });
             }
         }
     };
     xmlHttp.send(JSON.stringify(request));
+}
+
+function deleteAnchor(id) {
+    var request = {
+        "Command_Type": ["Read"],
+        "Command_Name": ["DeleteAnchor_Info"],
+        "Value": [{
+            "anchor_id": id
+        }]
+    };
+    var xmlHttp = createJsonXmlHttp("sql");
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+            var revObj = JSON.parse(this.responseText);
+            if (revObj.success > 0) {
+                var deleteRequest = {
+                    "Command_Type": ["Read"],
+                    "Command_Name": ["DeleteGroup_Anchor"],
+                    "Value": [{
+                        "group_id": "67",
+                        "anchor_id": "6549"
+                    }, {
+                        "group_id": "68",
+                        "anchor_id": "6549"
+                    }]
+                };
+
+
+                var deleteXmlHttp = createJsonXmlHttp("sql");
+                deleteXmlHttp.onreadystatechange = function () {
+                    if (deleteXmlHttp.readyState == 4 || deleteXmlHttp.readyState == "complete") {
+                        var revObj = JSON.parse(this.responseText);
+                        if (revObj.success > 0) {
+                            getAnchors();
+                        }
+                    }
+                };
+                deleteXmlHttp.send(JSON.stringify(deleteRequest));
+            }
+        }
+    };
+    xmlHttp.send(JSON.stringify(request));
+}
+
+function editAnchorList(id) {
+    var index = anchorsInfoArray.findIndex(function (info) {
+        return info.anchor_id == id;
+    });
+    if (index > -1) {
+        $("#edit_anchor_type").text(anchorsInfoArray[index].anchor_type);
+        $("#edit_anchor_id").text(anchorsInfoArray[index].anchor_id);
+        $("#edit_anchor_x").val(anchorsInfoArray[index].set_x);
+        $("#edit_anchor_y").val(anchorsInfoArray[index].set_y);
+        $("#dialog_edit_anchor").dialog("open");
+    } else {
+        alert("資料錯誤，請刷新頁面再試一次");
+    }
+}
+
+function getGroupList() {
+    var requestArray = {
+        "Command_Type": ["Read"],
+        "Command_Name": ["GetGroups"]
+    };
+    var xmlHttp = createJsonXmlHttp("sql");
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+            var revObj = JSON.parse(this.responseText);
+            if (revObj.success > 0) {
+                groupListArray = revObj.Values.slice(0); //利用抽離全部陣列完成陣列拷貝
+            }
+        }
+    };
+    xmlHttp.send(JSON.stringify(requestArray));
 }
 
 
@@ -141,8 +230,6 @@ $(function () {
             $("#anchor_id_alert").empty();
         }
     });
-
-
     $("#anchor_input_group_id").on('change', function () {
         if ($(this).val().length > 0) {
             var repeat = allGroupsArray.indexOf($(this).val());
@@ -238,7 +325,7 @@ $(function () {
                         }
                         var addXmlHttp = createJsonXmlHttp("sql");
                         addXmlHttp.onreadystatechange = function () {
-                            if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+                            if (addXmlHttp.readyState == 4 || addXmlHttp.readyState == "complete") {
                                 var revObj = JSON.parse(this.responseText);
                                 if (revObj.success > 0) {
                                     getAnchors();
@@ -285,8 +372,66 @@ $(function () {
         setDropdown_Group();
         dialog.dialog("open");
     });
+});
 
-    $("#btn_delete_anchor").click(function () { //按下Delete anchor
-        DeleteAnchorList();
+
+$(function () {
+    var dialog, form,
+        anchor_type = $("#edit_anchor_type"),
+        anchor_id = $("#edit_anchor_id"),
+        anchor_x = $("#edit_anchor_x"),
+        anchor_y = $("#edit_anchor_y"),
+        allFields = $([]).add(anchor_x).add(anchor_y);
+
+    function editAnchor() {
+        allFields.removeClass("ui-state-error");
+        var valid = true;
+        valid = valid && checkLength(anchor_x, "Not null", 1, 10);
+        valid = valid && checkLength(anchor_y, "Not null", 1, 10);
+        if (valid) {
+            var request = {
+                "Command_Type": ["Write"],
+                "Command_Name": ["EditListAnchor"],
+                "Value": [{
+                    "anchor_type": anchor_type.text(),
+                    "anchor_id": anchor_id.text(),
+                    "set_x": anchor_x.val(),
+                    "set_y": anchor_y.val()
+                }]
+            };
+            var xmlHttp = createJsonXmlHttp("sql");
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+                    var revObj = JSON.parse(this.responseText);
+                    if (revObj.success > 0) {
+                        getAnchors();
+                    }
+                }
+            };
+            xmlHttp.send(JSON.stringify(request));
+        }
+        return valid;
+    }
+
+    dialog = $("#dialog_edit_anchor").dialog({
+        autoOpen: false,
+        height: 350,
+        width: 340,
+        modal: true,
+        buttons: {
+            "Confirm": editAnchor,
+            Cancel: function () {
+                dialog.dialog("close");
+            }
+        },
+        close: function () {
+            form[0].reset();
+            allFields.removeClass("ui-state-error");
+        }
+    });
+
+    form = dialog.find("form").on("submit", function (event) {
+        event.preventDefault();
+        editAnchor();
     });
 });

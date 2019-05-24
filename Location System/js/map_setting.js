@@ -67,7 +67,6 @@ function newMap() {
     clearAnchorList();
     clearGroupList();
     clearAnchorGroup();
-    $("#table_map_group tbody").empty();
     resetCanvas_Anchor();
     $("#dialog_map_setting").dialog("open");
 }
