@@ -228,7 +228,6 @@ function getAnchors(map_id) {
                 for (i in anchorList) {
                     id = anchorList[i].anchor_id;
                     type = anchorList[i].anchor_type;
-                    type = anchorList[i].anchor_type;
                     x = anchorList[i].set_x / canvasImg.scale;
                     y = canvasImg.height - anchorList[i].set_y / canvasImg.scale; //因為Server回傳的座標為左下原點
                     anchorArray.push({
@@ -239,9 +238,6 @@ function getAnchors(map_id) {
                     });
                     drawAnchor(ctx, id, type, x, y); //畫出點的設定
                 }
-                inputAnchorList(anchorList); //函式在dialog_anchor_list.js內
-                //getGroupList(anchorList);
-                //getGroups(anchorList);
             }
         }
     };
@@ -679,20 +675,21 @@ function updateTagList() {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (canvasImg.isPutImg) {
-                var id = 0,
+                var id = "",
                     x = 0,
-                    y = 0;
+                    y = 0,
+                    system_time = "";
                 tagArray = [];
-                for (i in revObj.x) {
+                for (i in revObj.tag_list) {
                     id = revObj.tag_list[i];
-                    x = revObj.x[i];
-                    y = canvasImg.height - revObj.y[i]; //因為Server回傳的座標為左下原點 
+                    x = revObj.x[i] / canvasImg.scale;
+                    y = canvasImg.height - revObj.y[i] / canvasImg.scale; //因為Server回傳的座標為左下原點 
+                    system_time = revObj.system_time[i];
                     tagArray.push({
                         x: x,
                         y: y,
                         id: id,
-                        name: "",
-                        image: ""
+                        system_time: system_time
                     });
                 }
 
@@ -728,18 +725,21 @@ function drawAnchor(dctx, id, type, x, y) {
 }
 
 function drawTags(dctx, id, x, y) {
-    //var tagID = parseInt(id, 16);
-    if (tag_image.isOnload) {
-        dctx.beginPath();
-        dctx.drawImage(tag_image.image, x - 10, y - 20, 20, 20 * tag_image.size);
-        //dctx.fillStyle = '#000000';
-        //dctx.font = '15px serif';
-        //dctx.fillText(tagID, x - 10, y - 20); //tagID
-        dctx.fillStyle = '#ffffff00';
-        dctx.arc(x, y - 10, 10, 0, Math.PI * 2, true); // circle(x座標,y座標,半徑,開始弧度,結束弧度,順t/逆f時針)
-        dctx.fill(); //填滿圓形
-        dctx.closePath();
-    }
+    var radius = 10; //半徑
+    dctx.beginPath();
+    //circle(x座標,y座標,半徑,開始弧度,結束弧度,順t/逆f時針)
+    dctx.arc(x, y - radius * 2, radius, Math.PI * (1 / 6), Math.PI * (5 / 6), true);
+    dctx.lineTo(x, y);
+    dctx.closePath();
+    dctx.strokeStyle = '#145214';
+    dctx.stroke()
+    dctx.fillStyle = '#2eb82e';
+    dctx.fill();
+    dctx.beginPath();
+    dctx.arc(x, y - radius * 2, radius / 2.5, 0, Math.PI * 2, true);
+    dctx.closePath();
+    dctx.fillStyle = '#ffffff';
+    dctx.fill();
 }
 
 function drawAlarm() { //test

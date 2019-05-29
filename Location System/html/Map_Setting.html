@@ -21,12 +21,13 @@
     <link rel=stylesheet type="text/css" href="../css/map_setting_style.css">
     <script type="text/javascript" src="../js/general_functions.js"></script>
     <script type="text/javascript" src="../js/navbar_setting.js"></script>
-    <script type="text/javascript" src="../js/map_setting.js"></script>
+    <script type="text/javascript" src="../js/map_setting_load.js"></script>
     <script type="text/javascript" src="../js/group_setting.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="../js/Dialog/dialog_map_draw.js"></script>
     <script type="text/javascript" src="../js/Dialog/dialog_map_setting.js"></script>
+    <script type="text/javascript" src="../js/Dialog/dialog_add_map.js"></script>
     <script type="text/javascript" src="../js/Dialog/dialog_anchor_list.js"></script>
     <script type="text/javascript" src="../js/Dialog/dialog_anchor_group.js"></script>
     <script type="text/javascript" src="../js/Dialog/dialog_group_list.js"></script>
@@ -98,15 +99,36 @@
             <div class="col-lg-12">
                 <div id="maps_gallery"></div>
                 <label for="add_new_map" class="custom-file-download">
-                    <div class="new_map_block"></div>New Map <i class="far fa-images"></i>
+                    <div class="new_map_block" id="new_map_block"></div>New Map <i class="far fa-images"></i>
                 </label>
-                <input id="add_new_map" type="button" onclick="newMap();" class="btn-hidden" />
+                <input id="add_new_map" type="button" class="btn-hidden" />
             </div>
         </div>
     </div>
 
     <!-- Hidden Dialog -->
     <div class="hidden_dialog">
+        <!-- Following is a dialog to add group's main anchor -->
+        <div id="dialog_add_map" title="Add New Map">
+            <form>
+                <fieldset style="text-align: left;">
+                    <label>Map Name : </label>
+                    <input type="text" id="add_map_name" value="" style="max-width:100px;">
+                    <br><br>
+                    <!--Load Map-->
+                    <span class="block-add-file">
+                        <label for="add_map_file" class="btn-add-file" title="load new map">
+                            Select Map Image <i class="far fa-image" style='font-size:18px;'></i></label>
+                        <input id="add_map_file" type="file" accept="image/*" />
+                    </span>
+                    <br><br>
+                    <img id="add_map_image" src="" width="100%">
+                    <br><br>
+                    <!-- Allow form submission with keyboard without duplicating the dialog button -->
+                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                </fieldset>
+            </form>
+        </div>
         <!-- Following is a dialog to set the selected map or add a new map -->
         <div id="dialog_map_setting" title="Set Map & Anchors" style="overflow:auto;">
             <form>
@@ -222,9 +244,9 @@
                                     <thead>
                                         <tr class="ui-widget-header ">
                                             <th>Item</th>
-                                            <!--<th>Group ID</th>-->
                                             <th>Group</th>
                                             <th>Main Anchor</th>
+                                            <th>Edit</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -325,7 +347,7 @@
                     <label for="add_grouplist_id">Group ID : </label>
                     <input type="text" id="add_grouplist_id" value="" style="max-width:100px;">
                     <label id="add_group_id_alert"></label>
-                    <br>(1 ~ 65535)<br><br>
+                    <br>(0 ~ 65535)<br><br>
                     <label for="add_grouplist_name">Group Name : </label>
                     <input type="text" id="add_grouplist_name" value="" style="max-width:100px;">
                     <br><br>
@@ -337,17 +359,35 @@
                 </fieldset>
             </form>
         </div>
+        <!-- Following is a dialog to edit group's main anchor -->
+        <div id="dialog_edit_group_list" title="Edit Group List">
+            <form>
+                <fieldset style="text-align: left;">
+                    <label>Group ID : </label>
+                    <label id="edit_grouplist_id"></label>
+                    <br><br>
+                    <label>Group Name : </label>
+                    <input type="text" id="edit_grouplist_name" value="" style="max-width:100px;">
+                    <br><br>
+                    <label>Main Anchor ID : </label>
+                    <select id="edit_grouplist_main_anchor"></select>
+                    <br><br>
+                    <!-- Allow form submission with keyboard without duplicating the dialog button -->
+                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                </fieldset>
+            </form>
+        </div>
         <!-- Following is a dialog to add a new group -->
         <div id="dialog_add_anchor_group" title="Add Anchor Group">
             <form>
                 <fieldset style="text-align: left;">
-                    <label for="add_group_id">Group:</label>
-                    <input type="text" id="add_group_id" style="max-width:100px;"> (1 ~ 65535)
+                    <label>Group:</label>
+                    <select id="add_group_id"></select>
                     <br><br>
-                    <label for="add_group_main_anchor">Main Anchor ID:</label>
+                    <label>Main Anchor ID:</label>
                     <span id="add_group_main_anchor"></span>
                     <br><br>
-                    <label for="add_group_anchor">Anchor ID:</label>
+                    <label>Anchor ID:</label>
                     <select id="add_group_anchor"></select>
                 </fieldset>
             </form>

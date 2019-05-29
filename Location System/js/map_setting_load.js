@@ -1,10 +1,9 @@
-var thumb_width = parseFloat($("#new_map_block").css("width"));
-var thumb_height = parseFloat($("#new_map_block").css("height"));
 var mapArray = [];
 
 window.addEventListener("load", loadMap, false);
 
 function loadMap() {
+    $("#maps_gallery").empty();
     var requestArray = {
         "Command_Type": ["Read"],
         "Command_Name": ["GetMaps"]
@@ -22,14 +21,13 @@ function loadMap() {
                     var img_size = adjustImageSize(src);
                     $("#maps_gallery").append("<div class=\"thumbnail\">" +
                         "<div class=\"image_block\">" +
-                        "<a href=\"" + src + "\" target=\"_blank\">" +
-                        "<img src=\"" + src + "\"" +
-                        " width=\"" + img_size.width + "\" height=\"" + img_size.height + "\">" +
-                        "</a></div>" +
-                        "<div class=\"caption\"><table style='width:200px;'><tr>" +
-                        "<th>Map Name:</th>" +
-                        "<th><span name=\"" + map + "\">" + mapArray[i].map_name + "</span></th>" +
+                        "<img src=\"" + src + "\" width=\"" + img_size.width + "\" height=\"" + img_size.height + "\">" +
+                        "</div>" +
+                        "<div class=\"caption\"><table style='width:100%;'><tr>" +
+                        "<th style=\"width:90px;\">Map Name:</th>" +
+                        "<th style=\"width:50%;\"><span name=\"" + map + "\">" + mapArray[i].map_name + "</span></th>" +
                         "<th><button class='btn btn-primary' onclick=\"setMapById(\'" + mapArray[i].map_id + "\')\">設定</button></th>" +
+                        "<th><button class='btn btn-primary' onclick=\"deleteMap(\'" + mapArray[i].map_id + "\')\">刪除</button></th>" +
                         "</tr></table></div>" +
                         "</div>");
                 }
@@ -39,8 +37,15 @@ function loadMap() {
     xmlHttp.send(JSON.stringify(requestArray));
 }
 
+function confirmHrefType(href) {
+    var BASE64_MARKER = ';base64,';
+    if (href.indexOf(BASE64_MARKER) == -1)
+        return href;
+    else
+        return false;
+}
+
 function setMapById(id) { //點擊設定:開啟設定視窗
-    setOperate("change");
     var index = mapArray.findIndex(function (info) {
         return info.map_id == id;
     });
@@ -51,8 +56,7 @@ function setMapById(id) { //點擊設定:開啟設定視窗
         $("#map_info_name").val(mapArray[index].map_name);
         $("#map_info_scale").val(scale);
         setMap(urlData, scale);
-        //在設定好地圖後，導入Anchors
-        getAnchors();
+        getMapGroups(); //在設定好地圖後，導入Groups & Anchors
         $("#dialog_map_setting").dialog("open");
     } else {
         return;
@@ -60,7 +64,6 @@ function setMapById(id) { //點擊設定:開啟設定視窗
 }
 
 function newMap() {
-    setOperate("new");
     $("#map_info_id").val(""); //清空Map Information
     $("#map_info_name").val("");
     $("#map_info_scale").val("");
@@ -71,15 +74,14 @@ function newMap() {
     $("#dialog_map_setting").dialog("open");
 }
 
-function setNewMap(map_id) { //新增地圖
+/*function setNewMap(map_id) { //新增地圖
     var map = "map_id_" + map_id;
     var src = $("menu_load_map").files[0];
     var img_size = adjustImageSize(src);
     $("#maps_gallery").append("<div class=\"thumbnail\">" +
         "<div class=\"image_block\">" +
-        "<a href=\"" + src + "\" target=\"_blank\">" +
-        "<img src=\"" + src + "\"" +
-        " width=\"" + img_size.width + "\" height=\"" + img_size.height + "\">" +
+        "<a href=\"javascript: confirmHrefType(\'" + src + "\')\"  target=\"_blank\">" +
+        "<img src=\"" + src + "\" width=\"" + img_size.width + "\" height=\"" + img_size.height + "\">" +
         "</a></div>" +
         "<div class=\"caption\"><table style='width:200px;'><tr>" +
         "<th>Map Name:</th>" +
@@ -87,10 +89,38 @@ function setNewMap(map_id) { //新增地圖
         "<th><button class='btn btn-primary' onclick=\"setMapById(\'" + map_id + "\')\">設定</button></th>" +
         "</tr></table></div>" +
         "</div>");
+}*/
+
+function deleteMap(id) {
+    var r = confirm("Confirm to delete the map?");
+    if (r == true) {
+        var deleteMapReq = JSON.stringify({
+            "Command_Type": ["Read"],
+            "Command_Name": ["DeleteMap"],
+            "Value": [{
+                "map_id": id
+            }]
+        });
+        var mapHttp = createJsonXmlHttp("sql");
+        mapHttp.onreadystatechange = function () {
+            if (mapHttp.readyState == 4 || mapHttp.readyState == "complete") {
+                var revObj = JSON.parse(this.responseText);
+                if (revObj.success > 0) {
+                    $("#maps_gallery").empty();
+                    loadMap();
+                }
+            }
+        };
+        mapHttp.send(deleteMapReq);
+    } else {
+        return;
+    }
 }
 
 function adjustImageSize(src) {
     var img = new Image();
+    var thumb_width = parseFloat($("#new_map_block").css("width"));
+    var thumb_height = parseFloat($("#new_map_block").css("height"));
     var width = thumb_width,
         height = thumb_height;
     img.src = src;
@@ -134,9 +164,21 @@ function checkExt(fileName) {
 }
 
 function checkImageSize(file) {
-    if (file.size / 1048576 > 1) {
-        alert("檔案大小超過1MB，請重新選擇圖檔!");
+    if (file.size / 1000 > 250) {
+        alert("檔案大小超過250KB，請重新選擇圖檔!");
         return false;
     } else
         return true;
+}
+
+function getBase64Ext(urldata) {
+    urldata = typeof (urldata) == 'undefined' ? "" : urldata;
+    var start = urldata.indexOf("/"),
+        end = urldata.indexOf(";");
+    if (start > -1 && end > -1) {
+        return urldata.substring(start + 1, end);
+    } else {
+        alert("檔案格式錯誤，請檢查格式後重新上傳!");
+        return "";
+    }
 }

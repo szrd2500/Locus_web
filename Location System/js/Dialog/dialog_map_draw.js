@@ -25,11 +25,6 @@ var anchorArray = [];
 var displayMapInfo = true;
 var pageTimer = {}; //定義計時器全域變數
 
-var operate = ""; //暫用，等在Linux上測試時刪除
-function setOperate(type) {
-    operate = type;
-}
-
 window.addEventListener("load", setupCanvas, false);
 
 function setupCanvas() {
@@ -260,41 +255,53 @@ function getPointOnCanvas(x, y) {
 }
 
 
-function getAnchors() {
-    var map_id = $("#map_info_id").val();
+function getAnchors(map_allAnchorsID) {
     var requestArray = {
         "Command_Type": ["Read"],
-        "Command_Name": ["GetAnchors"],
-        "Value": {
-            "map_id": map_id
-        }
+        "Command_Name": ["GetAnchors"]
     };
     var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (revObj.success > 0) {
-                var anchorList = revObj.Values;
+                var revInfo = revObj.Values;
                 var canvas = document.getElementById("canvas_map");
                 var ctx = canvas.getContext("2d");
                 var id, type, x, y;
+                var anchorList = [];
+                var mainAnchorID = [];
+                var anchorID = [];
                 anchorArray = [];
                 setSize();
-                for (i in anchorList) {
-                    id = anchorList[i].anchor_id;
-                    type = anchorList[i].anchor_type;
-                    x = anchorList[i].set_x / canvasImg.scale;
-                    y = canvasImg.height - anchorList[i].set_y / canvasImg.scale; //因為Server回傳的座標為左下原點
-                    anchorArray.push({
-                        id: id,
-                        type: type,
-                        x: x,
-                        y: y
-                    });
-                    drawAnchor(ctx, id, type, x, y); //畫出點的設定
+                if (revInfo) {
+                    for (i in revInfo) {
+                        var hasAnc = map_allAnchorsID.indexOf(revInfo[i].anchor_id);
+                        if (hasAnc > -1) {
+                            anchorList.push(revInfo[i]);
+                            id = revInfo[i].anchor_id;
+                            type = revInfo[i].anchor_type;
+                            x = revInfo[i].set_x / canvasImg.scale;
+                            y = canvasImg.height - revInfo[i].set_y / canvasImg.scale; //因為Server回傳的座標為左下原點
+                            anchorArray.push({
+                                id: id,
+                                type: type,
+                                x: x,
+                                y: y
+                            });
+                            drawAnchor(ctx, id, type, x, y); //畫出點的設定
+                        }
+
+                        if (revInfo[i].anchor_type == "main")
+                            mainAnchorID.push(revInfo[i].anchor_id);
+                        else
+                            anchorID.push(revInfo[i].anchor_id);
+                    }
                 }
+                draw();
                 inputAnchorList(anchorList);
-                inputAnchorGroup(anchorArray);
+                setGrouplist_mainAnchor(mainAnchorID);
+                setAnchorgroup_anchor(anchorID);
             } else {
                 alert("獲取AnchorList失敗，請再試一次!");
             }
@@ -304,10 +311,9 @@ function getAnchors() {
 }
 
 function draw() {
-    const anc_arr = anchorArray;
     setSize();
-    drawGroups(anc_arr);
-    anc_arr.forEach(function (v) {
+    drawGroups(anchorArray);
+    anchorArray.forEach(function (v) {
         drawAnchor(ctx, v.id, v.type, v.x, v.y);
     });
 }

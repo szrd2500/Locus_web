@@ -3,7 +3,6 @@ var count_anchor_list = 0;
 var allAnchorArray = [];
 var allGroupsArray = [];
 var anchorsInfoArray = [];
-var groupListArray = [];
 
 function clearAnchorList() {
     $("#table_main_anchor_list tbody").empty(); //重置表格
@@ -15,7 +14,6 @@ function clearAnchorList() {
 function inputAnchorList(anchorList) {
     clearAnchorList();
     allAnchorArray = [];
-    anchorsInfoArray = [];
     anchorsInfoArray = anchorList.slice(0); //利用抽離全部陣列完成陣列拷貝
     for (var i = 0; i < anchorList.length; i++) {
         if (anchorList[i].anchor_type == "main") {
@@ -30,7 +28,7 @@ function inputAnchorList(anchorList) {
                 "</td><td>" +
                 "<label for=\"btn_edit_anchor_" + i + "\" class='btn-edit' title='Edit the anchor'>" +
                 "<i class='fas fa-edit' style='font-size:18px;'></i></label><input id=\"btn_edit_anchor_" + i + "\" type='button'" +
-                " class='btn-hidden' onclick=\"editAnchorList(\'" + anchorList[i].anchor_id + "\')\" />" +
+                " class='btn-hidden' onclick=\"editAnchorInfo(\'" + anchorList[i].anchor_id + "\')\" />" +
                 "<label for=\"btn_delete_main_anchor_" + i + "\"  class='btn-delete' style='margin-left:10px;' title='Delete the anchor'>" +
                 "<i class='fas fa-trash-alt' style='font-size:18px;'></i></label><input id=\"btn_delete_main_anchor_" + i + "\" type='button'" +
                 " class='btn-hidden' onclick=\"deleteMainAnchor(\'" + anchorList[i].anchor_id + "\')\" />" +
@@ -47,13 +45,28 @@ function inputAnchorList(anchorList) {
                 "</td><td>" +
                 "<label for=\"btn_edit_anchor_" + i + "\" class='btn-edit' title='Edit the anchor'>" +
                 "<i class='fas fa-edit' style='font-size:18px;'></i></label><input id=\"btn_edit_anchor_" + i + "\" type='button'" +
-                " class='btn-hidden' onclick=\"editAnchorList(\'" + anchorList[i].anchor_id + "\')\" />" +
+                " class='btn-hidden' onclick=\"editAnchorInfo(\'" + anchorList[i].anchor_id + "\')\" />" +
                 "<label for=\"btn_delete_anchor_" + i + "\" class='btn-delete' style='margin-left:10px;' title='Delete anchor'>" +
                 "<i class='fas fa-trash-alt' style='font-size:18px;'></i></label><input id=\"btn_delete_anchor_" + i + "\" type='button'" +
                 " class='btn-hidden' onclick=\"deleteAnchor(\'" + anchorList[i].anchor_id + "\')\" />" +
                 "</td></tr>");
         }
         allAnchorArray.push(anchorList[i].anchor_id);
+    }
+}
+
+function editAnchorInfo(id) {
+    var index = anchorsInfoArray.findIndex(function (info) {
+        return info.anchor_id == id;
+    });
+    if (index > -1) {
+        $("#edit_anchor_type").text(anchorsInfoArray[index].anchor_type);
+        $("#edit_anchor_id").text(anchorsInfoArray[index].anchor_id);
+        $("#edit_anchor_x").val(anchorsInfoArray[index].set_x);
+        $("#edit_anchor_y").val(anchorsInfoArray[index].set_y);
+        $("#dialog_edit_anchor").dialog("open");
+    } else {
+        alert("資料錯誤，請刷新頁面再試一次");
     }
 }
 
@@ -70,33 +83,33 @@ function deleteMainAnchor(id) {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (revObj.success > 0) {
-                getGroupList();
-                groupListArray.forEach(element => {
-                    if (element.main_anchor_id == id) {
-                        var deleteRequest = {
-                            "Command_Type": ["Read"],
-                            "Command_Name": ["EditGroup_Info"],
-                            "Value": {
-                                "group_id": element.group_id,
-                                "group_name": element.group_name,
-                                "main_anchor_id": "-1",
-                                "mode": element.group_name,
-                                "mode_value": element.group_name,
-                                "fence": element.group_name
-                            }
-                        };
-                        var deleteXmlHttp = createJsonXmlHttp("sql");
-                        deleteXmlHttp.onreadystatechange = function () {
-                            if (deleteXmlHttp.readyState == 4 || deleteXmlHttp.readyState == "complete") {
-                                var revObj = JSON.parse(this.responseText);
-                                if (revObj.success > 0) {
-                                    getAnchors();
+                var requestArray = {
+                    "Command_Type": ["Read"],
+                    "Command_Name": ["GetGroups"]
+                };
+                var getXmlHttp = createJsonXmlHttp("sql");
+                getXmlHttp.onreadystatechange = function () {
+                    if (getXmlHttp.readyState == 4 || getXmlHttp.readyState == "complete") {
+                        var revObj = JSON.parse(this.responseText);
+                        if (revObj.success > 0) {
+                            revObj.Values.forEach(element => {
+                                if (element.main_anchor_id == id) {
+                                    var resetGroupInfo = {
+                                        "group_id": element.group_id,
+                                        "group_name": element.group_name,
+                                        "main_anchor_id": "-1",
+                                        "mode": element.mode,
+                                        "mode_value": element.mode_value,
+                                        "fence": element.fence
+                                    };
+                                    EditGroupInfo(resetGroupInfo);
                                 }
-                            }
-                        };
-                        deleteXmlHttp.send(JSON.stringify(deleteRequest));
+                            });
+                            getMapGroups();
+                        }
                     }
-                });
+                };
+                getXmlHttp.send(JSON.stringify(requestArray));
             }
         }
     };
@@ -116,70 +129,36 @@ function deleteAnchor(id) {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (revObj.success > 0) {
-                var deleteRequest = {
+                var gerRequest = {
                     "Command_Type": ["Read"],
-                    "Command_Name": ["DeleteGroup_Anchor"],
-                    "Value": [{
-                        "group_id": "67",
-                        "anchor_id": "6549"
-                    }, {
-                        "group_id": "68",
-                        "anchor_id": "6549"
-                    }]
+                    "Command_Name": ["GetGroup_Anchors"]
                 };
-
-
-                var deleteXmlHttp = createJsonXmlHttp("sql");
-                deleteXmlHttp.onreadystatechange = function () {
-                    if (deleteXmlHttp.readyState == 4 || deleteXmlHttp.readyState == "complete") {
+                var getXmlHttp = createJsonXmlHttp("sql");
+                getXmlHttp.onreadystatechange = function () {
+                    if (getXmlHttp.readyState == 4 || getXmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
                         if (revObj.success > 0) {
-                            getAnchors();
+                            var deleteArr = [];
+                            revObj.Values.forEach(element => {
+                                if (element.anchor_id == id)
+                                    deleteArr.push({
+                                        "group_id": element.group_id,
+                                        "anchor_id": element.anchor_id
+                                    })
+                            });
+                            DeleteGroup_Anchor(deleteArr);
+                            getMapGroups();
                         }
                     }
                 };
-                deleteXmlHttp.send(JSON.stringify(deleteRequest));
+                getXmlHttp.send(JSON.stringify(gerRequest));
             }
         }
     };
     xmlHttp.send(JSON.stringify(request));
 }
 
-function editAnchorList(id) {
-    var index = anchorsInfoArray.findIndex(function (info) {
-        return info.anchor_id == id;
-    });
-    if (index > -1) {
-        $("#edit_anchor_type").text(anchorsInfoArray[index].anchor_type);
-        $("#edit_anchor_id").text(anchorsInfoArray[index].anchor_id);
-        $("#edit_anchor_x").val(anchorsInfoArray[index].set_x);
-        $("#edit_anchor_y").val(anchorsInfoArray[index].set_y);
-        $("#dialog_edit_anchor").dialog("open");
-    } else {
-        alert("資料錯誤，請刷新頁面再試一次");
-    }
-}
-
-function getGroupList() {
-    var requestArray = {
-        "Command_Type": ["Read"],
-        "Command_Name": ["GetGroups"]
-    };
-    var xmlHttp = createJsonXmlHttp("sql");
-    xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            var revObj = JSON.parse(this.responseText);
-            if (revObj.success > 0) {
-                groupListArray = revObj.Values.slice(0); //利用抽離全部陣列完成陣列拷貝
-            }
-        }
-    };
-    xmlHttp.send(JSON.stringify(requestArray));
-}
-
-
-function setDropdown_Group() {
-    //set dropdownlist of the map's groups
+function setDropdown_Group() { //set dropdownlist of the map's groups
     var requestArray = {
         "Command_Type": ["Read"],
         "Command_Name": ["GetMaps_Groups"]
@@ -204,6 +183,24 @@ function setDropdown_Group() {
         }
     };
     xmlHttp.send(JSON.stringify(requestArray));
+}
+
+function AddMapGroup(map_groupArray) {
+    var addRequest = {
+        "Command_Type": ["Write"],
+        "Command_Name": ["AddListMap_Group"],
+        "Value": map_groupArray
+    };
+    var addXmlHttp = createJsonXmlHttp("sql");
+    addXmlHttp.onreadystatechange = function () {
+        if (addXmlHttp.readyState == 4 || addXmlHttp.readyState == "complete") {
+            var revObj = JSON.parse(this.responseText);
+            if (revObj.success > 0) {
+                return;
+            }
+        }
+    };
+    addXmlHttp.send(JSON.stringify(addRequest));
 }
 
 $(function () {
@@ -313,6 +310,22 @@ $(function () {
                                     "fence": "0"
                                 }]
                             };
+                            var addXmlHttp = createJsonXmlHttp("sql");
+                            addXmlHttp.onreadystatechange = function () {
+                                if (addXmlHttp.readyState == 4 || addXmlHttp.readyState == "complete") {
+                                    var revObj = JSON.parse(this.responseText);
+                                    if (revObj.success > 0) {
+                                        var map_groupArray = [{
+                                            "map_id": $("#map_info_id").val(),
+                                            "group_id": input_group_id.val()
+                                        }];
+                                        AddMapGroup(map_groupArray);
+                                        getMapGroups();
+                                        dialog.dialog("close");
+                                    }
+                                }
+                            };
+                            addXmlHttp.send(JSON.stringify(addRequest));
                         } else {
                             addRequest = { //AnchorGroup
                                 "Command_Type": ["Write"],
@@ -322,18 +335,18 @@ $(function () {
                                     "group_id": select_group.val(),
                                 }]
                             };
-                        }
-                        var addXmlHttp = createJsonXmlHttp("sql");
-                        addXmlHttp.onreadystatechange = function () {
-                            if (addXmlHttp.readyState == 4 || addXmlHttp.readyState == "complete") {
-                                var revObj = JSON.parse(this.responseText);
-                                if (revObj.success > 0) {
-                                    getAnchors();
-                                    dialog.dialog("close");
+                            var addXmlHttp = createJsonXmlHttp("sql");
+                            addXmlHttp.onreadystatechange = function () {
+                                if (addXmlHttp.readyState == 4 || addXmlHttp.readyState == "complete") {
+                                    var revObj = JSON.parse(this.responseText);
+                                    if (revObj.success > 0) {
+                                        getMapGroups();
+                                        dialog.dialog("close");
+                                    }
                                 }
-                            }
-                        };
-                        addXmlHttp.send(JSON.stringify(addRequest));
+                            };
+                            addXmlHttp.send(JSON.stringify(addRequest));
+                        }
                     }
                 }
             };
@@ -391,20 +404,21 @@ $(function () {
         if (valid) {
             var request = {
                 "Command_Type": ["Write"],
-                "Command_Name": ["EditListAnchor"],
-                "Value": [{
+                "Command_Name": ["EditAnchor_Info"],
+                "Value": {
                     "anchor_type": anchor_type.text(),
                     "anchor_id": anchor_id.text(),
                     "set_x": anchor_x.val(),
                     "set_y": anchor_y.val()
-                }]
+                }
             };
             var xmlHttp = createJsonXmlHttp("sql");
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
                     if (revObj.success > 0) {
-                        getAnchors();
+                        getMapGroups();
+                        dialog.dialog("close");
                     }
                 }
             };

@@ -33,10 +33,10 @@ function updateAncGroupArr() {
 
 function updateGroupArray() {
     var groupArray = [];
-    var g_id = document.getElementsByName("grouplist_id");
+    var g_id = document.getElementsByName("chkbox_group_list");
     g_id.forEach(function (element) {
-        if (element.innerText != "" && typeof (element.innerText) != 'undefined')
-            groupArray.push(element.innerText);
+        if (element.value != "" && typeof (element.value) != 'undefined')
+            groupArray.push(element.value);
     });
     return groupArray;
 }
@@ -60,7 +60,7 @@ function catchGroupList() {
 
 //取出不重複的參考網址
 //https://guahsu.io/2017/06/JavaScript-Duplicates-Array/
-function updateMapGroupList() {
+/*function updateMapGroupList() {
     var allGroups = [];
     var anc_group = document.getElementsByName("anchorgroup_group_id");
     var main_anc_group = document.getElementsByName("grouplist_id");
@@ -73,23 +73,4 @@ function updateMapGroupList() {
         update[item] = update[item] ? update[item] + 1 : 1; //過濾掉重複的group_id放進Object(key)
     });
     const result = Object.keys(update);
-}
-
-
-
-function selectColumn(id) {
-    $("#" + id).toggleClass("changeBgColor");
-}
-
-function makeOptions(array, select) {
-    var options = "";
-    array.forEach(value => {
-        if (value == select) {
-            options += "<option value=\"" + value + "\" selected=\"selected\">" +
-                value + "</option>";
-        } else {
-            options += "<option value=\"" + value + "\">" + value + "</option>";
-        }
-    });
-    return options;
-}
+}*/
