@@ -92,18 +92,6 @@ function setup() {
 
 
     $(function () {
-        //多階下拉清單按鈕
-        $('.dropdown').mouseover(function (e) {
-            $(this).children('ul').show();
-        });
-        $('.dropdown ul').mouseleave(function (e) {
-            $(this).hide();
-        });
-        /*$('.dropdown ul').hover(function () {
-            $(this).show();
-        }, function () {
-            $(this).hide();
-        });*/
         //預設彈跳視窗載入後隱藏
         $("#member_dialog").dialog({
             autoOpen: false

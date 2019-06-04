@@ -226,15 +226,43 @@ thead th {
 }
 
 /* icon navbar */
-.sidebar ul .alarm a,
-.sidebar ul .member a {
-    background: transparent
+.menu-left ul .alarm a,
+.menu-left ul .member a,
+.menu-left ul .input_map a {
+    background: transparent;
 }
 
-.sidebar ul .alarm:hover a {
+.menu-left ul .alarm:hover a {
     background: rgb(240, 107, 98)
 }
 
-.sidebar ul .member:hover a {
+.menu-left ul .member:hover a {
     background: rgb(219, 157, 43)
+}
+
+.menu-left ul .input_map:hover a {
+    background: rgb(104, 198, 226)
+}
+
+.hover-color {
+    background: rgb(104, 198, 226)
+}
+
+.menu-left .dropdown {
+    position: absolute;
+    display: block;
+    left: 200px;
+    top: 439px;
+}
+
+.menu-left .dropdown ul {
+    -webkit-animation-name: fadeIn;
+    -o-animation-name: fadeIn;
+    animation-name: fadeIn;
+    -webkit-animation-fill-mode: both;
+    -o-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-delay: .3s;
+    -o-animation-delay: .3s;
+    animation-delay: .3s;
 }
