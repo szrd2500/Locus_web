@@ -49,9 +49,9 @@
                         <li><a href="../Map_Setting.html">
                                 <i class="fas fa-map"></i><span>地圖設定</span></a></li>
                         <li><a href="../Anchor_Setting.html">
-                                <i class="fas fa-anchor"></i><span>Anchor設定</span></a></li>
+                                <i class="fas fa-anchor"></i><span>裝置設定</span></a></li>
                         <li><a href="../Alarm_Setting.html">
-                                <i class="fas fa-bell"></i><span>Alarm設定</span></a></li>
+                                <i class="fas fa-bell"></i><span>警報設定</span></a></li>
                         <li><a href="../Reference.html">
                                 <i class="fas fa-cogs"></i><span>進階設定</span></a></li>
                         <hr>
@@ -60,31 +60,20 @@
                                 <span>Alarm List</span></a></li>
                         <li class="member"><a href="javascript: memberSidebarMove();">
                                 <i class="fas fa-address-book"></i><span>Member List</span></a></li>
-                        <li class="input_map"><a href="#">
-                                <i class="far fa-image"></i><span class="i18n" name="input_map"></span></a>
+                        </li>
+                        <li class="member"><a href="javascript: memberSidebarMove();">
+                                <i class="fas fa-address-book"></i><span>Member List</span></a></li>
                         </li>
                     </ul>
-                    <div class="dropdown">
-                        <ul class="dropdown-menu" id="loadMapButtonGroup"></ul>
-                    </div>
                 </nav>
             </div>
         </aside>
 
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-12" style="background: #ffffff;">
                 <!-- Web content -->
-                <div id="content" style="margin-top: 5px;">
-                    <!-- Top 
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle icon_btn" type="button" data-toggle="dropdown">
-                            <span class="i18n" name="input_map"></span>&nbsp;<i class="far fa-image"></i>&nbsp;
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" id="loadMapButtonGroup"></ul>
-                    </div>-->
-
-
+                <div id="content" style="margin-top:5px;">
+                    <!-- Top -->
                     <div style="float:right;">
                         <label class="i18n" name="language" style="color:rgb(0, 0, 0);"></label>
                         <select id="language" style="margin-top:5px;">
@@ -92,52 +81,39 @@
                             <option value="zh-TW">繁體中文</option>
                             <option value="zh-CN">简体中文</option>
                         </select>
+                        <div class="btn-group">
+                            <label for="btn_restore" id="label_restore" class="btn-icon" style="margin-right:10px;">
+                                <i class="fas fa-compress" style='font-size:20px;' title="Resize the map"></i></label>
+                            <input id="btn_restore" type="button" class="btn-hidden" onclick="restoreCanvas();" />
+                            <label for="btn_start" id="label_start" class="btn-icon" title="Start">
+                                <i class="fas fa-play" style='font-size:20px;'></i></label>
+                            <input id="btn_start" type="button" class="btn-hidden" onclick="StartClick();" />
+                            <label for="btn_remove" id="label_remove" class="btn-delete" title="Close the map">
+                                <i class="fas fa-window-close" style='font-size:20px;'></i></label>
+                            <input id="btn_remove" type="button" class="btn-hidden" onclick="closeMapTag();" />
+                        </div>
                     </div>
 
                     <!-- Midden -->
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#map_id_1">Home</a></li>
-                        <li><a data-toggle="tab" href="#map_id_2">Menu 1</a></li>
-                        <li><a data-toggle="tab" href="#map_id_3">Menu 2</a></li>
-                        <li><a data-toggle="tab" href="#map_id_4">Menu 3</a></li>
-                    </ul>
+                    <div class="btn-group">
+                        <div class="btn-group dropdown" id="input_map">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                <span class="i18n" name="input_map"></span>&nbsp;<i class="far fa-image"></i>&nbsp;
+                                <span class="caret"></span></button>
+                            <ul class="dropdown-menu" role="menu" id="loadMapButtonGroup"></ul>
+                        </div>
+                    </div>
 
-                    <div class="tab-content">
-                        <div id="map_id_1" class="tab-pane fade in active">
-                            <div class="cvsBlock" id="cvsBlock">
-                                <canvas id="canvas" style="height:1px; width:1px;">
-                                    <span class="i18n" name="no_canvas"></span>
-                                </canvas>
-                            </div>
-                            <div style="text-align:right;">
-                                <div class="btn-group">
-                                    <button class="btn btn-primary" id="btn_restore" onclick="restoreCanvas();">
-                                        <span class="i18n" name="restore_scale"></span>&nbsp;
-                                        <i class="fas fa-compress"></i></button>
-                                    <button class="btn btn-primary" id="btn_start" onclick="StartClick();">
-                                        <span class="i18n" name="start"></span>&nbsp;<i
-                                            class="fas fa-play"></i></button>
-                                </div>
-                                Map Scale: <span id="scale_visible" style="margin-right:30px;">undefined</span>
-                                X: <input type="text" id="x" class="coordinate" disabled>
-                                Y: <input type="text" id="y" class="coordinate" disabled>
-                            </div>
-                        </div>
-                        <div id="map_id_2" class="tab-pane fade">
-                            <h3>Menu 1</h3>
-                            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                                commodo consequat.</p>
-                        </div>
-                        <div id="map_id_3" class="tab-pane fade">
-                            <h3>Menu 2</h3>
-                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
-                                laudantium, totam rem aperiam.</p>
-                        </div>
-                        <div id="map_id_4" class="tab-pane fade">
-                            <h3>Menu 3</h3>
-                            <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
-                                explicabo.</p>
-                        </div>
+                    <div class="cvsBlock" id="cvsBlock">
+                        <canvas id="canvas" style="height:1px; width:1px;">
+                            <span class="i18n" name="no_canvas"></span>
+                        </canvas>
+                    </div>
+
+                    <div style="text-align:right;">
+                        Map Scale: <span id="scale_visible" style="margin-right:50px;"></span>
+                        X: <input type="text" id="x" class="coordinate" disabled>
+                        Y: <input type="text" id="y" class="coordinate" disabled>
                     </div>
                 </div>
 
@@ -238,7 +214,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!--<button class="button_arrow"><i class='fas fa-angle-double-left'></i></button>-->
                     </aside>
                 </div>
             </div>
