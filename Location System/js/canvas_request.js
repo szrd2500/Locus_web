@@ -173,6 +173,7 @@ function addMapTab(map_id, map_name) {
     $("#input_map").before("<button type=\"button\" name=\"map_tab\" class=\"btn btn-primary\" id=\"" + tab_map_id +
         "\" onclick=\"setMap(\'" + map_id + "\')\">" +
         map_name + "</button></li>");
+    setMap(map_id);
     $("#map_btn_" + map_id).prop('disabled', true).css('color', 'lightgray');
 }
 
@@ -701,9 +702,9 @@ function TimeToArray(time_str) {
 function changeAlarmLight() {
     $(function () {
         if (alarmID_array.length > 0) {
-            $("#alarmSideBar_icon img").attr("src", "../image/alarm1.png");
+            $("#alarmSideBar_icon").css("color", "red");
         } else {
-            $("#alarmSideBar_icon img").attr("src", "../image/alarm3.png");
+            $("#alarmSideBar_icon").css("color", "white");
         }
     });
 }
@@ -743,14 +744,7 @@ function updateMemberList() {
 */
 
 function updateTagList() {
-    var request = {
-        "Command_Type": ["Read"],
-        "Command_Name": ["requestTagList_json"],
-        "Value": {
-            "map_id": Map_id
-        }
-    };
-    var xmlHttp = createJsonXmlHttp("request");
+    var xmlHttp = createJsonXmlHttp("requestTagList_json");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
@@ -770,6 +764,11 @@ function updateTagList() {
                     y = 0,
                     system_time = "";
                 tagArray = [];
+
+                //update member list
+                var tbody = $("#table_rightbar_member_list tbody");
+                tbody.empty();
+
                 for (i in revObj) {
                     id = revObj[i].tag_id;
                     x = revObj[i].tag_x / canvasImg.scale;
@@ -781,29 +780,30 @@ function updateTagList() {
                         id: id,
                         system_time: system_time
                     });
-                }
 
-
-
-                //update member list
-                var revObj = JSON.parse(this.responseText);
-                var list = "",
-                    items;
-                var tbody = $("#table_rightbar_member_list tbody");
-                tbody.empty();
-                for (var i = 0; i < revObj.tag_list.length; i++) {
-                    items = i + 1;
-                    /*list += "<tr><td>" + items +
-                        "</td><td>" + " " +
-                        "</td><td>" + revObj.name[i] +
-                        "</td><td>" + revObj.tag_list[i].substring(14) +
-                        "</td></tr>";*/
-                    tbody.append("<tr><td>" + items +
-                        "</td><td>" + " " +
-                        "</td><td>" + revObj.name[i] +
-                        "</td><td>" + revObj.tag_list[i].substring(14) +
+                    tbody.append("<tr><td>" + (i + 1) +
+                        "</td><td>" + revObj[i].number +
+                        "</td><td>" + revObj[i].Name +
+                        "</td><td>" + revObj[i].tag_id +
                         "</td></tr>");
                 }
+
+                //update member list
+                //var list = "",
+
+                //for (var i = 0; i < revObj; i++) {
+                //    items = i + 1;
+                /*list += "<tr><td>" + items +
+                    "</td><td>" + " " +
+                    "</td><td>" + revObj.name[i] +
+                    "</td><td>" + revObj.tag_list[i].substring(14) +
+                    "</td></tr>";*/
+                /*    tbody.append("<tr><td>" + items +
+                        "</td><td>" + revObj[i].number +
+                        "</td><td>" + revObj[i].Name +
+                        "</td><td>" + revObj[i].tag_id +
+                        "</td></tr>");
+                }*/
                 //tbody.html(list);
 
 
@@ -823,7 +823,7 @@ function updateTagList() {
             }
         }
     };
-    xmlHttp.send(JSON.stringify(request));
+    xmlHttp.send();
 }
 
 function drawAnchor(dctx, id, type, x, y) {
@@ -997,8 +997,8 @@ function handleAnchorPosition() {
 
 function autoSendRequest() {
     if (!AnchorPosition) {
-        updateAlarmList()
-        updateMemberList();
+        //updateAlarmList()
+        //updateMemberList();
         updateTagList();
         draw();
         canvas.removeEventListener("click", handleAnchorPosition);
@@ -1022,10 +1022,9 @@ function StartClick() {
     if (canvasImg.isPutImg) {
         if (!isStart) {
             isStart = true;
-            document.getElementById("label_start").innerHTML = "<i class=\"fas fa-pause\" style='font-size:20px;'></i>";
-            /*document.getElementById("btn_start").innerHTML = $.i18n.prop('stop') +
-                "&nbsp;<i class=\"fas fa-pause\"></i>";*/
             requestArray.Value = "Start";
+            document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\">" +
+                "</i><span>" + $.i18n.prop('stop') + "</span>";
             //設定計時器
             //pageTimer["timer1"] = setInterval("autoSendRequest()", delaytime);
             pageTimer["timer1"] = setTimeout(function request() {
@@ -1035,9 +1034,8 @@ function StartClick() {
         } else {
             isStart = false;
             requestArray.Value = "Stop";
-            document.getElementById("label_start").innerHTML = "<i class=\"fas fa-play\" style='font-size:20px;'></i>";
-            /*document.getElementById("btn_start").innerHTML = $.i18n.prop('start') +
-                 "&nbsp;<i class=\"fas fa-play\"></i>";*/
+            document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-play\">" +
+                "</i><span>" + $.i18n.prop('start') + "</span>";
             for (var each in pageTimer) {
                 //clearInterval(pageTimer[each]);
                 clearTimeout(pageTimer[each]);

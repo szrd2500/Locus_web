@@ -54,6 +54,10 @@
                                 <i class="fas fa-bell"></i><span>警報設定</span></a></li>
                         <li><a href="../Reference.html">
                                 <i class="fas fa-cogs"></i><span>進階設定</span></a></li>
+                        <li class="excel"><a href="#">
+                                <i class="fas fa-sign-in-alt"></i><span>匯入</span></a></li>
+                        <li class="excel"><a href="#">
+                                <i class="fas fa-sign-out-alt"></i><span>匯出</span></a></li>
                         <hr>
                         <li class="alarm"><a href="javascript: alarmSidebarMove();">
                                 <i class="fas fa-exclamation-circle" id="alarmSideBar_icon"></i>
@@ -61,8 +65,8 @@
                         <li class="member"><a href="javascript: memberSidebarMove();">
                                 <i class="fas fa-address-book"></i><span>Member List</span></a></li>
                         </li>
-                        <li class="member"><a href="javascript: memberSidebarMove();">
-                                <i class="fas fa-address-book"></i><span>Member List</span></a></li>
+                        <li class="start"><a href="javascript: StartClick();" id="btn_start">
+                                <i class="fas fa-play"></i><span>Start</span></a></li>
                         </li>
                     </ul>
                 </nav>
@@ -81,17 +85,11 @@
                             <option value="zh-TW">繁體中文</option>
                             <option value="zh-CN">简体中文</option>
                         </select>
-                        <div class="btn-group">
-                            <label for="btn_restore" id="label_restore" class="btn-icon" style="margin-right:10px;">
-                                <i class="fas fa-compress" style='font-size:20px;' title="Resize the map"></i></label>
-                            <input id="btn_restore" type="button" class="btn-hidden" onclick="restoreCanvas();" />
-                            <label for="btn_start" id="label_start" class="btn-icon" title="Start">
-                                <i class="fas fa-play" style='font-size:20px;'></i></label>
-                            <input id="btn_start" type="button" class="btn-hidden" onclick="StartClick();" />
-                            <label for="btn_remove" id="label_remove" class="btn-delete" title="Close the map">
-                                <i class="fas fa-window-close" style='font-size:20px;'></i></label>
-                            <input id="btn_remove" type="button" class="btn-hidden" onclick="closeMapTag();" />
-                        </div>
+
+                        <label for="btn_remove" id="label_remove" class="btn-delete" title="Close the map">
+                            <i class="fas fa-window-close" style='font-size:20px;'></i></label>
+                        <input id="btn_remove" type="button" class="btn-hidden" onclick="closeMapTag();" />
+
                     </div>
 
                     <!-- Midden -->
@@ -111,6 +109,9 @@
                     </div>
 
                     <div style="text-align:right;">
+                        <label for="btn_restore" id="label_restore" class="btn-icon" style="margin-right:30px;">
+                            <i class="fas fa-compress" style='font-size:18px;' title="Resize the map"></i></label>
+                        <input id="btn_restore" type="button" class="btn-hidden" onclick="restoreCanvas();" />
                         Map Scale: <span id="scale_visible" style="margin-right:50px;"></span>
                         X: <input type="text" id="x" class="coordinate" disabled>
                         Y: <input type="text" id="y" class="coordinate" disabled>

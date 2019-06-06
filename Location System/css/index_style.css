@@ -274,7 +274,8 @@ thead th {
 
 /* icon navbar */
 .menu-left ul .alarm a,
-.menu-left ul .member a {
+.menu-left ul .member a,
+.menu-left ul .start a  {
     background: transparent;
 }
 
@@ -284,4 +285,8 @@ thead th {
 
 .menu-left ul .member:hover a {
     background: rgb(219, 157, 43)
+}
+
+.menu-left ul .start:hover a {
+    background: rgb(4, 143, 124)
 }

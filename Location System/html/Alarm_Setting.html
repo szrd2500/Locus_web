@@ -59,6 +59,10 @@
                                 <i class="fas fa-bell"></i><span>警報設定</span></a></li>
                         <li><a href="../Reference.html">
                                 <i class="fas fa-cogs"></i><span>進階設定</span></a></li>
+                        <li class="excel"><a href="#">
+                                <i class="fas fa-sign-in-alt"></i><span>匯入</span></a></li>
+                        <li class="excel"><a href="#">
+                                <i class="fas fa-sign-out-alt"></i><span>匯出</span></a></li>
                         <hr>
                     </ul>
                 </nav>
@@ -270,17 +274,17 @@
                         </div>
                     </div>
                     <div class="col-lg-5" style="background-color:white;">
-                        <label>選擇地圖 : </label>
-                        <select id="select_map"></select>
+                        <!--<label>選擇地圖 : </label>
+                        <select id="select_map"></select>-->
                         <br>
                         <div style="margin-bottom:20px;">
                             <nav class="sidebar-menu">
                                 <ul class="nav">
-                                    <!--Load Map
-                                    <li><label for="menu_load_map" class="btn-sidebar" title="load new map">
+                                    <!--Select Map-->
+                                    <li><label for="menu_select_map" class="btn-sidebar" title="Select map">
                                             <i class="far fa-image" style='font-size:20px;'></i></label>
-                                        <input id="menu_load_map" type="file" accept="image/*" /></li>
-                                    -->
+                                        <!--<input id="menu_select_map" type="file" accept="image/*" />-->
+                                        <select id="menu_select_map" class="btn-hidden"></select></li>
                                     <!--Restore Size-->
                                     <li><label for="menu_resize" id="label_resize" class="btn-sidebar" title="恢復原比例">
                                             <i class="fas fa-expand" style='font-size:20px;'></i></label>
@@ -366,8 +370,8 @@
                             <label>選擇圍籬 : </label>
                             <select id="select_fence"></select><br>
                             <label>名單類型 : </label>
-                            <input type="radio" name="BW_list_type" value="Black" checked/> Black 
-                            <input type="radio" name="BW_list_type" value="White" /> White 
+                            <input type="radio" name="BW_list_type" value="Black" checked /> Black
+                            <input type="radio" name="BW_list_type" value="White" /> White
                             <div style="display:flex; text-align: center;">
                                 <span class="block-bw-list">
                                     <label class="bw-list-title">黑名單</label> <!-- 預設黑名單 -->
