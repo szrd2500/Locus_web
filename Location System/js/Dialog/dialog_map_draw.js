@@ -19,7 +19,6 @@ var isFitWindow = true;
 
 var isPosition = false;
 var serverImg = new Image();
-var map_id = "";
 var anchorArray = [];
 
 var displayMapInfo = true;
@@ -255,49 +254,61 @@ function getPointOnCanvas(x, y) {
 }
 
 
-function getAnchors(map_allAnchorsID) {
+function getAnchors(map_anchors) {
+    var map_id = $("#map_info_id").val();
     var requestArray = {
         "Command_Type": ["Read"],
-        "Command_Name": ["GetAnchors"]
+        "Command_Name": ["GetMainAnchorsInMap"],
+        "Value": {
+            "map_id": map_id
+        }
     };
     var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (revObj.success > 0) {
-                var revInfo = revObj.Values;
-                var canvas = document.getElementById("canvas_map");
-                var ctx = canvas.getContext("2d");
+                var revInfo = ('Values' in revObj) == true ? revObj.Values : [];
                 var id, type, x, y;
-                var anchorList = [];
+                var anchorList = map_anchors.slice(0);
                 var mainAnchorID = [];
                 var anchorID = [];
-                anchorArray = [];
                 setSize();
-                if (revInfo) {
-                    for (i in revInfo) {
-                        var hasAnc = map_allAnchorsID.indexOf(revInfo[i].anchor_id);
-                        if (hasAnc > -1) {
-                            anchorList.push(revInfo[i]);
-                            id = revInfo[i].anchor_id;
-                            type = revInfo[i].anchor_type;
-                            x = revInfo[i].set_x / canvasImg.scale;
-                            y = canvasImg.height - revInfo[i].set_y / canvasImg.scale; //因為Server回傳的座標為左下原點
-                            anchorArray.push({
-                                id: id,
-                                type: type,
-                                x: x,
-                                y: y
-                            });
-                            drawAnchor(ctx, id, type, x, y); //畫出點的設定
-                        }
-
-                        if (revInfo[i].anchor_type == "main")
-                            mainAnchorID.push(revInfo[i].anchor_id);
-                        else
-                            anchorID.push(revInfo[i].anchor_id);
-                    }
+                anchorList.forEach(element => {
+                    id = element.anchor_id;
+                    type = "";
+                    x = element.set_x / canvasImg.scale;
+                    y = canvasImg.height - element.set_y / canvasImg.scale;
+                    anchorArray.push({
+                        id: id,
+                        type: type,
+                        x: x,
+                        y: y
+                    });
+                    drawAnchor(ctx, id, type, x, y); //畫出點的設定
+                    anchorID.push(id);
+                });
+                for (i in revInfo) {
+                    anchorList.push({
+                        anchor_id: revInfo[i].main_anchor_id,
+                        anchor_type: "main",
+                        set_x: revInfo[i].set_x,
+                        set_y: revInfo[i].set_y
+                    });
+                    id = revInfo[i].main_anchor_id;
+                    type = "main";
+                    x = revInfo[i].set_x / canvasImg.scale;
+                    y = canvasImg.height - revInfo[i].set_y / canvasImg.scale; //因為Server回傳的座標為左下原點
+                    anchorArray.push({
+                        id: id,
+                        type: type,
+                        x: x,
+                        y: y
+                    });
+                    drawAnchor(ctx, id, type, x, y); //畫出點的設定
+                    mainAnchorID.push(id);
                 }
+
                 draw();
                 inputAnchorList(anchorList);
                 setGrouplist_mainAnchor(mainAnchorID);

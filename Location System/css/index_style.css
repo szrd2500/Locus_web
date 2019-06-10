@@ -263,6 +263,8 @@ thead th {
 .sidebar-table {
     overflow: auto;
     width: 300px;
+    height: 650px;
+    max-height: 650px;
     margin: 10px 10px 0px 0px;
 }
 

@@ -47,21 +47,21 @@ function setupCanvas() {
     $(function () {
         resetBlockDisplay();
         $("#block_fence_info").show();
-        $("#label_fence_info").css('background-color', 'rgb(40, 108, 197)');
+        //$("#menu_fence_info").addClass("selected");
         $("#menu_fence_info").on('click', function () {
             resetBlockDisplay();
             $("#block_fence_info").show();
-            $("#label_fence_info").css('background-color', 'rgb(40, 108, 197)');
+            //$("#menu_fence_info").addClass("selected");
         });
         $("#menu_fence_dot_list").on('click', function () {
             resetBlockDisplay();
             $("#block_fence_dot_list").show();
-            $("#label_fence_dot_list").css('background-color', 'rgb(40, 108, 197)');
+            // $("#menu_fence_dot_list").addClass("selected");
         });
         $("#menu_BW_list").on('click', function () {
             resetBlockDisplay();
             $("#block_BW_list").show();
-            $("#label_BW_list").css('background-color', 'rgb(40, 108, 197)');
+            // $("#menu_BW_list").addClass("selected");
         });
         $("#menu_resize").on('click', resizeCanvas);
         $("#select_map").on('change', function () {
@@ -81,9 +81,9 @@ function resetBlockDisplay() {
     $("#block_fence_info").hide();
     $("#block_fence_dot_list").hide();
     $("#block_BW_list").hide();
-    $("#label_fence_info").css('background-color', 'rgb(57, 143, 255)');
-    $("#label_fence_dot_list").css('background-color', 'rgb(57, 143, 255)');
-    $("#label_BW_list").css('background-color', 'rgb(57, 143, 255)');
+    //$("#menu_fence_info").removeClass("selected");
+    //$("#menu_fence_dot_list").removeClass("selected");
+    //$("#menu_BW_list").removeClass("selected");
 }
 
 function loadMaps() {
@@ -96,9 +96,10 @@ function loadMaps() {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (revObj.success > 0) {
-                var revInfo = revObj.Values;
+                var revInfo = ('Values' in revObj) == true ? revObj.Values.slice(0) : [];
                 mapArray = [];
-                $("#select_map").html("<option value=\"''\" selected=\"selected\">請選擇</option>")
+                //resetCanvas();
+                $("#select_map").empty()
                 revInfo.forEach(v => {
                     mapArray.push({
                         id: v.map_id,
@@ -107,7 +108,9 @@ function loadMaps() {
                         file_ext: v.map_file_ext,
                         scale: v.map_scale
                     });
-                    $("#select_map").append("<option value=\"" + v.map_id + "\">" + v.map_name + "</option>");
+                    $("#select_map").append("<li><input type=\"button\" id=\"map_btn_" + v.map_id + "\" " +
+                        "value=\"" + v.map_name + "\"" +
+                        "onclick=\"setMapById(\'" + v.map_id + "\')\"></li>");
                 });
             }
         }
@@ -147,7 +150,7 @@ function setMap(map_url, map_scale) {
 
         var serImgSize = serverImg.width / serverImg.height;
         var cvs_width = parseFloat($("#mapBlock").css("width")) - 2;
-        var cvs_height = parseFloat($("#mapBlock").css("height")) - 2;
+        var cvs_height = parseFloat($("#mapBlock").css("height")) - 7;
         console.log(cvs_width + "," + cvs_height);
         var cvsSize = cvs_width / cvs_height;
         if (serImgSize > cvsSize) { //原圖比例寬邊較長
@@ -216,18 +219,18 @@ function resizeCanvas() {
         ctx.restore();
         ctx.save();
         isFitWindow = false; //目前狀態:原比例 
-        document.getElementById("label_resize").innerHTML = "<i class=\"fas fa-compress\" style='font-size:20px;'></i>";
-        document.getElementById("label_resize").title = "符合視窗大小";
+        document.getElementById("menu_resize").innerHTML = "<i class=\"fas fa-compress\" style='font-size:20px;'></i>";
+        document.getElementById("menu_resize").title = "符合視窗大小";
     } else { //依比例拉伸(Fit in Window)
         var cvs_width = parseFloat($("#mapBlock").css("width")) - 2;
-        var cvs_height = parseFloat($("#mapBlock").css("height")) - 2;
+        var cvs_height = parseFloat($("#mapBlock").css("height")) - 7;
         if ((serverImg.width / serverImg.height) > (cvs_width / cvs_height)) //原圖比例寬邊較長
             fitZoom = cvs_width / serverImg.width;
         else
             fitZoom = cvs_height / serverImg.height;
         isFitWindow = true; //目前狀態:依比例拉伸
-        document.getElementById("label_resize").innerHTML = "<i class=\"fas fa-expand\" style='font-size:20px;'></i>";
-        document.getElementById("label_resize").title = "恢復原比例";
+        document.getElementById("menu_resize").innerHTML = "<i class=\"fas fa-expand\" style='font-size:20px;'></i>";
+        document.getElementById("menu_resize").title = "恢復原比例";
     }
     draw();
 }

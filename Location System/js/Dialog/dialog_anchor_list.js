@@ -29,7 +29,7 @@ function inputAnchorList(anchorList) {
                 "<label for=\"btn_edit_anchor_" + i + "\" class='btn-edit' title='Edit the anchor'>" +
                 "<i class='fas fa-edit' style='font-size:18px;'></i></label><input id=\"btn_edit_anchor_" + i + "\" type='button'" +
                 " class='btn-hidden' onclick=\"editAnchorInfo(\'" + anchorList[i].anchor_id + "\')\" />" +
-                "<label for=\"btn_delete_main_anchor_" + i + "\"  class='btn-delete' style='margin-left:10px;' title='Delete the anchor'>" +
+                "<label for=\"btn_delete_main_anchor_" + i + "\"  class='btn-remove' style='margin-left:10px;' title='Delete the anchor'>" +
                 "<i class='fas fa-trash-alt' style='font-size:18px;'></i></label><input id=\"btn_delete_main_anchor_" + i + "\" type='button'" +
                 " class='btn-hidden' onclick=\"deleteMainAnchor(\'" + anchorList[i].anchor_id + "\')\" />" +
                 "</td></tr>");
@@ -46,7 +46,7 @@ function inputAnchorList(anchorList) {
                 "<label for=\"btn_edit_anchor_" + i + "\" class='btn-edit' title='Edit the anchor'>" +
                 "<i class='fas fa-edit' style='font-size:18px;'></i></label><input id=\"btn_edit_anchor_" + i + "\" type='button'" +
                 " class='btn-hidden' onclick=\"editAnchorInfo(\'" + anchorList[i].anchor_id + "\')\" />" +
-                "<label for=\"btn_delete_anchor_" + i + "\" class='btn-delete' style='margin-left:10px;' title='Delete anchor'>" +
+                "<label for=\"btn_delete_anchor_" + i + "\" class='btn-remove' style='margin-left:10px;' title='Delete anchor'>" +
                 "<i class='fas fa-trash-alt' style='font-size:18px;'></i></label><input id=\"btn_delete_anchor_" + i + "\" type='button'" +
                 " class='btn-hidden' onclick=\"deleteAnchor(\'" + anchorList[i].anchor_id + "\')\" />" +
                 "</td></tr>");

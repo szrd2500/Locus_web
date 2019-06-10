@@ -15,27 +15,27 @@ function inputTimeGroups() {
             if (revObj.success > 0) {
                 count_time_groups = 0;
                 $("#table_time_group tbody").empty();
-                TimeGroupArr = revObj.Values.slice(0);
-                if (TimeGroupArr) {
-                    for (i = 0; i < TimeGroupArr.length; i++) {
-                        var timelist_name = [];
-                        if (TimeGroupArr[i].elements) {
-                            TimeGroupArr[i].elements.forEach(element => {
-                                timelist_name.push(element.time_slot_name);
-                            });
-                        }
-                        count_time_groups++;
-                        var tr_id = "tr_time_group_" + count_time_groups;
-                        $("#table_time_group tbody").append("<tr id=\"" + tr_id + "\">" +
-                            "<td><input type='checkbox' name=\"chkbox_time_group\" value=\"" + TimeGroupArr[i].time_group_id + "\" " +
-                            "onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_time_groups + "</td>" +
-                            "<td><label name=\"time_group_name\">" + TimeGroupArr[i].time_group_name + "</label></td>" +
-                            "<td><label name=\"time_group_slots\">" + timelist_name.toString() + "</label></td>" +
-                            "<td style='text-align:center;'><label for=\"btn_edit_time_group_" + count_time_groups +
-                            "\" class='btn-edit' title='Edit the time group'><i class='fas fa-edit' style='font-size: 18px;'></i></label>" +
-                            "<input id=\"btn_edit_time_group_" + count_time_groups + "\" type='button' class='btn-hidden'" +
-                            " onclick=\"inputTimeGroupSlots(\'" + TimeGroupArr[i].time_group_id + "\')\" /></td></tr>");
+                TimeGroupArr = ('Values' in revObj) == true ? revObj.Values.slice(0) : [];
+                getTimeGroups(TimeGroupArr);
+                inputAlarmGroupTable(); //載入警報群組已設定的內容
+                for (i = 0; i < TimeGroupArr.length; i++) {
+                    var timelist_name = [];
+                    if (TimeGroupArr[i].elements) {
+                        TimeGroupArr[i].elements.forEach(element => {
+                            timelist_name.push(element.time_slot_name);
+                        });
                     }
+                    count_time_groups++;
+                    var tr_id = "tr_time_group_" + count_time_groups;
+                    $("#table_time_group tbody").append("<tr id=\"" + tr_id + "\">" +
+                        "<td><input type='checkbox' name=\"chkbox_time_group\" value=\"" + TimeGroupArr[i].time_group_id + "\" " +
+                        "onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_time_groups + "</td>" +
+                        "<td><label name=\"time_group_name\">" + TimeGroupArr[i].time_group_name + "</label></td>" +
+                        "<td><label name=\"time_group_slots\">" + timelist_name.toString() + "</label></td>" +
+                        "<td style='text-align:center;'><label for=\"btn_edit_time_group_" + count_time_groups +
+                        "\" class='btn-edit' title='Edit the time group'><i class='fas fa-edit' style='font-size: 18px;'></i></label>" +
+                        "<input id=\"btn_edit_time_group_" + count_time_groups + "\" type='button' class='btn-hidden'" +
+                        " onclick=\"inputTimeGroupSlots(\'" + TimeGroupArr[i].time_group_id + "\')\" /></td></tr>");
                 }
             } else {
                 alert("讀取時段群組失敗，請再試一次!");
@@ -172,7 +172,7 @@ $(function () {
             alert("請先輸入群組名稱");
             return;
         }
-        $("#add_time_group_slot").html(displayNameOptions(TimeSlotArr, TimeSlotArr[0].id));
+        $("#add_time_group_slot").html(createOptions_name(TimeSlotArr, TimeSlotArr[0].id));
         $("#dialog_add_time_group_slot").dialog("open");
     });
 

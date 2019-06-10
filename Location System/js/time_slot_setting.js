@@ -15,22 +15,21 @@ function inputTimeSetting() {
             $("#table_time_slot tbody").empty(); //先重置表格
             count_time_slot = 0;
             if (revObj.success > 0) {
-                timeSlotArray = revObj.Values.slice(0);
-                if (timeSlotArray) {
-                    for (i = 0; i < timeSlotArray.length; i++) {
-                        count_time_slot++;
-                        var tr_id = "tr_time_slot_" + count_time_slot;
-                        $("#table_time_slot tbody").append("<tr id=\"" + tr_id + "\">" +
-                            "<td><input type='checkbox' name=\"chkbox_time_slot\" value=\"" + timeSlotArray[i].time_slot_id +
-                            "\" onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_time_slot + "</td>" +
-                            "<td><label name=\"time_slot_name\">" + timeSlotArray[i].time_slot_name + "</label></td>" +
-                            "<td style='text-align:center;'><label for=\"btn_edit_time_slot_" + count_time_slot +
-                            "\" class='btn-edit' title='Edit the time slot'><i class='fas fa-edit' style='font-size:18px;'>" +
-                            "</i></label><input id=\"btn_edit_time_slot_" + count_time_slot + "\" type='button'" +
-                            " class='btn-hidden' onclick=\"inputWeekSchedule(\'" + timeSlotArray[i].time_slot_id + "\')\" />" +
-                            "</td></tr>");
-                    }
+                timeSlotArray = ('Values' in revObj) == true ? revObj.Values.slice(0) : [];
+                for (i = 0; i < timeSlotArray.length; i++) {
+                    count_time_slot++;
+                    var tr_id = "tr_time_slot_" + count_time_slot;
+                    $("#table_time_slot tbody").append("<tr id=\"" + tr_id + "\">" +
+                        "<td><input type='checkbox' name=\"chkbox_time_slot\" value=\"" + timeSlotArray[i].time_slot_id +
+                        "\" onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_time_slot + "</td>" +
+                        "<td><label name=\"time_slot_name\">" + timeSlotArray[i].time_slot_name + "</label></td>" +
+                        "<td style='text-align:center;'><label for=\"btn_edit_time_slot_" + count_time_slot +
+                        "\" class='btn-edit' title='Edit the time slot'><i class='fas fa-edit' style='font-size:18px;'>" +
+                        "</i></label><input id=\"btn_edit_time_slot_" + count_time_slot + "\" type='button'" +
+                        " class='btn-hidden' onclick=\"inputWeekSchedule(\'" + timeSlotArray[i].time_slot_id + "\')\" />" +
+                        "</td></tr>");
                 }
+                inputTimeGroups()
             } else {
                 alert("讀取TimeSettingList失敗，請再試一次!");
                 return;

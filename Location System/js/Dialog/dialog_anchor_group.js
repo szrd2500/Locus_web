@@ -21,30 +21,36 @@ function inputAnchorGroup(map_mainAnchors) {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (revObj.success > 0) {
-                var group_anchors = revObj.Values;
-                var map_allAnchors = map_mainAnchors;
+                var group_anchors = ('Values' in revObj) ? revObj.Values : [];
+                //var map_allAnchors = map_mainAnchors;
+                var map_anchors = [];
                 clearAnchorGroup();
-                if (group_anchors) {
-                    group_anchors.forEach(info => {
-                        count_group++;
-                        var tr_id = "tr_anchor_group_" + count_group;
-                        $("#table_anchor_group tbody").append("<tr id=\"" + tr_id + "\"><td>" +
-                            "<input type=\"checkbox\" name=\"anchorgroup_group_id\" value=\"" + info.group_id + "\"" +
-                            " onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_group +
-                            "</td><td>" +
-                            "<input type=\"text\" name=\"anchorgroup_group_name\" value=\"" + info.group_name +
-                            "\" style=\"max-width:70px;\" readonly/>" +
-                            "</td><td>" +
-                            "<input type=\"text\" name=\"anchorgroup_main_anchor_id\" value=\"" + info.main_anchor_id +
-                            "\" style=\"max-width:60px;\" readonly/>" +
-                            "</td><td>" +
-                            "<input type=\"text\" name=\"anchorgroup_anchor_id\" value=\"" + info.anchor_id +
-                            "\" style=\"max-width:60px;\" readonly/>" +
-                            "</td></tr>");
-                        map_allAnchors.push(info.anchor_id);
+                group_anchors.forEach(info => {
+                    count_group++;
+                    var tr_id = "tr_anchor_group_" + count_group;
+                    $("#table_anchor_group tbody").append("<tr id=\"" + tr_id + "\"><td>" +
+                        "<input type=\"checkbox\" name=\"anchorgroup_group_id\" value=\"" + info.group_id + "\"" +
+                        " onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_group +
+                        "</td><td>" +
+                        "<input type=\"text\" name=\"anchorgroup_group_name\" value=\"" + info.group_name +
+                        "\" style=\"max-width:70px;\" readonly/>" +
+                        "</td><td>" +
+                        "<input type=\"text\" name=\"anchorgroup_main_anchor_id\" value=\"" + info.main_anchor_id +
+                        "\" style=\"max-width:60px;\" readonly/>" +
+                        "</td><td>" +
+                        "<input type=\"text\" name=\"anchorgroup_anchor_id\" value=\"" + info.anchor_id +
+                        "\" style=\"max-width:60px;\" readonly/>" +
+                        "</td></tr>");
+                    //map_allAnchors.push(info.anchor_id);
+                    map_anchors.push({
+                        anchor_id: info.anchor_id,
+                        anchor_type: "",
+                        set_x: info.set_x,
+                        set_y: info.set_y
                     });
-                }
-                getAnchors(map_allAnchors);
+                });
+
+                getAnchors(map_anchors);
             } else {
                 alert("獲取GroupList失敗，請再試一次!");
                 return;

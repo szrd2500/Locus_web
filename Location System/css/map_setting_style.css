@@ -161,13 +161,24 @@ h1 {
 
 .btn-delete {
     cursor: pointer;
-    color: rgb(255, 38, 38);
-    font-size: 20px;
-    margin: 0px 5px 0px 5px;
+    color: rgb(255, 0, 0);
+    font-size: 18px;
+    margin: 0px 5px 0px 0px;
 }
 
 .btn-delete:hover {
-    color: rgb(255, 113, 113);
+    color: rgb(255, 187, 187);
+}
+
+.btn-remove {
+    cursor: pointer;
+    color: rgb(0, 0, 0);
+    font-size: 18px;
+    margin: 0px 5px 0px 0px;
+}
+
+.btn-remove:hover {
+    color: rgb(189, 189, 189);
 }
 
 .btn-add {
@@ -190,6 +201,17 @@ h1 {
 
 .btn-add-pos:hover {
     color: rgb(147, 192, 96);
+}
+
+.btn-edit {
+    cursor: pointer;
+    color: rgb(235, 160, 0);
+    font-size: 18px;
+    margin: 0px 5px 0px 5px;
+}
+
+.btn-edit:hover {
+    color: rgb(253, 214, 129);
 }
 
 .sidebar-menu {
@@ -253,7 +275,7 @@ h1 {
 .block-list {
     overflow: auto;
     height: 414px;
-    max-width: 330px;
+    max-width: 340px;
     margin: 0px 0px 0px 10px;
 }
 

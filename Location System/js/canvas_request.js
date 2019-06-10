@@ -48,11 +48,6 @@ var isFocus = true,
 
 var Map_id = "";
 
-var Request_Name = {
-    LoadMap: "sql",
-    GetAnchors: "sql"
-};
-
 window.addEventListener("load", setup, false);
 
 function setup() {
@@ -71,7 +66,7 @@ function setup() {
 
     canvas.addEventListener("mousemove", handleMouseMove, false); //滑鼠在畫布中移動的座標
     canvas.addEventListener("mousewheel", handleMouseWheel, false); //畫布縮放
-    canvas.addEventListener("dblclick", handleDblClick, false); // 快速放大點擊位置
+    //canvas.addEventListener("dblclick", handleDblClick, false); // 快速放大點擊位置
     canvas.addEventListener('click', handleMouseClick, false); //點擊地圖上的tag，跳出tag的訊息框
     cvsBlock.addEventListener("mousewheel", handleMouseWheel, false); // 畫面縮放
     cvsBlock.addEventListener("DOMMouseScroll", handleMouseWheel, false); // 畫面縮放(for Firefox)
@@ -459,7 +454,6 @@ function handleMouseWheel(event) {
         $("#canvas").css("margin-left", end_x + "px").css("margin-top", end_y + "px");
         draw();
     });
-
 }
 
 
@@ -709,104 +703,31 @@ function changeAlarmLight() {
     });
 }
 
-/*
-function updateMemberList() {
-    var xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
-    xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            try {
-                var revObj = JSON.parse(this.responseText);
-                var list = "",
-                    items;
-                var tbody = document.getElementsByTagName("tbody");
-                for (var i = 0; i < revObj.tag_list.length; i++) {
-                    items = i + 1;
-                    list += "<tr><td>" + items +
-                        "</td><td>" + " " +
-                        "</td><td>" + revObj.name[i] +
-                        "</td><td>" + revObj.tag_list[i].substring(14) +
-                        "</td></tr>";
-                }
-                tbody[2].innerHTML = list; //此tbody在html文件中所有tbody標籤的排序(0開頭)-->2
-            } catch (e) {
-                return 0;
-            }
-        }
-    };
-    xmlHttp.open("POST", "requestMemberList", true);
-    xmlHttp.setRequestHeader("Content-type", "application/json");
-    xmlHttp.send();
-}
-*/
-
 function updateTagList() {
     var xmlHttp = createJsonXmlHttp("requestTagList_json");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (canvasImg.isPutImg) {
-
-                /*{
-                    "Name": "",
-                    "number": "",
-                    "tag_id": "0000000000000002",
-                    "tag_time": "2019-05-31 16:06:24.69",
-                    "tag_x": 649,
-                    "tag_y": 61
-                }*/
-
-                var id = "",
-                    x = 0,
-                    y = 0,
-                    system_time = "";
-                tagArray = [];
-
-                //update member list
                 var tbody = $("#table_rightbar_member_list tbody");
                 tbody.empty();
-
+                tagArray = [];
                 for (i in revObj) {
-                    id = revObj[i].tag_id;
-                    x = revObj[i].tag_x / canvasImg.scale;
-                    y = canvasImg.height - revObj[i].tag_y / canvasImg.scale; //因為Server回傳的座標為左下原點 
-                    system_time = revObj[i].tag_time;
+                    //update tag array
                     tagArray.push({
-                        x: x,
-                        y: y,
-                        id: id,
-                        system_time: system_time
+                        x: revObj[i].tag_id,
+                        y: revObj[i].tag_x / canvasImg.scale,
+                        id: canvasImg.height - revObj[i].tag_y / canvasImg.scale,
+                        system_time: revObj[i].tag_time
                     });
 
+                    //update member list
                     tbody.append("<tr><td>" + (i + 1) +
                         "</td><td>" + revObj[i].number +
                         "</td><td>" + revObj[i].Name +
                         "</td><td>" + revObj[i].tag_id +
                         "</td></tr>");
                 }
-
-                //update member list
-                //var list = "",
-
-                //for (var i = 0; i < revObj; i++) {
-                //    items = i + 1;
-                /*list += "<tr><td>" + items +
-                    "</td><td>" + " " +
-                    "</td><td>" + revObj.name[i] +
-                    "</td><td>" + revObj.tag_list[i].substring(14) +
-                    "</td></tr>";*/
-                /*    tbody.append("<tr><td>" + items +
-                        "</td><td>" + revObj[i].number +
-                        "</td><td>" + revObj[i].Name +
-                        "</td><td>" + revObj[i].tag_id +
-                        "</td></tr>");
-                }*/
-                //tbody.html(list);
-
-
 
                 //定時比對tagArray更新alarmArray
                 var alarmIndex = -1;
@@ -998,7 +919,6 @@ function handleAnchorPosition() {
 function autoSendRequest() {
     if (!AnchorPosition) {
         //updateAlarmList()
-        //updateMemberList();
         updateTagList();
         draw();
         canvas.removeEventListener("click", handleAnchorPosition);
