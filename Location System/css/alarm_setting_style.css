@@ -90,6 +90,12 @@ td {
     border: 1px solid rgb(146, 154, 160);
 }
 
+.table-line-gray td:nth-child(2),
+.table-line-gray td:nth-child(3),
+.table-line-gray td:nth-child(4) {
+    text-align: center;
+}
+
 #dialog_add_time_setting label {
     font-weight: bold;
     font-family: 'Microsoft JhengHei', 'sans-serif';
@@ -305,20 +311,29 @@ input[type=radio]:not(old).beauty:checked+label {
 
 .block-list {
     overflow: auto;
-    max-height: 530px;
+    max-height: 490px;
+    height: 490px;
     width: 100%;
-    border: 1px solid rgb(165, 165, 165);
-    height: 530px;
+    border: 1px solid rgb(175, 175, 175);
 }
 
-.block-list label{ 
+.block-list-helf {
+    overflow: auto;
+    max-height: 200px;
+    height: 200px;
+    width: 100%;
+}
+
+.add_fence_title {
     /*title*/
     font-size: 16px;
     background: rgb(199, 211, 219);
-    color: #000000;
+    /*border: 1px solid rgb(175, 175, 175);*/
+    color: rgb(64, 69, 73);
     width: 100%;
     margin: 0px;
-    text-align: center
+    text-align: center;
+    margin-bottom: 5px;
 }
 
 .block-bw-list {

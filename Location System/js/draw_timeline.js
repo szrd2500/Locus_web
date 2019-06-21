@@ -48,7 +48,7 @@ function setup() {
     canvas.addEventListener("mousemove", handleMouseMove, false); //滑鼠在畫布中移動的座標
     canvas.addEventListener("mousewheel", handleMouseWheel, false); //畫布縮放
     cvsBlock.addEventListener("mousewheel", handleMouseWheel, false); // 畫面縮放
-    cvsBlock.addEventListener("DOMMouseScroll", handleMouseWheel, false);// 畫面縮放(for Firefox)
+    cvsBlock.addEventListener("DOMMouseScroll", handleMouseWheel, false); // 畫面縮放(for Firefox)
 
     $(function () {
         $("#canvas").mousedown(function (e) {
@@ -90,11 +90,7 @@ function setup() {
         "Command_Type": ["Read"],
         "Command_Name": ["GetMaps"]
     };
-    var xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
+    var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
@@ -103,8 +99,6 @@ function setup() {
             }
         }
     };
-    xmlHttp.open("POST", "sql", true);
-    xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(requestArray));
 
     /**
@@ -134,20 +128,6 @@ function setup() {
             $(this).unbind('mousemove');
         });
     });
-}
-
-function GetXmlHttpObject() {
-    var xmlHttp = null;
-    try { // Firefox, Opera 8.0+, Safari
-        xmlHttp = new XMLHttpRequest();
-    } catch (e) { //Internet Explorer
-        try {
-            xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-    }
-    return xmlHttp;
 }
 
 function loadImage(map_url, map_scale) {
@@ -454,10 +434,10 @@ function drawNextTime() {
             loadImage(array[0].map_src, array[0].map_scale);
             restartCanvas();
             drawTag(ctx, array[0].time, array[0].x, array[0].y);
-            document.getElementById("position").value = array[0].map_name;
-            document.getElementById("draw_time").value = array[0].time;
-            document.getElementById("draw_x").value = array[0].x;
-            document.getElementById("draw_y").value = array[0].y;
+            document.getElementById("position").innerText = array[0].map_name;
+            document.getElementById("draw_time").innerText = array[0].time;
+            document.getElementById("draw_x").innerText = array[0].x;
+            document.getElementById("draw_y").innerText = array[0].y;
             time++;
         } else if (time < array.length) {
             if (array[time].map_src != array[time - 1].map_src)
@@ -465,10 +445,10 @@ function drawNextTime() {
             reDrawTag(ctx);
             drawArrow(ctx, array[time - 1].x, array[time - 1].y, array[time].x, array[time].y, 30, 8, 2, '#66ccff');
             drawTag(ctx, array[time].time, array[time].x, array[time].y);
-            document.getElementById("position").value = array[time].map_name;
-            document.getElementById("draw_time").value = array[time].time;
-            document.getElementById("draw_x").value = array[time].x;
-            document.getElementById("draw_y").value = array[time].y;
+            document.getElementById("position").innerText = array[time].map_name;
+            document.getElementById("draw_time").innerText = array[time].time;
+            document.getElementById("draw_x").innerText = array[time].x;
+            document.getElementById("draw_y").innerText = array[time].y;
             time++;
         } else {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -481,7 +461,7 @@ function search() {
     var startDate = new Date($("#start_date").val() + 'T' + checkTimeLength($("#start_time").val()));
     var endDate = new Date($("#end_date").val() + 'T' + checkTimeLength($("#end_time").val()));
     if (endDate - startDate > 86400000 * 7) { //86400000 = 一天的毫秒數
-        var retVal = confirm("搜尋日期超過7天，可能會占用過多記憶體，請問仍要繼續進行?");
+        var retVal = confirm($.i18n.prop('i_alertTimeTooLong'));
         if (retVal == true) {
             timelineArray = [];
             getTimeline({
@@ -516,11 +496,7 @@ function search() {
 
 
 function getTimeline(request) {
-    var xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
+    var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
@@ -557,12 +533,10 @@ function getTimeline(request) {
                         }
                     });
                 } else
-                    alert("搜尋完畢!");
+                    alert($.i18n.prop('i_searchOver'));
             }
         }
     };
-    xmlHttp.open("POST", "sql", true);
-    xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(request));
 }
 

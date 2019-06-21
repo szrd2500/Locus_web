@@ -7,7 +7,7 @@ function clearAnchorGroup() {
     count_group = 0;
 }
 
-function inputAnchorGroup(map_mainAnchors) {
+function inputAnchorGroup() {
     var map_id = $("#map_info_id").val();
     var requestArray = {
         "Command_Type": ["Read"],
@@ -22,7 +22,6 @@ function inputAnchorGroup(map_mainAnchors) {
             var revObj = JSON.parse(this.responseText);
             if (revObj.success > 0) {
                 var group_anchors = ('Values' in revObj) ? revObj.Values : [];
-                //var map_allAnchors = map_mainAnchors;
                 var map_anchors = [];
                 clearAnchorGroup();
                 group_anchors.forEach(info => {
@@ -41,7 +40,6 @@ function inputAnchorGroup(map_mainAnchors) {
                         "<input type=\"text\" name=\"anchorgroup_anchor_id\" value=\"" + info.anchor_id +
                         "\" style=\"max-width:60px;\" readonly/>" +
                         "</td></tr>");
-                    //map_allAnchors.push(info.anchor_id);
                     map_anchors.push({
                         anchor_id: info.anchor_id,
                         anchor_type: "",
@@ -49,10 +47,9 @@ function inputAnchorGroup(map_mainAnchors) {
                         set_y: info.set_y
                     });
                 });
-
                 getAnchors(map_anchors);
             } else {
-                alert("獲取GroupList失敗，請再試一次!");
+                alert($.i18n.prop('i_mapAlert_12'));
                 return;
             }
         }
@@ -135,7 +132,7 @@ $(function () {
                     add_anchor.html(makeOptions(allAnchorsArray, allAnchorsArray[0]));
                     dialog.dialog("open");
                 } else {
-                    alert("獲取GroupList失敗，請再試一次!");
+                    alert($.i18n.prop('i_mapAlert_12'));
                     return;
                 }
             }
@@ -144,15 +141,31 @@ $(function () {
     });
 
     $("#btn_delete_anchor_group").on("click", function () {
-        deleteAnchorGroup();
+        var group_ids = document.getElementsByName("anchorgroup_group_id");
+        var anchor_ids = document.getElementsByName("anchorgroup_anchor_id");
+        var deleteArr = [];
+        for (j in group_ids) {
+            if (group_ids[j].checked) {
+                deleteArr.push({
+                    "group_id": group_ids[j].value,
+                    "anchor_id": anchor_ids[j].value
+                });
+            }
+        }
+        if (deleteArr.length > 0) {
+            DeleteGroup_Anchor(deleteArr);
+            getMapGroups();
+        } else {
+            alert($.i18n.prop('i_mapAlert_9'));
+        }
     });
 
 
     function addAnchorGroup() {
         allFields.removeClass("ui-state-error");
         var valid = true;
-        valid = valid && checkLength(add_group, "Should be more than 0 and less than 65535.", 1, 5);
-        valid = valid && checkLength(add_anchor, "Should be more than 0 and less than 65535.", 1, 5);
+        valid = valid && checkLength(add_group, $.i18n.prop('i_mapAlert_14'), 1, 5);
+        valid = valid && checkLength(add_anchor, $.i18n.prop('i_mapAlert_14'), 1, 5);
         if (valid) {
             var request = {
                 "Command_Type": ["Write"],
@@ -177,21 +190,6 @@ $(function () {
         return valid;
     }
 
-    function deleteAnchorGroup() {
-        var group_ids = document.getElementsByName("anchorgroup_group_id");
-        var anchor_ids = document.getElementsByName("anchorgroup_anchor_id");
-        var deleteArr = [];
-        for (j in group_ids) {
-            if (group_ids[j].checked) {
-                deleteArr.push({
-                    "group_id": group_ids[j].value,
-                    "anchor_id": anchor_ids[j].value
-                });
-            }
-        }
-        DeleteGroup_Anchor(deleteArr);
-        getMapGroups();
-    }
 
     dialog = $("#dialog_add_anchor_group").dialog({
         autoOpen: false,

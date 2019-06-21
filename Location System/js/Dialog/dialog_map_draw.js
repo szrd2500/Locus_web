@@ -162,7 +162,7 @@ function resizeCanvas() {
         ctx.save();
         isFitWindow = false; //目前狀態:原比例 
         document.getElementById("label_resize").innerHTML = "<i class=\"fas fa-compress\" style='font-size:20px;'></i>";
-        document.getElementById("label_resize").title = "Fit in window";
+        document.getElementById("label_resize").title = $.i18n.prop('i_fit_window');
     } else { //依比例拉伸(Fit in Window)
         var cvs_width = parseFloat($("#mapBlock").css("width")) - 2;
         var cvs_height = parseFloat($("#mapBlock").css("height")) - 2;
@@ -172,7 +172,7 @@ function resizeCanvas() {
             fitZoom = cvs_height / serverImg.height;
         isFitWindow = true; //目前狀態:依比例拉伸
         document.getElementById("label_resize").innerHTML = "<i class=\"fas fa-expand\" style='font-size:20px;'></i>";
-        document.getElementById("label_resize").title = "Restore the original size";
+        document.getElementById("label_resize").title = $.i18n.prop('i_restore_scale');
     }
     draw();
 }
@@ -254,7 +254,8 @@ function getPointOnCanvas(x, y) {
 }
 
 
-function getAnchors(map_anchors) {
+function
+getAnchors(map_anchors) {
     var map_id = $("#map_info_id").val();
     var requestArray = {
         "Command_Type": ["Read"],
@@ -268,12 +269,21 @@ function getAnchors(map_anchors) {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (revObj.success > 0) {
-                var revInfo = ('Values' in revObj) == true ? revObj.Values : [];
                 var id, type, x, y;
-                var anchorList = map_anchors.slice(0);
-                var mainAnchorID = [];
                 var anchorID = [];
+                var mainAnchorID = [];
+                var anchorList = map_anchors.slice(0);
+                var mainAnchorList = [];
+                var revInfo = 'Values' in revObj == true ? revObj.Values : [];
+                revInfo.forEach(element => {
+                    var repect = mainAnchorList.findIndex(function (info) {
+                        return info.main_anchor_id == element.main_anchor_id;
+                    });
+                    if (repect == -1)
+                        mainAnchorList.push(element);
+                });
                 setSize();
+                //Anchor
                 anchorList.forEach(element => {
                     id = element.anchor_id;
                     type = "";
@@ -285,36 +295,36 @@ function getAnchors(map_anchors) {
                         x: x,
                         y: y
                     });
-                    drawAnchor(ctx, id, type, x, y); //畫出點的設定
+                    drawAnchor(ctx, id, type, x, y);
                     anchorID.push(id);
                 });
-                for (i in revInfo) {
+                //Main Anchor
+                mainAnchorList.forEach(element => {
                     anchorList.push({
-                        anchor_id: revInfo[i].main_anchor_id,
+                        anchor_id: element.main_anchor_id,
                         anchor_type: "main",
-                        set_x: revInfo[i].set_x,
-                        set_y: revInfo[i].set_y
+                        set_x: element.set_x,
+                        set_y: element.set_y
                     });
-                    id = revInfo[i].main_anchor_id;
+                    id = element.main_anchor_id;
                     type = "main";
-                    x = revInfo[i].set_x / canvasImg.scale;
-                    y = canvasImg.height - revInfo[i].set_y / canvasImg.scale; //因為Server回傳的座標為左下原點
+                    x = element.set_x / canvasImg.scale;
+                    y = canvasImg.height - element.set_y / canvasImg.scale;
                     anchorArray.push({
                         id: id,
                         type: type,
                         x: x,
                         y: y
                     });
-                    drawAnchor(ctx, id, type, x, y); //畫出點的設定
+                    drawAnchor(ctx, id, type, x, y);
                     mainAnchorID.push(id);
-                }
-
+                });
                 draw();
                 inputAnchorList(anchorList);
                 setGrouplist_mainAnchor(mainAnchorID);
                 setAnchorgroup_anchor(anchorID);
             } else {
-                alert("獲取AnchorList失敗，請再試一次!");
+                alert($.i18n.prop('i_mapAlert_6'));
             }
         }
     };
@@ -340,6 +350,8 @@ function drawAnchor(dctx, id, type, x, y) {
 }
 
 function drawAnchorPosition(dctx, x, y) {
+    x = x / canvasImg.scale;
+    y = canvasImg.height - y / canvasImg.scale;
     dctx.fillStyle = '#99cc00';
     dctx.beginPath();
     dctx.arc(x, y, 4, 0, Math.PI * 2, true);
@@ -398,13 +410,12 @@ function startAnchorPosition() {
     if (!isPosition) {
         isPosition = true;
         document.getElementById("label_anchor_position").innerHTML = "<i class='fas fa-map-marked' style='font-size:20px;'></i>";
-        document.getElementById("label_anchor_position").title = "Stop anchor position";
-        //設定計時器 pageTimer["timer1"] = setInterval("autoSendRequest()", delaytime);
+        document.getElementById("label_anchor_position").title = $.i18n.prop('i_mapAlert_7');
         var delaytime = 100; //0.1s
         pageTimer["timer1"] = setTimeout(function request() {
             draw();
-            var posX = lastX * Zoom / fitZoom;
-            var posY = ((canvas.height - lastY) * Zoom / fitZoom);
+            var posX = lastX * Zoom / fitZoom * canvasImg.scale;
+            var posY = lastY * Zoom / fitZoom * canvasImg.scale;
             drawAnchorPosition(ctx, posX, posY);
             pageTimer["timer1"] = setTimeout(request, delaytime);
         }, delaytime);
@@ -412,10 +423,8 @@ function startAnchorPosition() {
     } else {
         isPosition = false;
         document.getElementById("label_anchor_position").innerHTML = "<i class='fas fa-map-marked-alt' style='font-size:20px;'></i>";
-        document.getElementById("label_anchor_position").title = "Start anchor position";
-        //清除計時器 clearInterval(pageTimer[each]);
-        //clearTimeout(pageTimer["timer1"]);
-        for (var each in pageTimer) {
+        document.getElementById("label_anchor_position").title = $.i18n.prop('i_mapAlert_8');
+        for (each in pageTimer) {
             clearTimeout(pageTimer[each]);
         }
         draw();

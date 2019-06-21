@@ -24,14 +24,14 @@ function inputTimeSetting() {
                         "\" onchange=\"selectColumn(\'" + tr_id + "\')\" />  " + count_time_slot + "</td>" +
                         "<td><label name=\"time_slot_name\">" + timeSlotArray[i].time_slot_name + "</label></td>" +
                         "<td style='text-align:center;'><label for=\"btn_edit_time_slot_" + count_time_slot +
-                        "\" class='btn-edit' title='Edit the time slot'><i class='fas fa-edit' style='font-size:18px;'>" +
-                        "</i></label><input id=\"btn_edit_time_slot_" + count_time_slot + "\" type='button'" +
-                        " class='btn-hidden' onclick=\"inputWeekSchedule(\'" + timeSlotArray[i].time_slot_id + "\')\" />" +
-                        "</td></tr>");
+                        "\" class='btn-edit' title='" + $.i18n.prop('i_editTimeSlot') + "'>" +
+                        "<i class='fas fa-edit' style='font-size:18px;'></i></label>" +
+                        "<input id=\"btn_edit_time_slot_" + count_time_slot + "\" type='button' class='btn-hidden'" +
+                        " onclick=\"inputWeekSchedule(\'" + timeSlotArray[i].time_slot_id + "\')\" /></td></tr>");
                 }
-                inputTimeGroups()
+                inputTimeGroups();
             } else {
-                alert("讀取TimeSettingList失敗，請再試一次!");
+                alert($.i18n.prop('i_alarmAlert_14'));
                 return;
             }
         }
@@ -121,8 +121,8 @@ $(function () {
         if (sumMins <= 0) {
             start_time.addClass("ui-state-error");
             end_time.addClass("ui-state-error");
-            //updateTips( "開始時間不可比結束時間晚，並且間隔至少一分鐘" );
-            alert("開始時間不可比結束時間晚，並且間隔至少一分鐘");
+            //updateTips($.i18n.prop('i_alarmAlert_20'));
+            alert($.i18n.prop('i_alarmAlert_20'));
             return false;
         } else {
             return true;
@@ -130,14 +130,14 @@ $(function () {
     }
 
     function SendResult() {
-        var r = confirm("Confirm submit the time slot setting ?");
+        var r = confirm($.i18n.prop('i_alarmAlert_21'));
         if (r == false)
             return;
 
         allFields.removeClass("ui-state-error");
         resetWeekTimeColor();
 
-        var valid = true && checkLength(add_name, "Time slot check", 1, 20),
+        var valid = true && checkLength(add_name, $.i18n.prop('i_alarmAlert_22'), 1, 20),
             time_slot_setting = {
                 "time_slot_name": add_name.val(),
                 "Sun_start": "-1",
@@ -158,8 +158,8 @@ $(function () {
 
         weekday_arr.forEach(weekday => {
             if ($("#week_time_check_" + weekday).prop('checked')) {
-                valid = valid && checkLength($("#week_time_start_" + weekday), "Time slot check", 5, 5);
-                valid = valid && checkLength($("#week_time_end_" + weekday), "Time slot check", 5, 5);
+                valid = valid && checkLength($("#week_time_start_" + weekday), $.i18n.prop('i_alarmAlert_23'), 5, 5);
+                valid = valid && checkLength($("#week_time_end_" + weekday), $.i18n.prop('i_alarmAlert_23'), 5, 5);
                 valid = valid && checkTimeSum($("#week_time_start_" + weekday), $("#week_time_end_" + weekday));
                 time_slot_setting[weekday + "_start"] = $("#week_time_start_" + weekday).val() + ":00";
                 time_slot_setting[weekday + "_end"] = $("#week_time_end_" + weekday).val() + ":59";
@@ -181,9 +181,9 @@ $(function () {
                             inputTimeSetting();
                             dialog.dialog("close");
                             resetWeekSchedule();
-                            alert("新增時段設定成功!");
+                            alert($.i18n.prop('i_alarmAlert_17'));
                         } else {
-                            alert("新增時段設定失敗");
+                            alert($.i18n.prop('i_alarmAlert_18'));
                         }
                     }
                 };
@@ -203,9 +203,9 @@ $(function () {
                             inputTimeSetting();
                             dialog.dialog("close");
                             resetWeekSchedule();
-                            alert("編輯時段設定成功!");
+                            alert($.i18n.prop('i_alarmAlert_24'));
                         } else {
-                            alert("編輯時段設定失敗");
+                            alert($.i18n.prop('i_alarmAlert_25'));
                         }
                     }
                 };
@@ -267,7 +267,7 @@ $(function () {
             }
         }
         if (delete_arr.length == 0) {
-            alert("請至少勾選一項時段設定");
+            alert($.i18n.prop('i_alarmAlert_9'));
             return;
         }
         var requestJSON = JSON.stringify({
@@ -281,9 +281,9 @@ $(function () {
                 var revObj = JSON.parse(this.responseText);
                 if (revObj.success > 0) {
                     inputTimeSetting();
-                    alert("刪除時段設定成功");
+                    alert($.i18n.prop('i_alarmAlert_26'));
                 } else {
-                    alert("刪除時段設定失敗");
+                    alert($.i18n.prop('i_alarmAlert_27'));
                 }
             }
         };
