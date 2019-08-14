@@ -71,6 +71,7 @@ function DeleteGroup_Anchor(deleteArr) {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (revObj.success > 0) {
+                getAllDataOfMap();
                 return;
             }
         }
@@ -79,30 +80,79 @@ function DeleteGroup_Anchor(deleteArr) {
 }
 
 function editGroup_Anchor(anchor_id, set_x, set_y) {
-    var groupList = getRowData_Group();
-    if (anchor_id != "") {
-        var anchor_groupList = getRowData_Group_Anchor();
-        var count = 0;
-        $("#table_edit_group_ids tbody").empty();
-        anchor_groupList.forEach(element => {
-            if (element.anchor_id == anchor_id) {
-                count++;
-                $("#table_edit_group_ids tbody").append("<tr>" +
-                    "<td><input type=\"checkbox\" name=\"edit_checkbox_groups\" /> " + count + "</td>" +
-                    "<td><select name=\"edit_group_id\">" +
-                    makeNameOptions("group_id", groupList, element.group_id) + "</select></td>" +
-                    "<td><select name=\"edit_group_name\">" +
-                    makeNameOptions("group_name", groupList, element.group_name) + "</select></td>" +
-                    "</tr>");
-            }
-        });
-        $("#edit_group_anchor").html(getAnchorDropdown(anchor_id));
-    }
-    setGroupConnectChange("select[name='edit_group_id']", "select[name='edit_group_name']");
+    if (anchor_id == "")
+        return;
+    var anchor_groupList = getRowData_Group_Anchor();
+    var count = 0;
+    $("#table_edit_group_ids tbody").empty();
+    anchor_groupList.forEach(element => {
+        if (element.anchor_id == anchor_id) {
+            count++;
+            $("#table_edit_group_ids tbody").append("<tr>" +
+                "<td><input type=\"hidden\" name=\"edit_checkbox_groups\" value=\"" + element.id + "\" />" +
+                count + "</td>" +
+                "<td><input type=\"text\" name=\"edit_group_id\" value=\"" +
+                element.group_id + "\" style=\"max-width:80px; background:white;\" disabled/></td>" +
+                "<td><input type=\"text\" name=\"edit_group_name\" value=\"" +
+                element.group_name + "\" style=\"max-width:80px; background:white;\" disabled/></td></tr>");
+        }
+    });
+    $("#edit_group_anchor").html(getAnchorDropdown(anchor_id)).prop("disabled", true);
+    $("#label_edit_group_add").hide();
+    $("#label_edit_group_delete").hide();
     $("#edit_group_anchor_x").val(set_x);
     $("#edit_group_anchor_y").val(set_y);
     $("#dialog_edit_anchor_group").dialog("open");
 }
+
+function EditGroupAnchorByAnc(anchor_id, set_x, set_y) {
+    var getRequest = {
+        "Command_Type": ["Read"],
+        "Command_Name": ["GetAnchorsInMap"],
+        "Value": {
+            "map_id": $("#map_info_id").val()
+        }
+    };
+    var getXmlHttp = createJsonXmlHttp("sql");
+    getXmlHttp.onreadystatechange = function () {
+        if (getXmlHttp.readyState == 4 || getXmlHttp.readyState == "complete") {
+            var revObj = JSON.parse(this.responseText);
+            if (revObj.success > 0) {
+                var mapGroupAnchor = 'Values' in revObj == true ? revObj.Values : [];
+                mapGroupAnchor.forEach(function (v, i) {
+                    if (v.anchor_id == anchor_id) {
+                        var editRequest = {
+                            "Command_Type": ["Write"],
+                            "Command_Name": ["EditGroup_Anchor"],
+                            "Value": {
+                                "id": v.id,
+                                "group_id": v.group_id,
+                                "anchor_id": anchor_id,
+                                "set_x": set_x,
+                                "set_y": set_y
+                            }
+                        };
+                        var editXmlHttp = createJsonXmlHttp("sql");
+                        editXmlHttp.onreadystatechange = function () {
+                            if (editXmlHttp.readyState == 4 || editXmlHttp.readyState == "complete") {
+                                var revObj2 = JSON.parse(this.responseText);
+                                if (revObj2.success > 0) {
+                                    return;
+                                }
+                            }
+                        };
+                        editXmlHttp.send(JSON.stringify(editRequest));
+                    }
+                });
+                getAllDataOfMap();
+            } else {
+                alert($.i18n.prop('i_mapAlert_6'));
+            }
+        }
+    };
+    getXmlHttp.send(JSON.stringify(getRequest));
+}
+
 
 $(function () {
     var dialog, form,
@@ -201,12 +251,7 @@ $(function () {
             var isRepeat = anchor_arr.findIndex(function (info) {
                 return info.anchor_id == add_anchor_id.eq(i).val();
             });
-            if (isRepeat > -1) {
-                alert("基站列表中有Anchor_id重複，請刪除或修改重複項")
-                add_anchor_id.eq(i).addClass("ui-state-error");
-                valid = false;
-                return false;
-            } else {
+            if (isRepeat == -1) {
                 anchor_arr.push({
                     "group_id": add_group_id.val(),
                     "anchor_id": add_anchor_id.eq(i).val(),
@@ -235,7 +280,11 @@ $(function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
                     if (revObj.success > 0) {
-                        getAllDataOfMap();
+                        EditGroupAnchorByAnc(
+                            add_anchor_id.eq(i).val(),
+                            add_anchor_x.eq(i).val(),
+                            add_anchor_y.eq(i).val()
+                        );
                         dialog.dialog("close");
                     }
                 }
@@ -318,42 +367,91 @@ $(function () {
         edit_id.removeClass("ui-state-error");
         edit_group.removeClass("ui-state-error");
 
-        edit_group.each(function (i) {
+        /*edit_group.each(function (i) {
             valid = valid && checkLength(edit_group.eq(i), $.i18n.prop('i_mapAlert_14'), 1, 5);
-        });
-
+        });*/
         valid = valid && checkLength(edit_anchor, $.i18n.prop('i_mapAlert_14'), 1, 5);
+        valid = valid && checkLength(edit_x, $.i18n.prop('i_mapAlert_13'), 1, 50);
+        valid = valid && checkLength(edit_y, $.i18n.prop('i_mapAlert_13'), 1, 50);
 
         if (valid) {
-            var anchorGroupList = getRowData_Group_Anchor();
-            edit_group.each(function (i) {
-                anchorGroupList.forEach(function (info) {
-                    if (info.group_id == edit_group.eq(i).val() && info.anchor_id == edit_anchor.val()) {
-                        var request = {
-                            "Command_Type": ["Write"],
-                            "Command_Name": ["EditGroup_Anchor"],
-                            "Value": {
-                                "id": info.id,
-                                "group_id": info.group_id,
-                                "anchor_id": info.anchor_id,
-                                "set_x": edit_x.val(),
-                                "set_y": edit_y.val()
+            var isEdit = edit_anchor.prop("disabled"); //disabled==>edit mode
+            if (isEdit) {
+                edit_id.each(function (i) {
+                    var request = {
+                        "Command_Type": ["Write"],
+                        "Command_Name": ["EditGroup_Anchor"],
+                        "Value": {
+                            "id": $(this).val(),
+                            "group_id": $("input[name='edit_group_id']").eq(i).val(),
+                            "anchor_id": edit_anchor.val(),
+                            "set_x": edit_x.val(),
+                            "set_y": edit_y.val()
+                        }
+                    };
+                    var xmlHttp = createJsonXmlHttp("sql");
+                    xmlHttp.onreadystatechange = function () {
+                        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+                            var revObj = JSON.parse(this.responseText);
+                            if (revObj.success > 0) {
+                                getAllDataOfMap();
+                                dialog.dialog("close");
                             }
-                        };
-                        var xmlHttp = createJsonXmlHttp("sql");
-                        xmlHttp.onreadystatechange = function () {
-                            if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-                                var revObj = JSON.parse(this.responseText);
-                                if (revObj.success > 0) {
-                                    getAllDataOfMap();
-                                    dialog.dialog("close");
-                                }
-                            }
-                        };
-                        xmlHttp.send(JSON.stringify(request));
-                    }
+                        }
+                    };
+                    xmlHttp.send(JSON.stringify(request));
                 });
-            });
+            } else {
+                var anc_group_arr = [];
+                var pass = true;
+                if (edit_group.length == 0) {
+                    alert("請至少新增一個群組")
+                    return false;
+                }
+                var GroupAnchorList = getRowData_Group_Anchor();
+                edit_group.each(function (i) {
+                    if (!pass)
+                        return;
+                    pass = pass && checkLength(edit_group.eq(i), $.i18n.prop('i_mapAlert_14'), 1, 5);
+                    var isRepeat = anc_group_arr.findIndex(function (info) {
+                        return info.group_id == edit_group.eq(i).val();
+                    });
+                    if (isRepeat == -1) {
+                        anc_group_arr.push({
+                            "group_id": edit_group.eq(i).val(),
+                            "anchor_id": edit_anchor.val(),
+                            "set_x": edit_x.val(),
+                            "set_y": edit_y.val()
+                        });
+                    }
+                    GroupAnchorList.forEach(element => {
+                        if (element.anchor_id == edit_anchor.val()) {
+                            edit_anchor.addClass("ui-state-error");
+                            alert("Anchor_id : " + element.anchor_id +
+                                " 已經設定在此地圖的群組中，請刪除其他群組位置再進行相同操作!");
+                            pass = false;
+                        }
+                    });
+                });
+                if (pass) {
+                    var request = {
+                        "Command_Type": ["Write"],
+                        "Command_Name": ["AddListGroup_Anchor"],
+                        "Value": anc_group_arr
+                    };
+                    var xmlHttp = createJsonXmlHttp("sql");
+                    xmlHttp.onreadystatechange = function () {
+                        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+                            var revObj = JSON.parse(this.responseText);
+                            if (revObj.success > 0) {
+                                getAllDataOfMap();
+                                dialog.dialog("close");
+                            }
+                        }
+                    };
+                    xmlHttp.send(JSON.stringify(request));
+                }
+            }
         }
         return valid;
     }
@@ -372,8 +470,8 @@ $(function () {
         close: function () {
             form[0].reset();
             allFields.removeClass("ui-state-error");
-            edit_id.removeClass("ui-state-error");
-            edit_group.removeClass("ui-state-error");
+            $("#table_edit_group_ids tbody").empty();
+            catchMap_Anchors();
         }
     });
 
