@@ -11,6 +11,10 @@ aside button {
     outline: none;
 }
 
+input[type='text']{
+    padding: 0px 5px;
+}
+
 .nav-tabs {
     border-color: rgb(47, 95, 201);
 }

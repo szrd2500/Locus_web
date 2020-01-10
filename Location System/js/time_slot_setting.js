@@ -1,12 +1,9 @@
-var token = "";
 var operate = "";
 var count_time_setting = 0;
 var weekday_arr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 var timeSlotArray = [];
 
-$(function () {
-    token = getToken();
-
+function importTimeSlot() {
     inputTimeSetting();
     resetWeekSchedule();
     weekday_arr.forEach(weekday => {
@@ -221,7 +218,7 @@ $(function () {
         };
         deleteXmlHttp.send(requestJSON);
     });
-});
+}
 
 function inputTimeSetting() {
     var request = {

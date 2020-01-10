@@ -325,7 +325,7 @@ input[type=radio]:not(old).beauty:checked+label {
     height: 612px;
     width: 100%;
     overflow: auto;
-    border: 1px gray solid;
+    border: 1px solid rgb(0, 105, 175);
 }
 
 .block-list {
@@ -333,7 +333,7 @@ input[type=radio]:not(old).beauty:checked+label {
     max-height: 490px;
     height: 490px;
     width: 100%;
-    border: 1px solid rgb(175, 175, 175);
+    border: 1px solid rgb(0, 105, 175);
 }
 
 .block-list-helf {

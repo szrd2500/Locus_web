@@ -19,6 +19,7 @@ $(function () {
     getMap();
     setMembersDialog();
     setDisplayRowsDialog();
+    getDepts();
 
     $("#select_report_type").on("change", function () {
         switch ($(this).val()) {
@@ -124,9 +125,54 @@ $(function () {
             element.checked = isChecked;
         });
     });
+
+    $("#btn_export_excel").click(function () {
+        var array = [];
+        var name = "";
+        switch ($("#select_report_name").val()) {
+            case "person_timeline":
+                name = "person_timeline";
+                array = convertTableToArray("table_person_timeline");
+                break;
+            case "member_attendance":
+            case "all_member_attend":
+                name = "member_attendance";
+                array = convertTableToArray("table_member_attendance");
+                break;
+            default:
+                break;
+        }
+
+        $("#dvjson").excelexportjs({
+            containerid: "dvjson",
+            datatype: 'json',
+            dataset: array,
+            columns: getColumns(array),
+            fileName: "Report.xls",
+            worksheetName: name
+        });
+    });
 });
 
-
+function getDepts() {
+    var xmlHttp = createJsonXmlHttp("sql");
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+            var revObj = JSON.parse(this.responseText);
+            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                $("#search_dept").val("<option value=\"\">All</option>");
+                revObj.Value[0].Values.forEach(element => {
+                    $("#search_dept").append("<option value=\"" + element.c_id + "\">" + element.children + "</option>");
+                });
+            }
+        }
+    };
+    xmlHttp.send(JSON.stringify({
+        "Command_Type": ["Read"],
+        "Command_Name": ["GetDepartment_relation_list"],
+        "api_token": [token]
+    }));
+}
 
 function selectPage(page_name) {
     switch (page_name) {

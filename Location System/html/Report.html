@@ -20,16 +20,22 @@
     <!-- Icon Navbar-->
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
-    <!--編寫css-->
+    <!--Edit css-->
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
     <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
     <link rel="stylesheet" type="text/css" href="../css/report_setting.css" />
+    <!-- Excel -->
+    <!--<script type="text/javascript" src="../js/xlsx/xlsx.full.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>
+    <script type="text/javascript" src="../js/excel_export.js"></script>
+    <!--Edit js-->
     <script type="text/javascript" src="../js/general_functions.js"></script>
     <script type="text/javascript" src="../js/check_permission.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="../js/report.js"></script>
     <!--JQuery UI - Dialog-->
-    <script type="text/javascript" src="../js/Dialog/dialog_search_member.js"></script>
+    <script type="text/javascript" src="../js/Dialog/dialog_report_member.js"></script>
 </head>
 
 <body>
@@ -125,8 +131,8 @@
                                     <th class="i18n" name="i_userID"></th>
                                     <th class="i18n" name="i_dept"></th>
                                     <th class="i18n" name="i_name"></th>
-                                    <th>上班時間</th>
-                                    <th>下班時間</th>
+                                    <th class="i18n" name="i_clockIn"></th>
+                                    <th class="i18n" name="i_clockOut"></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -182,6 +188,8 @@
                     <br><br>
                     <div style="width: 100%; text-align: center;">
                         <button class="btn btn-default" id="btn_create_report" style="margin:auto;">建立報表</button>
+                        <button class="btn btn-default" id="btn_export_excel" style="margin:auto;">導出報表</button>
+                        <a href="" id="excel_export_download"></a>
                     </div>
                 </div>
             </div>

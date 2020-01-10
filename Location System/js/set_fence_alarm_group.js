@@ -1,13 +1,8 @@
-var token = "";
-var fenceArray = [];
-
 /**
  * FAG = FenceAlarmGroup 圍籬警戒群組
  */
 
-$(function () {
-    token = getToken();
-
+function importFenceAlarmGroup() {
     var dialog, form;
     var sendFAG_Set = function () {
         $("#add_FAG_id").removeClass("ui-state-error");
@@ -169,7 +164,7 @@ $(function () {
 
     getFenceAlarmGroup();
     getFences();
-});
+}
 
 function updateFenceAG_List(array) {
     $("#table_fence_alarm_group tbody").empty();

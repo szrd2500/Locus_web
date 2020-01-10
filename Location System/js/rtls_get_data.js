@@ -131,6 +131,7 @@ function changeMapToCookie(index, map_id) {
 }
 
 function loadMapToCanvas() {
+    Stop();
     let cookie = Cookies.get("recent_map"), //載入MapCookies
         recentMaps = typeof (cookie) === 'undefined' ? [] : JSON.parse(cookie);
     if (typeof (recentMaps) !== 'object') {
@@ -680,7 +681,7 @@ function search() {
                                 "<td>" + member_data.job_title + "</td>" +
                                 "<td>" + member_data.type + "</td>" +
                                 //"<td>" + member_data.alarm_group_id + "</td>" +
-                                "<td><button class=\"btn btn-default\"" +
+                                "<td><button class=\"btn btn-default btn-focus\"" +
                                 " onclick=\"locateTag(\'" + v.id + "\')\">" +
                                 "<img class=\"icon-image\" src=\"../image/target.png\">" +
                                 "</button></td></tr>";
@@ -691,13 +692,13 @@ function search() {
         }
     } else {
         let memberArray = [];
-        for (let each in MemberList) {
+        for (let each in MemberList) { //each : 'user_id'
             if (key == "user_id") {
                 if (each == value)
-                    memberArray.push(element);
-            } else if (MemberList[key]) {
-                if (MemberList[key] == value)
-                    memberArray.push(element);
+                    memberArray.push(MemberList[each]);
+            } else if (MemberList[each][key]) {
+                if (MemberList[each][key] == value)
+                    memberArray.push(MemberList[each]);
             }
         }
         memberArray.forEach(element => {
@@ -709,7 +710,7 @@ function search() {
                 "<td>" + element.job_title + "</td>" +
                 "<td>" + element.type + "</td>" +
                 //"<td>" + memberArray[i].alarm_group_id + "</td>" +
-                "<td><button class=\"btn btn-default\"" +
+                "<td><button class=\"btn btn-default btn-focus\"" +
                 " onclick=\"locateTag(\'" + element.tag_id + "\')\">" +
                 "<img class=\"icon-image\" src=\"../image/target.png\">" +
                 "</button></td></tr>";

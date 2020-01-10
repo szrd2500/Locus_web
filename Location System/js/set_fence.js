@@ -1,40 +1,33 @@
-var token = "";
-var PIXEL_RATIO; // 獲取瀏覽器像素比
-var cvsBlock, canvas, ctx;
-var canvasImg = {
-    isPutImg: false,
-    width: 0,
-    height: 0,
-    scale: 1
-}; //預設比例尺為1:1
-var lastX = 0; //滑鼠最後位置的X座標
-var lastY = 0; //滑鼠最後位置的Y座標
-var mouseDown = false;
-// View parameters
-var xleftView = 0;
-var ytopView = 0;
-var Zoom = 1.0; //actual width and height of zoomed and panned display
-var fitZoom = 1;
-var isFitWindow = true;
-var isPosition = false;
-var serverImg = new Image();
-var map_id = "";
-var mapArray = [];
-//var anchorArray = [];
-var anchorGroupArray = [];
-var groupArray = [];
-var fenceArray = [];
-var fenceDotArray = [];
-var addFenceDotArray = [];
-var addFenceContainGroup = [];
-
-var pageTimer = {}; //定義計時器全域變數
-
-window.addEventListener("load", setupCanvas, false);
+let PIXEL_RATIO, // 獲取瀏覽器像素比
+    cvsBlock, canvas, ctx,
+    canvasImg = {
+        isPutImg: false,
+        width: 0,
+        height: 0,
+        scale: 1
+    }, //預設比例尺為1:1
+    lastX = 0, //滑鼠最後位置的X座標
+    lastY = 0, //滑鼠最後位置的Y座標
+    mouseDown = false,
+    // View parameters
+    xleftView = 0,
+    ytopView = 0,
+    Zoom = 1.0, //actual width and height of zoomed and panned display
+    fitZoom = 1,
+    isFitWindow = true,
+    isPosition = false,
+    serverImg = new Image();
+var map_id = "",
+    mapArray = [],
+    anchorGroupArray = [],
+    groupArray = [],
+    fenceArray = [],
+    fenceDotArray = [],
+    addFenceDotArray = [],
+    addFenceContainGroup = [],
+    pageTimer = {}; //定義計時器全域變數
 
 function setupCanvas() {
-    token = getToken();
-
     cvsBlock = document.getElementById("mapBlock");
     canvas = document.getElementById("canvas_map");
     ctx = canvas.getContext("2d");
@@ -50,19 +43,20 @@ function setupCanvas() {
     canvas.addEventListener("mousemove", handleMouseMove, false);
     canvas.addEventListener("mousewheel", handleMouseWheel, false);
     cvsBlock.addEventListener("mousewheel", handleMouseWheel, false); // mousewheel duplicates dblclick function
-    cvsBlock.addEventListener("DOMMouseScroll", handleMouseWheel, false); // for Firefox
+    cvsBlock.addEventListener("DOMMouseScroll", handleMouseWheel, false); // for Firefox  
 
     $(function () {
-        resetBlockDisplay();
-        $("#block_fence_info").show();
         $("#menu_fence_info").on('click', function () {
             resetBlockDisplay();
+            $("#label_fence_info").addClass("opened");
             $("#block_fence_info").show();
         });
         $("#menu_fence_alarm_group").on('click', function () {
             resetBlockDisplay();
+            $("#label_fence_alarm_group").addClass("opened");
             $("#block_fence_alarm_group").show();
         });
+        $("#menu_fence_info").click();
         $("#menu_resize").on('click', resizeCanvas);
         $("#select_map").on('change', function () {
             setMapById($(this).val());
@@ -75,6 +69,7 @@ function setupCanvas() {
 function resetBlockDisplay() {
     $("#block_fence_info").hide();
     $("#block_fence_alarm_group").hide();
+    $(".btn-sidebar").removeClass("opened");
 }
 
 function loadMaps() {
@@ -100,8 +95,7 @@ function loadMaps() {
                         scale: v.map_scale
                     });
                     $("#select_map").append("<li><input type=\"button\" id=\"map_btn_" + v.map_id + "\" " +
-                        "value=\"" + v.map_name + "\"" +
-                        "onclick=\"setMapById(\'" + v.map_id + "\')\"></li>");
+                        "value=\"" + v.map_name + "\" onclick=\"setMapById(\'" + v.map_id + "\')\"></li>");
                 });
             }
         }
@@ -451,7 +445,7 @@ function drawFences() {
             if (dot_info.fence_id == fence_info.fence_id) {
                 fence.setFenceDot(
                     fence_info.fence_name,
-                    parseFloat(dot_info.point_x) ,
+                    parseFloat(dot_info.point_x),
                     canvasImg.height - parseFloat(dot_info.point_y)
                 );
                 count++;
