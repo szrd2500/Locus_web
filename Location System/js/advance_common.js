@@ -1,16 +1,16 @@
-'use strict';
+var isStart = false;
 
 function searchNetworkCards() {
-    let xmlHttp = createJsonXmlHttp("Command");
+    var xmlHttp = createJsonXmlHttp("Command");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            let revObj = JSON.parse(this.responseText),
+            var revObj = JSON.parse(this.responseText),
                 cookie = typeof (Cookies.get("local_ip")) == 'undefined' ? "" : Cookies.get("local_ip");
-            if (checkTokenAlive(token, revObj)) {
-                let revInfo = revObj.Value[0];
+            if (checkTokenAlive(revObj)) {
+                var revInfo = revObj.Value[0];
                 document.getElementById("local_ip").value = revInfo[0].ip;
-                let html = "";
-                for (let i = 0; i < revInfo.length; i++) {
+                var html = "";
+                for (var i = 0; i < revInfo.length; i++) {
                     if (revInfo[i].ip == cookie) {
                         html += "<option value=\"" + revInfo[i].ip + "\" selected>" +
                             revInfo[i].net_interface_id + "</option>";
@@ -38,25 +38,25 @@ function searchNetworkCards() {
 }
 
 function searchDevices() {
-    let xmlHttp = createJsonXmlHttp("Command");
+    var xmlHttp = createJsonXmlHttp("Command");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             if (!this.responseText) {
                 alert("Search devices failed!");
                 return;
             }
-            let revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj)) {
-                let revInfo = revObj.Value ? revObj.Value[0] : [];
+            var revObj = JSON.parse(this.responseText);
+            if (checkTokenAlive(revObj)) {
+                var revInfo = revObj.Value ? revObj.Value[0] : [];
                 $("#sel_device_ip").empty();
                 ipPortList = {};
                 if (revInfo && revInfo.length > 0) {
                     revInfo.sort(function (a, b) {
-                        let a_str = a.IP_address.substring(a.IP_address.lastIndexOf(".") + 1),
+                        var a_str = a.IP_address.substring(a.IP_address.lastIndexOf(".") + 1),
                             b_str = b.IP_address.substring(b.IP_address.lastIndexOf(".") + 1);
                         return a_str - b_str;
                     });
-                    revInfo.forEach(element => {
+                    revInfo.forEach(function (element) {
                         ipPortList[element.IP_address] = element.TCP_Serve_Port;
                         $("#sel_device_ip").append("<option value=\"" + element.IP_address + "\">" +
                             element.IP_address + "</option>")
@@ -77,29 +77,59 @@ function searchDevices() {
 }
 
 function StartClick() {
-    let delaytime = 100,
-        requestArray = {
-            "Command_Type": ["Write"],
-            "Command_Name": ["Launch"],
-            "api_token": [token]
-        };
     if (!isStart) {
         isStart = true;
-        requestArray.Value = "Start";
+        sendLaunchCmd("Start");
         document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\">" +
-            "</i><span>" + $.i18n.prop('i_stop') + "</span>";
+            "</i><span>" + $.i18n.prop('i_stopPositioning') + "</span>";
     } else {
         isStart = false;
-        requestArray.Value = "Stop";
+        sendLaunchCmd("Stop");
         document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-play\">" +
-            "</i><span>" + $.i18n.prop('i_start') + "</span>";
+            "</i><span>" + $.i18n.prop('i_startPositioning') + "</span>";
     }
-    let xmlHttp = createJsonXmlHttp("test2");
+
+}
+
+function sendLaunchCmd(switch_type) {
+    var requestArray = {
+        "Command_Type": ["Write"],
+        "Command_Name": ["Launch"],
+        "Value": switch_type,
+        "api_token": [token]
+    };
+    var xmlHttp = createJsonXmlHttp("test2");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            let revObj = JSON.parse(this.responseText),
-                pass = checkTokenAlive(token, revObj);
+            if (checkTokenAlive(JSON.parse(this.responseText)))
+                return true;
+            else
+                return false;
         }
     };
     xmlHttp.send(JSON.stringify(requestArray));
+}
+
+function restartLaunch() {
+    isStart = false;
+    var requestArray = {
+        "Command_Type": ["Write"],
+        "Command_Name": ["Launch"],
+        "Value": "Stop",
+        "api_token": [token]
+    };
+    var xmlHttp = createJsonXmlHttp("test2");
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+            if (checkTokenAlive(JSON.parse(this.responseText))) {
+                isStart = true;
+                sendLaunchCmd("Start");
+                document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\">" +
+                    "</i><span>" + $.i18n.prop('i_stopPositioning') + "</span>";
+            }
+        }
+    };
+    xmlHttp.send(JSON.stringify(requestArray));
+    document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-play\">" +
+        "</i><span>" + $.i18n.prop('i_startPositioning') + "</span>";
 }

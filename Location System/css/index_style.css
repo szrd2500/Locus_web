@@ -1,13 +1,8 @@
-.row {
-    margin-left: 30px;
-}
-
 th,
 td {
     padding: 4px;
     text-align: left;
-    border: 1px solid rgb(47, 95, 201);
-    /*#808080;*/
+    border: 1px solid #808080;
 }
 
 /* 自訂thead(表格的開頭)文字大小 */
@@ -40,32 +35,28 @@ fieldset {
     margin-top: 25px;
 }
 
-.tool-bar {
-    float: right;
-}
-
-/* 修改滾動條樣式 */
-/* this targets the default scrollbar (compulsory) */
+/* 修改滾動條樣式 this targets the default scrollbar (compulsory) */
+/*  
 ::-webkit-scrollbar {
     width: 12px !important;
     height: 12px !important;
-}
+}*/
 
 /*the new scrollbar will have a flat appearance with the set background color*/
-::-webkit-scrollbar-track {
+/*::-webkit-scrollbar-track {
     background-color: transparent;
-}
+}*/
 
 /* this will style the thumb, ignoring the track */
-::-webkit-scrollbar-thumb {
+/*::-webkit-scrollbar-thumb {
     background-color: lightgray;
     border: 1px solid rgb(128, 128, 128);
-}
+}*/
 
 /* if both the vertical and the horizontal bars appear, then perhaps the right bottom corner also needs to be styled */
-::-webkit-scrollbar-corner {
+/*::-webkit-scrollbar-corner {
     background-color: gray;
-}
+}*/
 
 /***************/
 
@@ -73,7 +64,8 @@ fieldset {
  * Alarm Dialog裡的Status文字設定
  */
 #alarm_dialog_status {
-    color: red;
+    color: rgb(255, 255, 255);
+    text-shadow: 0px 0px 1px #000000;
 }
 
 #content {
@@ -81,7 +73,12 @@ fieldset {
     -o-transition: all 0.5s ease;
     -webkit-transition: all 0.5s ease;
     transition: all 0.5s ease;
-    padding: 0px 0px 0px 0px;
+    background: transparent;
+    margin: 12px 0px;
+    float: left;
+    position: relative;
+    width: 100%;
+    height: auto;
 }
 
 #content.right_open {
@@ -94,8 +91,7 @@ fieldset {
 
 .member_photo {
     float: left;
-    max-width: 130px;
-    margin-right: 10px;
+    max-width: 120px;
 }
 
 canvas:hover {
@@ -235,20 +231,37 @@ input[type="file"] {
     border: 0;
 }
 
+.btn-mode {
+    padding: 5px;
+    width: 100%;
+    border: 2px solid transparent;
+}
+
+.btn-mode:hover {
+    border: 2px solid rgb(33, 170, 233);
+}
+
+.btn-mode.selected {
+
+    background: rgb(166, 208, 228);
+}
+
 .btn-set {
     cursor: pointer;
     background: transparent !important;
-    color: rgb(0, 119, 255) !important;
+    color: rgb(0, 0, 0) !important;
     padding: 0px !important;
 }
 
 .btn-set:hover {
     background: transparent !important;
-    color: rgb(90, 158, 236) !important;
+    color: rgb(56, 56, 56) !important;
 }
 
 .btn-set i {
     font-size: 18px !important;
+    -webkit-filter: drop-shadow(0px 0px 2px rgb(255, 255, 255));
+    filter: drop-shadow(0px 0px 2px rgb(255, 255, 255))
 }
 
 .btn-icon {
@@ -330,7 +343,6 @@ input[type="file"] {
 }
 
 /* Model */
-
 .modal-body {
     background: #36a4ff63;
     border-radius: 5px;
@@ -356,4 +368,22 @@ input[type="file"] {
 .noborder-block th,
 .noborder-block td {
     border: none;
+}
+
+.canvas-modes {
+    margin-top: 5px;
+    border: 1px solid lightgray;
+}
+
+.canvas-modes img {
+    float: right;
+    height: 100px;
+}
+
+.canvas-modes i {
+    margin: auto;
+}
+
+.dialog {
+    font-family: 'Microsoft JhengHei', 'sans-serif';
 }

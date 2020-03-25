@@ -1,13 +1,12 @@
-var token = "";
 var CommandName_account = "";
 var userArray = [];
 
 $(function () {
-    token = getToken();
-    if (!getPermissionOfPage("Account_Management")) {
-        alert("Permission denied!");
-        history.back();
-    }
+    var h = document.documentElement.clientHeight;
+    $(".container").css("height", h - 10 + "px");
+
+    loadUserData();
+    checkPermissionOfPage("Account_Management");
     setNavBar("", "");
     inputUsersTable();
     inputPermissionTable();
@@ -22,12 +21,12 @@ $(function () {
 
     resetPermissionTable();
     
-    let dialog, form,
+    var dialog, form,
         permission_name = $("#permission_name"),
         allFields = $([]).add(permission_name);
-    let SendResult = function () {
+    var SendResult = function () {
         allFields.removeClass("ui-state-error");
-        let valid = true && checkLength(permission_name, $.i18n.prop('i_alertError_10'), 1, 20);
+        var valid = true && checkLength(permission_name, $.i18n.prop('i_alertError_10'), 1, 20);
         if (valid) {
             dialog.dialog("close");
         }
@@ -57,19 +56,19 @@ $(function () {
     });*/
 
     //Dialog to edit the account.
-    let dialog2, form2,
+    var dialog2, form2,
         account = $("#edit_account"),
         allFields = $([]).add(account);
-    let SendResult2 = function () {
+    var SendResult2 = function () {
         allFields.removeClass("ui-state-error");
-        let valid = true && checkLength(account, $.i18n.prop('i_alertError_10'), 1, 20);
+        var valid = true && checkLength(account, $.i18n.prop('i_alertError_10'), 1, 20);
         if (valid) {
-            let is_active = "1";
-            document.getElementsByName("edit_is_active").forEach(element => {
+            var is_active = "1";
+            document.getElementsByName("edit_is_active").forEach(function (element) {
                 if (element.checked)
                     is_active = element.value;
             });
-            let request2 = {
+            var request2 = {
                 "Command_Type": ["Write"],
                 "Command_Name": [CommandName_account],
                 "Value": [{
@@ -82,11 +81,11 @@ $(function () {
                 }],
                 "api_token": [token]
             };
-            let xmlHttp2 = createJsonXmlHttp("sql");
+            var xmlHttp2 = createJsonXmlHttp("sql");
             xmlHttp2.onreadystatechange = function () {
                 if (xmlHttp2.readyState == 4 || xmlHttp2.readyState == "complete") {
-                    let revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                    var revObj = JSON.parse(this.responseText);
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                         dialog2.dialog("close");
                         inputUsersTable();
                     }
@@ -124,39 +123,65 @@ $(function () {
 });
 
 function inputPermissionTable() {
-    let page_permission = getPermission()
     $("#table_permission tbody").empty();
-    page_permission.forEach(element => {
-        let level = element.permission;
-        if (level == "2")
-            level = 'i_high';
-        else if (level == "1")
-            level = 'i_mid';
+    /* page_permission */
+    [{
+        page_name: 'homePage',
+        permission: MinimumPermission["index"]
+    }, {
+        page_name: 'member_settingPage',
+        permission: MinimumPermission["Member_Setting"]
+    }, {
+        page_name: 'timelinePage',
+        permission: MinimumPermission["Timeline"]
+    }, {
+        page_name: 'map_settingPage',
+        permission: MinimumPermission["Map_Setting"]
+    }, {
+        page_name: 'anchor_settingPage',
+        permission: MinimumPermission["Anchor_Setting"]
+    }, {
+        page_name: 'alarm_settingPage',
+        permission: MinimumPermission["Alarm_Setting"]
+    }, {
+        page_name: 'report',
+        permission: MinimumPermission["Report"]
+    }, {
+        page_name: 'advance_settingPage',
+        permission: MinimumPermission["Reference"]
+    }, {
+        page_name: 'account_managementPage',
+        permission: MinimumPermission["Account_Management"]
+    }].forEach(function (element) {
+        if (element.permission == "2")
+            element.permission = 'i_high';
+        else if (element.permission == "1")
+            element.permission = 'i_mid';
         else
-            level = 'i_low';
+            element.permission = 'i_low';
         $("#table_permission tbody").append("<tr>" +
-            "<td class=\"i18n\" name=\"" + element.page_name + "\"></td>" +
-            "<td class=\"i18n\" name=\"" + level + "\"></td>" +
+            "<td class=\"i18n\" name=\"" + element.page_name + "\">" + $.i18n.prop(element.page_name) + "</td>" +
+            "<td class=\"i18n\" name=\"" + element.permission + "\">" + $.i18n.prop(element.permission) + "</td>" +
             "<tr>");
     });
 }
 
 function inputUsersTable() {
-    let request = {
+    var request = {
         "Command_Name": ["getuser"],
         "api_token": [token]
     };
-    let xmlHttp = createJsonXmlHttp("user");
+    var xmlHttp = createJsonXmlHttp("user");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            let revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].accountNum > 0) {
-                let revInfo = revObj.Value[0].Values || [];
+            var revObj = JSON.parse(this.responseText);
+            if (checkTokenAlive(revObj) && revObj.Value[0].accountNum > 0) {
+                var revInfo = revObj.Value[0].Values || [];
                 $("#table_account tbody").empty();
                 userArray = [];
                 for (i = 0; i < revInfo.length; i++) {
                     userArray.push(revInfo[i]);
-                    let level = revInfo[i].userType;
+                    var level = revInfo[i].userType;
                     if (level == "2")
                         level = $.i18n.prop('i_high');
                     else if (level == "1")
@@ -179,15 +204,15 @@ function inputUsersTable() {
 }
 
 /*function showDialog_permission() {
-    let permission = this.cells[0].childNodes[0].textContent;
+    var permission = this.cells[0].childNodes[0].textContent;
     document.getElementById("permission_name").value = permission;
     $("#dialog_permission_setting").dialog("open");
 }*/
 
 function editAccountInfo() {
     CommandName_account = "EditAccount_Info";
-    let id = this.cells[0].childNodes[0].value;
-    let index = userArray.findIndex(function (user) {
+    var id = this.cells[0].childNodes[0].value;
+    var index = userArray.findIndex(function (user) {
         return user.id == id;
     });
     $("#edit_id").val(userArray[index].id);
@@ -214,8 +239,8 @@ function newAccountInfo() {
 }
 
 function deleteAccountInfo() {
-    let delete_arr = [];
-    document.getElementsByName("chk_id").forEach(element => {
+    var delete_arr = [];
+    document.getElementsByName("chk_id").forEach(function (element) {
         if (element.checked) {
             delete_arr.push({
                 "id": element.value
@@ -224,17 +249,17 @@ function deleteAccountInfo() {
     });
     if (delete_arr.length > 0) {
         if (confirm($.i18n.prop('i_permissionAlert_1'))) {
-            let request = {
+            var request = {
                 "Command_Type": ["Write"],
                 "Command_Name": ["DeleteAccount_by_id"],
                 "Value": delete_arr,
                 "api_token": [token]
             };
-            let xmlHttp = createJsonXmlHttp("sql");
+            var xmlHttp = createJsonXmlHttp("sql");
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-                    let revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                    var revObj = JSON.parse(this.responseText);
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                         inputUsersTable();
                     }
                 }
@@ -248,14 +273,14 @@ function deleteAccountInfo() {
 
 
 /*function changeCheck() {
-    let radio = document.getElementsByName(this.value);
+    var radio = document.getElementsByName(this.value);
     if (this.checked) {
-        radio.forEach(element => {
+        radio.forEach(function(element) {
             element.disabled = false;
         });
         radio[0].checked = true;
     } else {
-        radio.forEach(element => {
+        radio.forEach(function(element) {
             element.disabled = true;
             element.checked = false;
         });
@@ -263,11 +288,11 @@ function deleteAccountInfo() {
 }
 
 function resetPermissionTable() {
-    let checkBoxs = document.getElementsByName("chkbox_permission");
-    for (let i = 0; i < checkBoxs.length; i++) {
-        let radio = document.getElementsByName(checkBoxs[i].value);
+    var checkBoxs = document.getElementsByName("chkbox_permission");
+    for (var i = 0; i < checkBoxs.length; i++) {
+        var radio = document.getElementsByName(checkBoxs[i].value);
         checkBoxs[i].checked = false;
-        radio.forEach(element => {
+        radio.forEach(function(element) {
             element.disabled = true;
             element.checked = false;
         });

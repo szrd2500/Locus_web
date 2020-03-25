@@ -1,66 +1,63 @@
-const IP_MODE = ["DHCP", "Static"]
-const RF_CHANNEL = ["CH1(3.5GHz)", "CH2(4.0GHz)", "CH3(4.5GHz)", "CH4(4.5GHz WBW)", "CH5(6.5GHz)", "CH7(6.5GHz WBW)"];
-const RF_DATARATE = ["110Kbps", "850Kbps", "6.8Mbps"];
-const RF_PRF = ["16M", "64M"];
-const RF_PREAMBLE_CODE = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "17", "18", "19", "20"];
-const RF_PREAMBLE_LEN = ["64", "128", "256", "512", "1024", "1536", "2048", "4096"];
-const RF_PAC = ["8", "16", "32", "64"];
-const RF_TX_PG_DELAY = ["CH1", "CH2", "CH3", "CH4", "CH5", "CH7"];
-const RF_NSD = ["0", "1"];
-const RF_SDF_TIMEOUTR = ["1089"];
-const RF_SMARTPOWER = ["0", "1"];
-const RF_NTM = [
-    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "17", "18", "19", "20", "21", "22", "23", "24",
-    "25", "26", "27", "28", "29", "30", "31"
-];
-const RF_MULT = ["0", "1", "2", "3", "4", "5", "6", "7"];
-const RED_LIGHT = "<img src=\"../image/redLight.png\"/>";
-const GREEN_LIGHT = "<img src=\"../image/greenLight.png\"/>";
+var IP_MODE = ["DHCP", "Static"],
+    RF_CHANNEL = ["CH1(3.5GHz)", "CH2(4.0GHz)", "CH3(4.5GHz)", "CH4(4.5GHz WBW)", "CH5(6.5GHz)", "CH7(6.5GHz WBW)"],
+    RF_DATARATE = ["110Kbps", "850Kbps", "6.8Mbps"],
+    RF_PRF = ["16M", "64M"],
+    RF_PREAMBLE_CODE = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "17", "18", "19", "20"],
+    RF_PREAMBLE_LEN = ["64", "128", "256", "512", "1024", "1536", "2048", "4096"],
+    RF_PAC = ["8", "16", "32", "64"],
+    RF_TX_PG_DELAY = ["CH1", "CH2", "CH3", "CH4", "CH5", "CH7"],
+    RF_NSD = ["0", "1"],
+    RF_SDF_TIMEOUTR = ["1089"],
+    RF_SMARTPOWER = ["0", "1"],
+    RF_NTM = [
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "17", "18", "19", "20", "21", "22", "23", "24",
+        "25", "26", "27", "28", "29", "30", "31"
+    ],
+    RF_MULT = ["0", "1", "2", "3", "4", "5", "6", "7"],
+    RED_LIGHT = "<img src=\"../image/redLight.png\"/>",
+    GREEN_LIGHT = "<img src=\"../image/greenLight.png\"/>";
 var displayRowArray = {
-    "check_all_net_basic": true,
-    "check_all_net_advance": true,
-    "check_all_rf_basic": true,
-    "check_all_rf_advance": true,
-    "row_ip_addr": true,
-    "row_gateway_addr": true,
-    "row_mask_addr": true,
-    "row_client_ip_addr": true,
-    "row_machine_number": true,
-    "row_model": true,
-    "row_tcp_server_port": true,
-    "row_udp_server_port": true,
-    "row_tcp_client_src_port": true,
-    "row_tcp_client_des_port": true,
-    "row_rf_mode": true,
-    "row_rf_version": true,
-    "row_rf_channel": true,
-    "row_rf_datarate": true,
-    "row_rf_preamble_code": true,
-    "row_rf_preamble_len": true,
-    "row_rf_pac": true,
-    "row_rf_sdf_timeoutr": true,
-    "row_rf_prf": true,
-    "row_rf_pg_delay": true,
-    "row_rf_power": true,
-    "row_rf_nsd": true,
-    "row_rf_smartpower": true,
-    "row_rf_ntm": true,
-    "row_rf_mult": true
-};
-var token = "";
+        "check_all_net_basic": true,
+        "check_all_net_advance": true,
+        "check_all_rf_basic": true,
+        "check_all_rf_advance": true,
+        "row_ip_addr": true,
+        "row_gateway_addr": true,
+        "row_mask_addr": true,
+        "row_client_ip_addr": true,
+        "row_machine_number": true,
+        "row_model": true,
+        "row_tcp_server_port": true,
+        "row_udp_server_port": true,
+        "row_tcp_client_src_port": true,
+        "row_tcp_client_des_port": true,
+        "row_rf_mode": true,
+        "row_rf_version": true,
+        "row_rf_channel": true,
+        "row_rf_datarate": true,
+        "row_rf_preamble_code": true,
+        "row_rf_preamble_len": true,
+        "row_rf_pac": true,
+        "row_rf_sdf_timeoutr": true,
+        "row_rf_prf": true,
+        "row_rf_pg_delay": true,
+        "row_rf_power": true,
+        "row_rf_nsd": true,
+        "row_rf_smartpower": true,
+        "row_rf_ntm": true,
+        "row_rf_mult": true
+    };
 
-$(function () { //Load==>
-    token = getToken();
-    /**
-     * Check this page's permission and load navbar
-     */
-    if (!getPermissionOfPage("Anchor_Setting")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+$(function () { //Load
+    var h = document.documentElement.clientHeight;
+    //$(".container").css("height", h - 10 + "px");
+    $(".middle").css("height", h - 125 + "px");
+
+    
+    /* Check this page's permission and load navbar */
+    loadUserData();
+    checkPermissionOfPage("Anchor_Setting");
     setNavBar("Anchor_Setting", "");
-
-    $(".middle").css("height", screen.availHeight * 0.75 + "px");
 
     var dialog, form;
     dialog = $("#dialog_set_table_display").dialog({
@@ -114,17 +111,6 @@ $(function () { //Load==>
         $("#check_all_rf_basic").prop("checked", displayRowArray["check_all_rf_basic"]);
         $("#check_all_rf_advance").prop("checked", displayRowArray["check_all_rf_advance"]);
         dialog.dialog("open");
-    });
-
-    $("#select_connect_mode").change(function () {
-        var opt = $(this).children('option:selected').val();
-        if (opt == "ethernet") {
-            $(".mode_ethernet").show();
-            $(".mode_comport").hide();
-        } else {
-            $(".mode_ethernet").hide();
-            $(".mode_comport").show();
-        }
     });
 
     $("#check_all_net_basic").change(function () {
@@ -189,7 +175,7 @@ function Limit_input_number(e) {
         (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
         // Allow: home, end, left, right, down, up
         (e.keyCode >= 35 && e.keyCode <= 40)) {
-        // let it happen, don't do anything
+        // var it happen, don't do anything
         return;
     }
     // Ensure that it is a number and stop the keypress
@@ -293,7 +279,7 @@ function setListenerOfSetAllRow() {
     $("#all_check").parent().on('click', function () {
         var state = $("#all_check").prop("checked");
         $("#all_check").prop("checked", !state);
-        check.forEach(element => {
+        check.forEach(function (element) {
             element.checked = !state;
         });
         checked_trans();
@@ -397,7 +383,7 @@ function setListenerOfSetAllRow() {
         "rf_channel", "rf_datarate", "rf_prf", "rf_preamble_code", "rf_preamble_len", "rf_pac",
         "rf_pg_delay", "rf_power", "rf_nsd", "rf_sdf_timeoutr", "rf_smartpower", "rf_ntm", "rf_mult"
     ];
-    network_name_array.forEach(column => {
+    network_name_array.forEach(function (column) {
         $("#all_" + column).on("change", function () {
             check.forEach(function (element, i) {
                 if (element.checked && status[i].value == "1")
@@ -405,7 +391,7 @@ function setListenerOfSetAllRow() {
             });
         });
     });
-    rf_name_array.forEach(column => {
+    rf_name_array.forEach(function (column) {
         $("#all_" + column).on("change", function () {
             check.forEach(function (element, i) {
                 if (element.checked && status[i].value == "1")
@@ -418,7 +404,7 @@ function setListenerOfSetAllRow() {
 function ipAddrTo_ip(ip_addr) {
     var ip = "";
     if (ip_addr) {
-        ip_addr.split(".").forEach(block => {
+        ip_addr.split(".").forEach(function (block) {
             ip += "_" + block;
         });
     }

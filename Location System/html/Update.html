@@ -8,23 +8,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
     <!--BootStrap3-->
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.3.7.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/import/bootstrap-3.3.7.min.js"></script>
     <!--JQuery庫-->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
     <!-- Add icon library -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
     <!-- Icon Navbar-->
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
     <!--編寫css-->
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
     <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
-    <link rel="stylesheet" type="text/css" href="../css/advance_setting.css" />
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/advance_setting_style.css" />
+    <script type="text/javascript" src="../js/import/js.cookie.min.js"></script>
     <script type="text/javascript" src="../js/general_functions.js"></script>
     <script type="text/javascript" src="../js/check_permission.js"></script>
     <script type="text/javascript" src="../js/advance_common.js"></script>
@@ -38,22 +37,23 @@
 
         <!-- Web Content -->
         <div class="row">
-            <div class="col-lg-12">
-                <div style="float:right;">
-                    <img class="logo" src="../image/logo/icon.png">
-                    <label class="i18n" name="i_language"></label>
-                    <select id="language" class="select-lang">
-                        <option value="en">English</option>
-                        <option value="zh-TW">繁體中文</option>
-                        <option value="zh-CN">简体中文</option>
-                    </select>
-                    <label id="login_user"></label>
-                </div>
+            <div class="col-lg-12 top_nav">
+                <img class="logo" src="../image/logo/icon.png">
+                <label id="login_user"></label>
+            </div>
+            <div class="tool-bar">
+                <label class="i18n" name="i_language"></label>
+                <select id="language" class="select-lang">
+                    <option value="en">English</option>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="zh-CN">简体中文</option>
+                </select>
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-12">
+                <h3 class="title-shadow">韌體更新</h3>
                 <div class="center">
                     <h4>Update File : </h4>
                     <input type="text" id="update_file" style="width: 100%;" readonly><br><br>
@@ -72,39 +72,25 @@
                             </div>
                         </div>
                     </div>
-                    <br>
+                    
                     <div style="text-align: center;">
                         <button class="btn btn-primary" id="btn_reset">Reset</button>
-
-                        <button class="btn btn-primary" id="btn_upload" style="margin-left: 10px;">Upload
-                            Firmware</button>
-
-                        <!--<label for="btn_reset" class="btn-reset" title="Reset Progress">
-                            <i class="fas fa-undo-alt"></i></label>
-                        <input id="btn_reset" type="button" class="btn-hidden" />
-
-                        <label for="btn_upload" class="btn-upload" title="Upload Firmware">
-                            <i class="fas fa-upload"></i></label>
-                        <input id="btn_upload" type="button" class="btn-hidden" />-->
+                        <button class="btn btn-primary" id="btn_upload" style="margin-left: 10px;">
+                            Upload Firmware</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="row">
-            <br>
             <div class="col-lg-12">
                 <div class="network-bar">
                     <label>Network interface card :&nbsp;</label><select id="interface_card"></select> ,&nbsp;
                     <label>Local IP :&nbsp;</label><input type="text" id="local_ip" value="" readonly>
-
                     <label for="search_devices" class="btn-label label-search" title="Search Devices">
                         <i class="fas fa-search"></i></label>
                     <input id="search_devices" type="button" onclick="searchDevices()" class="btn-hidden" />
-
-                    <label style="margin: 0px 5px 0px 20px;">Device IP :&nbsp;<select
-                            id="sel_device_ip"></select></label>
-
+                    <label style="margin-left: 5px;">Device IP :&nbsp;<select id="sel_device_ip"></select></label>
                     <label for="btn_update" class="btn-label label-update" title="Update Firmware">
                         <i class="fas fa-upload"></i></label>
                     <input id="btn_update" type="button" class="btn-hidden" />
@@ -124,22 +110,11 @@
                     </span>
                 </div>
                 <div id="block_files_list"></div>
+                <br>
             </div>
-            <!--<div class="col-lg-3">
-                <label>Network interface card :&nbsp;</label><select id="interface_card"></select>
-                <br><br>
-                <label>Local IP :&nbsp;</label><input type="text" id="local_ip" value="" readonly>
-                <br><br>
-                <button class="btn btn-primary" id="search_devices" style="float: right;"
-                    onclick="searchDevices()">Search Devices</button>
-                <br><br>
-                <label>Device IP :&nbsp;<select id="sel_device_ip"></select></label>
-                <br><br>
-                <button id="btn_update" class="btn btn-primary">Update Firmware</button>
-            </div>-->
         </div>
     </div>
-    <!-- i18n -->
+    <!-- i18n 多語言翻譯 -->
     <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
     <script type="text/javascript" src="../js/i18n/language.js"></script>
 </body>

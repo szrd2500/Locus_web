@@ -7,16 +7,15 @@
     <meta id="i18n_pagename" content="common">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
-    <!-- BootStrap3 -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <!-- JQuery -->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!-- Add icon library -->
-    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css'
-        integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
+    <!--Jquery-->
+    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
+    <!--BootStrap3-->
+    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.4.0.css" />
+    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/import/bootstrap-3.4.0.min.js"></script>
+    <!--Add icon library-->
+    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
     <!-- Icon Navbar -->
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
@@ -29,15 +28,13 @@
     <script type="text/javascript" src="../js/tree_table/tree.js"></script>
     <script type="text/javascript" src="../js/general_functions.js"></script>
     <script type="text/javascript" src="../js/check_permission.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../js/map_group_list.js"></script>
+    <script type="text/javascript" src="../js/map_set_anchor.js"></script>
+    <script type="text/javascript" src="../js/map_set_group.js"></script>
+    <script type="text/javascript" src="../js/map_set_group_anchor.js"></script>
+    <script type="text/javascript" src="../js/map_draw.js"></script>
     <script type="text/javascript" src="../js/map_setting_load.js"></script>
-    <script type="text/javascript" src="../js/group_setting.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script type="text/javascript" src="../js/Dialog/dialog_map_draw.js"></script>
-    <script type="text/javascript" src="../js/Dialog/dialog_map_setting.js"></script>
-    <script type="text/javascript" src="../js/Dialog/dialog_map_add.js"></script>
-    <script type="text/javascript" src="../js/Dialog/dialog_anchor_list.js"></script>
-    <script type="text/javascript" src="../js/Dialog/dialog_anchor_group.js"></script>
-    <script type="text/javascript" src="../js/Dialog/dialog_group_list.js"></script>
 </head>
 
 <body>
@@ -47,23 +44,23 @@
 
         <!-- Web Content -->
         <div class="row">
-            <div class="col-lg-12">
-                <div style="float:right;">
-                    <img class="logo" src="../image/logo/icon.png">
-                    <label class="i18n" name="i_language"></label>
-                    <select id="language" class="select-lang">
-                        <option value="en">English</option>
-                        <option value="zh-TW">繁體中文</option>
-                        <option value="zh-CN">简体中文</option>
-                    </select>
-                    <label id="login_user"></label>
-                </div>
+            <div class="col-lg-12 top_nav">
+                <img class="logo" src="../image/logo/icon.png">
+                <label id="login_user"></label>
+            </div>
+            <div class="tool-bar">
+                <label class="i18n" name="i_language"></label>
+                <select id="language" class="select-lang">
+                    <option value="en">English</option>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="zh-CN">简体中文</option>
+                </select>
             </div>
         </div>
-
+        <br>
         <div class="row">
             <div class="col-lg-12">
-                <h5 style="text-align: center; margin:0px; padding:5px; background:rgb(0, 65, 117);">Map List</h5>
+                <!--<h5 style="margin-top: 15px;">Map List</h5>-->
                 <div class="map_list">
                     <div id="maps_gallery"></div>
                     <label for="add_new_map" class="custom-file-download">
@@ -73,12 +70,12 @@
                     <input id="add_new_map" type="button" class="btn-hidden" />
                 </div>
             </div>
-        </div>
 
+        </div>
+        <br>
         <div class="row">
             <div class="col-lg-6">
-                <h5 style="text-align: center; margin:0px; padding:5px; background:rgb(0, 65, 117);">Map Setting
-                </h5>
+                <!--<h5>Map Setting</h5>-->
                 <div id="cvsBlock">
                     <canvas id="canvas_map" height="1" width="1">
                         <span class="i18n" name="i_no_canvas"></span>
@@ -106,7 +103,7 @@
                                 <i class="fas fa-expand" style='font-size:20px;'></i></label>
                             <input id="menu_resize" type="button" class="btn-hidden" /></li>
                         <!--Map Info-->
-                        <li><label for="menu_map_info" id="label_map_info" class="btn-sidebar i18n-input"
+                        <li><label for="menu_map_info" id="label_map_info" class="btn-sidebar opened i18n-input"
                                 selectattr="title" selectname="i_mapInfo">
                                 <i class="fas fa-info-circle" style='font-size:20px;'></i></label>
                             <input id="menu_map_info" type="button" class="btn-hidden" /></li>
@@ -127,7 +124,7 @@
                             <input id="menu_anchor_group" type="button" class="btn-hidden" /></li>
                     </ul>
                 </nav>
-                <div id="block_info" style="width:100%; float:left;">
+                <div id="block_info" class="display-block" style="width:100%; float:left; margin-top:10px;">
                     <input type="hidden" id="map_info_id" />
                     <label class="i18n" name="i_mapName"></label> :&nbsp;
                     <input type="text" id="map_info_name" style="width:120px;" />
@@ -138,8 +135,8 @@
                     <input type="button" id="btn_submit_map_info" class="btn btn-primary" value="確認變更地圖資訊(包含圖片)"
                         disabled />
                 </div>
-                <div id="block_anchor_list">
-                    <div style="width:100%; float:left; margin:0px;">
+                <div id="block_anchor_list" class="display-block" style="display: none;">
+                    <span class="control-bar">
                         <label for="btn_add_anchor_list" id="label_add_anchor_list" class="btn-add i18n-input"
                             selectattr="title" selectname="i_addAnchorGroup">
                             <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
@@ -148,7 +145,8 @@
                             selectattr="title" selectname="i_deleteAnchorGroup"><i class="fas fa-minus-square"
                                 style='font-size:20px;'></i></label>
                         <input id="btn_delete_anchor_list" type="button" class="btn-hidden" />
-                    </div>
+                    </span>
+                    <br><br>
                     <div class="anchor_list">
                         <table id="table_main_anchor_list" class="table-line">
                             <thead>
@@ -171,8 +169,8 @@
                         </table>
                     </div>
                 </div>
-                <div id="block_group_list">
-                    <span style="width:100%; float:left;">
+                <div id="block_group_list" class="display-block" style="display: none;">
+                    <span class="control-bar">
                         <label for="btn_add_group" id="label_add_group" class="btn-add i18n-input" selectattr="title"
                             selectname="i_addGroup">
                             <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
@@ -187,6 +185,7 @@
                             <i class="fas fa-map-marked-alt" style='font-size:20px;'></i></label>
                         <input id="btn_pos_group" type="button" class="btn-hidden" />
                     </span>
+                    <br><br>
                     <div class="block-list">
                         <table id="table_group_list" class="table-line">
                             <thead>
@@ -203,8 +202,8 @@
                         </table>
                     </div>
                 </div>
-                <div id="block_anchor_group">
-                    <span style="width:100%; float:left;">
+                <div id="block_anchor_group" class="display-block" style="display: none;">
+                    <span class="control-bar">
                         <label for="btn_add_anchor_group" id="label_add_anchor_group" class="btn-add i18n-input"
                             selectattr="title" selectname="i_addAnchorGroup">
                             <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
@@ -219,6 +218,7 @@
                             <i class="fas fa-map-marked-alt" style='font-size:20px;'></i></label>
                         <input id="btn_pos_anchor_group" type="button" class="btn-hidden" />
                     </span>
+                    <br><br>
                     <div>
                         <ul id="myTab" class="nav nav-tabs">
                             <li class="active">
@@ -434,7 +434,6 @@
     <!-- i18n translation -->
     <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
     <script type="text/javascript" src="../js/i18n/language.js"></script>
-    <!-- i18n -->
 </body>
 
 </html>

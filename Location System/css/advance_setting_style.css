@@ -1,0 +1,358 @@
+.container {
+    min-width: 530px;
+}
+
+tr.checked td {
+    background: #aaddff !important;
+}
+
+tbody tr {
+    cursor: pointer;
+}
+
+th,
+td {
+    font-family: 'Microsoft JhengHei', 'sans-serif';
+    padding: 8px;
+    text-align: left;
+}
+
+.nav-tabs {
+    margin-top: 10px;
+}
+
+
+h4 {
+    color: white;
+}
+
+#reference_block {
+    height: 630px;
+    max-height: 630px;
+    overflow: auto;
+    margin: 10px 0px;
+}
+
+#command_block {
+    max-height: 675px;
+    overflow: auto;
+    margin: 10px 0px;
+}
+
+.table-line th {
+    border: 1px solid rgb(117, 117, 117);
+    background: rgb(167, 167, 167);
+    color: white;
+    text-align: center;
+}
+
+.table-line td {
+    border: 1px solid rgb(117, 117, 117);
+    background: #f2f2f2;
+    color: black;
+}
+
+.center {
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+}
+
+.rectangle {
+    margin: auto;
+    width: 200px;
+    border: 2px solid #e6e6e6;
+    padding: 10px;
+}
+
+button {
+    font-weight: bold !important;
+}
+
+select,
+select option,
+input[type="text"] {
+    background: white !important;
+    color: black !important;
+}
+
+input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    cursor: pointer;
+    color: #dddddd;
+    text-decoration: none;
+    font-family: Sans-serif;
+    padding: 10px 15px;
+    border: 2px solid lightgray;
+    border-radius: 4px;
+    box-shadow: 1px 3px 2px rgba(0, 0, 0, 0.719);
+    background: gray;
+}
+
+.btn-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    background: transparent;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.label-refresh {
+    color: rgb(0, 153, 255);
+}
+
+.label-check {
+    color: #33cc33;
+}
+
+.label-delete {
+    color: black;
+}
+
+.label-update {
+    color: gray;
+}
+
+.label-search {
+    color: rgb(255, 174, 0);
+    margin-right: 20px;
+}
+
+.label-download {
+    color: rgb(0, 130, 175);
+}
+
+.label-upload {
+    color: rgb(0, 187, 11);
+}
+
+.label-view {
+    color: rgb(19, 76, 197);
+}
+
+.label-openfile {
+    color: rgb(19, 197, 182);
+}
+
+.btn-label {
+    cursor: pointer;
+    background: transparent;
+    margin: 5px 5px 0px 5px;
+}
+
+.btn-label:hover {
+    color: rgba(255, 255, 255, 0.753);
+    -webkit-filter: drop-shadow(0px 0px 5px rgba(251, 255, 0, 0.911));
+    filter: drop-shadow(0px 0px 5px rgba(251, 255, 0, 0.849));
+}
+
+.btn-label i {
+    font-size: 20px;
+}
+
+/*.btn-label:active{
+    color: white;
+}*/
+
+.network-bar {
+    margin: 10px 10px 0px 10px;
+    border: 2px solid lightgray;
+    background: lightgray;
+    color: black;
+    padding: 5px 10px;
+    /*min-width: 570px;*/
+}
+
+.backup-btns button {
+    margin: 10px 20px 0px 10px;
+}
+
+.db-filelist-bar {
+    height: auto;
+    margin: 0px 10px;
+    border: 2px solid lightgray;
+    background: lightgray;
+    color: black;
+    padding: 5px 10px;
+}
+
+.db-filelist-bar input[type='text'] {
+    padding-left: 5px;
+}
+
+#filedata_name {
+    font-weight: bold;
+    color: black;
+    text-shadow: 1px 1px 4px #2731d0;
+    text-align: center;
+}
+
+#database_files_list {
+    margin: 0px 10px;
+    border: 2px solid lightgray;
+    background: white;
+    min-height: 410px;
+    color: black;
+    overflow: auto;
+}
+
+#block_files_list {
+    margin: 0px 10px;
+    border: 2px solid lightgray;
+    background: white;
+    min-height: 295px;
+    color: black;
+    overflow: auto;
+}
+
+.file-img-name {
+    margin: 7px;
+    padding: 5px;
+    width: 150px;
+    position: relative;
+    display: inline-block;
+    background: transparent;
+}
+
+.file-img-name img {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 5px;
+}
+
+.file-img-name input {
+    color: black;
+    cursor: pointer;
+    text-align: left;
+    width: 100px;
+}
+
+.file-img-name label {
+    color: black;
+    cursor: pointer;
+    text-align: left;
+    word-break: break-all;
+    white-space: pre-wrap;
+    padding: 0px 3px;
+    border: 1px solid lightgray;
+}
+
+.onselected {
+    border-radius: 4px;
+    background: rgb(208, 230, 236);
+}
+
+
+.cmd-send-bar td {
+    padding: 15px 5px;
+}
+
+/* icon navbar */
+.sidebar ul .setting-type a {
+    background: transparent;
+}
+
+.sidebar ul .setting-type:hover a,
+.sidebar ul .setting-type.active a,
+.sidebar ul .setting-type.active:hover a {
+    background: rgb(135, 145, 160);
+}
+
+.menu-left ul .start a {
+    background: transparent;
+}
+
+.menu-left ul .start:hover a {
+    background: rgb(4, 143, 124)
+}
+
+.dialog_progress {
+    top: 10px;
+    left: 45%;
+    position: absolute;
+    margin: auto;
+    width: auto;
+    height: auto;
+    display: none;
+    padding: 8px 12px;
+    -moz-box-shadow: 4px 4px 12px -2px rgb(97, 96, 96);
+    -webkit-box-shadow: 4px 4px 12px -2px rgb(97, 96, 96);
+    box-shadow: 4px 4px 12px -2px rgb(97, 96, 96);
+    border-radius: 5px;
+    background: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+}
+
+
+/* Slider setting */
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 1px solid white;
+    background: rgb(0, 195, 255);
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 1px solid white;
+    background: rgb(0, 195, 255);
+    cursor: pointer;
+}
+
+.slider-text {
+    background-color: transparent;
+    color: rgb(0, 74, 160);
+    font-weight: bold;
+    font-size: 20px;
+    padding: 2px 8px;
+    margin-left: 5px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 3px 1px rgb(115, 111, 111) inset;
+}
+
+.slider-block {
+    margin: 20px;
+    height: 565px;
+}
+
+.slider-block span {
+    font-size: 20px;
+    color: rgb(43, 43, 43);
+}

@@ -1,30 +1,26 @@
-var token = "";
-var permission = "0";
-var default_color = '#2eb82e';
-var memberArray = [];
-var deptColorArray = [];
-var titleColorArray = [];
-var userTypeColorArray = [];
-var userTypeArr = [];
-var alarmGroupArr = [];
-var dotTypeArr = ['Dept', 'JobTitle', 'UserType', 'Custom'];
-var statusArr = ['OnJob', 'LeaveJob'];
-var genderArr = ['Male', 'Female'];
-var educationArr = ['PrimarySchool', 'MiddleSchool', 'HighSchool', 'JuniorSchool', 'College', 'GraduateSchool'];
+var permission = "0",
+    default_color = '#2eb82e',
+    memberArray = [],
+    deptColorArray = [],
+    titleColorArray = [],
+    userTypeColorArray = [],
+    userTypeArr = [],
+    alarmGroupArr = [],
+    dotTypeArr = ['Dept', 'JobTitle', 'UserType', 'Custom'],
+    statusArr = ['OnJob', 'LeaveJob'],
+    genderArr = ['Male', 'Female'],
+    educationArr = ['PrimarySchool', 'MiddleSchool', 'HighSchool', 'JuniorSchool', 'College', 'GraduateSchool'];
 
 
 $(function () {
-    //Check this page's permission and load navbar
-    token = getToken();
-    permission = getUser() ? parseInt(getUser().userType, 10) : 0;
-    if (!getPermissionOfPage("Member_Setting")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    /* Check this page's permission and load navbar */
+    loadUserData();
+    checkPermissionOfPage("Member_Setting");
     setNavBar("Member_Setting", "Member_Setting");
 
     var h = document.documentElement.clientHeight;
-    $(".table_member").css("height", h * 0.9 + "px");
+    $(".container").css("height", h - 10 + "px");
+    $(".member_list").css("max-height", h - 110 + "px");
 
     sortTable('.row_number', '');
     sortTable('.row_user_id', '');
@@ -42,9 +38,9 @@ $(function () {
     deptXmlHttp.onreadystatechange = function () {
         if (deptXmlHttp.readyState == 4 || deptXmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values || [];
-                for (i = 0; i < revInfo.length; i++)
+                for (var i = 0; i < revInfo.length; i++)
                     deptColorArray.push(revInfo[i]);
             }
         }
@@ -59,9 +55,9 @@ $(function () {
     titleXmlHttp.onreadystatechange = function () {
         if (titleXmlHttp.readyState == 4 || titleXmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values || [];
-                revInfo.forEach(element => {
+                revInfo.forEach(function (element) {
                     titleColorArray.push(element);
                 });
             }
@@ -77,9 +73,9 @@ $(function () {
     userTypeXmlHttp.onreadystatechange = function () {
         if (userTypeXmlHttp.readyState == 4 || userTypeXmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values || [];
-                revInfo.forEach(element => {
+                revInfo.forEach(function (element) {
                     userTypeColorArray.push(element);
                     userTypeArr.push(element.type);
                 });
@@ -92,10 +88,10 @@ $(function () {
         "api_token": [token]
     }));
     $("#main_type").change(function () {
-        var type = typeof ($(this).val()) != 'undefined' ? $(this).val() : "";
-        var index = $("#main_select_tag_color").children('option:selected').index();
+        var type = typeof ($(this).val()) != 'undefined' ? $(this).val() : "",
+            index = $("#main_select_tag_color").children('option:selected').index();
         if (index == 3 && type != "") {
-            userTypeColorArray.forEach(v => {
+            userTypeColorArray.forEach(function (v) {
                 if (v.type == type) {
                     $("#main_input_tag_color").val(colorToHex(v.color)).prop("disabled", true);
                 }
@@ -105,10 +101,8 @@ $(function () {
     $("#main_picture_upload").unbind();
     $("#main_picture_upload").change(function () {
         var file = this.files[0];
-        var valid = checkExt(this.value);
         //console.log(file.size / 1024);
-        valid = valid && checkImageSize(file); //" KB"
-        if (valid)
+        if (checkExt(this.value) && checkImageSize(file))
             transBase64(file);
     });
     $("#main_picture_clear").click(function () {
@@ -137,18 +131,17 @@ $(function () {
         } else {
             $("input[name='chkbox_members']").prop("checked", false);
             $("#table_member_setting tbody tr").removeClass("selected");
-           // $("#table_member_setting tbody tr td").css("background-color", "#ffffff");
+            // $("#table_member_setting tbody tr td").css("background-color", "#ffffff");
         }
     });
     $("#selectAll").on('click', function () {
         $("#selectAll").parent().click();
     });
     $("#excel_import").change(function () {
-        if (permission > 0) {
+        if (permission > 0)
             importf(this);
-        } else {
+        else
             alert("No write permission!")
-        }
         $(this).val(''); //reset input[type='file']
     });
     $("#excel_export").click(function () {
@@ -165,18 +158,23 @@ $(function () {
     var lang = getCookie("userLanguage");
     $("#excel_example").click(function () {
         link = document.getElementById("excel_export_download");
-        if (lang == "en") {
-            link.download = "RTLS_Example_EN.xls";
-            link.href = "../excel/RTLS_Example_EN.xls";
-        } else if (lang == "zh-TW") {
-            link.download = "RTLS_Example_TW.xls";
-            link.href = "../excel/RTLS_Example_TW.xls";
-        } else if (lang == "zh-CN") {
-            link.download = "RTLS_Example_CN.xls";
-            link.href = "../excel/RTLS_Example_CN.xls";
-        } else {
-            link.download = "RTLS_Example_EN.xls";
-            link.href = "../excel/RTLS_Example_EN.xls";
+        switch (lang) {
+            case "en":
+                link.download = "RTLS_Example_EN.xls";
+                link.href = "../excel/RTLS_Example_EN.xls";
+                break;
+            case "zh-TW":
+                link.download = "RTLS_Example_TW.xls";
+                link.href = "../excel/RTLS_Example_TW.xls";
+                break;
+            case "zh-CN":
+                link.download = "RTLS_Example_CN.xls";
+                link.href = "../excel/RTLS_Example_CN.xls";
+                break;
+            default:
+                link.download = "RTLS_Example_EN.xls";
+                link.href = "../excel/RTLS_Example_EN.xls";
+                break;
         }
         link.click();
     });
@@ -192,10 +190,10 @@ function UpdateMemberList() {
     getXmlHttp.onreadystatechange = function () {
         if (getXmlHttp.readyState == 4 || getXmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revList = revObj.Value[0].Values || [];
                 alarmGroupArr = [];
-                revList.forEach(element => {
+                revList.forEach(function (element) {
                     alarmGroupArr.push({
                         id: element.alarm_gid,
                         name: element.alarm_group_name
@@ -210,18 +208,18 @@ function UpdateMemberList() {
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                         var revObj2 = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj2) && revObj2.Value[0].success > 0) {
+                        if (checkTokenAlive(revObj2) && revObj2.Value[0].success > 0) {
                             $(function () {
                                 $("#table_member_setting tbody").empty(); //先重置表格
                                 memberArray = revObj2.Value[0].Values.slice(0) || [];
                                 for (var i = 0; i < memberArray.length; i++) {
-                                    var tr_id = "tr_member_" + i;
-                                    var user_id = parseInt(memberArray[i].tag_id.substring(8), 16);
-                                    var number = memberArray[i].number;
-                                    var alarm_index = alarmGroupArr.findIndex(function (array) {
-                                        return array.id == memberArray[i].alarm_group_id;
-                                    });
-                                    var alarm_group_name = alarm_index > -1 ? alarmGroupArr[alarm_index].name : "";
+                                    var tr_id = "tr_member_" + i,
+                                        user_id = parseInt(memberArray[i].tag_id.substring(8), 16),
+                                        number = memberArray[i].number,
+                                        alarm_index = alarmGroupArr.findIndex(function (array) {
+                                            return array.id == memberArray[i].alarm_group_id;
+                                        }),
+                                        alarm_group_name = alarm_index > -1 ? alarmGroupArr[alarm_index].name : "";
                                     $("#table_member_setting tbody").append("<tr id=\"" + tr_id + "\">" +
                                         "<td><input type=\"checkbox\" name=\"chkbox_members\" value=\"" + number + "\" " +
                                         " /> <label>" + (i + 1) + "</label></td>" +
@@ -268,7 +266,7 @@ function editMemberData(number) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values[0];
                 $("#main_tid_id").val(parseInt(revInfo.tag_id.substring(0, 8), 16));
                 $("#main_user_id").val(parseInt(revInfo.tag_id.substring(8), 16));
@@ -333,7 +331,7 @@ function editMemberData(number) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values[0]
                 //$("#main_picture_thumbnail").attr("href", "data:image/png;base64," + revInfo.photo);
                 $("#main_picture_img").attr("src", "data:image/png;base64," + revInfo.photo);
@@ -355,8 +353,8 @@ function transBase64(file) {
 }
 
 function checkExt(fileName) {
-    var validExts = new Array(".png", ".jpg", ".jpeg"); // 可接受的副檔名
-    var fileExt = fileName.substring(fileName.lastIndexOf('.'));
+    var validExts = new Array(".png", ".jpg", ".jpeg"), // 可接受的副檔名
+        fileExt = fileName.substring(fileName.lastIndexOf('.'));
     if (validExts.indexOf(fileExt) < 0) {
         alert($.i18n.prop('i_fileError_2') + validExts.toString());
         return false;
@@ -374,31 +372,31 @@ function checkImageSize(file) {
 
 // 使用FileReader讀取檔案，並且回傳Base64編碼後的source
 function convertTobase64(file) {
-    return new Promise((resolve, reject) => {
+    return new Promise(function (resolve, reject) {
         // 建立FileReader物件
         var reader = new FileReader();
         // 註冊onload事件，取得result則resolve (會是一個Base64字串)
-        reader.onload = () => {
+        reader.onload = function () {
             resolve(reader.result);
-        }
+        };
         // 註冊onerror事件，若發生error則reject
-        reader.onerror = () => {
+        reader.onerror = function () {
             reject(reader.error);
-        }
+        };
         // 讀取檔案
         reader.readAsDataURL(file);
     });
 }
 
 function adjustImageSize(src) {
-    var thumb_width = parseInt($("#main_picture_block").css('max-width'), 10);
-    var thumb_height = parseInt($("#main_picture_block").css('max-height'), 10);
+    var thumb_width = parseInt($("#main_picture_block").css('max-width'), 10),
+        thumb_height = parseInt($("#main_picture_block").css('max-height'), 10);
     if (src.length > 0) {
         var img = new Image();
         img.src = src;
         img.onload = function () {
-            var thumbSize = thumb_width / thumb_height;
-            var imgSize = img.width / img.height;
+            var thumbSize = thumb_width / thumb_height,
+                imgSize = img.width / img.height;
             if (imgSize > thumbSize) { //原圖比例寬邊較長
                 $("#main_picture_img").attr('src', src);
                 $("#main_picture_img").width(thumb_width).height(img.height * (thumb_width / img.width));
@@ -453,9 +451,9 @@ function addMemberData() {
 }
 
 function removeMemberDatas() {
-    var checkboxs = document.getElementsByName("chkbox_members");
-    var num_arr = [];
-    for (j in checkboxs) {
+    var checkboxs = document.getElementsByName("chkbox_members"),
+        num_arr = [];
+    for (var j = 0; j < checkboxs.length; j++) {
         if (checkboxs[j].checked)
             num_arr.push({
                 "number": checkboxs[j].value
@@ -474,7 +472,7 @@ function removeMemberDatas() {
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                     UpdateMemberList();
                 }
             }
@@ -484,9 +482,9 @@ function removeMemberDatas() {
 }
 
 function multiEditData() {
-    var checkboxs = document.getElementsByName("chkbox_members");
-    var num_arr = [];
-    for (j in checkboxs) {
+    var checkboxs = document.getElementsByName("chkbox_members"),
+        num_arr = [];
+    for (var j = 0; j < checkboxs.length; j++) {
         if (checkboxs[j].checked)
             num_arr.push(checkboxs[j].value);
     }
@@ -509,10 +507,10 @@ function multiEditData() {
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
-                            var revInfo = revObj.Value[0].Values || [];
-                            var deptArr = [];
-                            revInfo.forEach(element => {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
+                            var revInfo = revObj.Value[0].Values || [],
+                                deptArr = [];
+                            revInfo.forEach(function (element) {
                                 deptArr.push({
                                     id: element.c_id,
                                     name: element.children
@@ -535,10 +533,10 @@ function multiEditData() {
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
-                            var revInfo = revObj.Value[0].Values || [];
-                            var titleArr = [];
-                            revInfo.forEach(element => {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
+                            var revInfo = revObj.Value[0].Values || [],
+                                titleArr = [];
+                            revInfo.forEach(function (element) {
                                 titleArr.push({
                                     id: element.c_id,
                                     name: element.children
@@ -561,10 +559,10 @@ function multiEditData() {
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
-                            var revInfo = revObj.Value[0].Values || [];
-                            var typeArr = [];
-                            revInfo.forEach(element => {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
+                            var revInfo = revObj.Value[0].Values || [],
+                                typeArr = [];
+                            revInfo.forEach(function (element) {
                                 typeArr.push(element.type);
                             });
                             $("#multi_edit_value").html(createOptions(typeArr, typeArr[0]));
@@ -584,10 +582,10 @@ function multiEditData() {
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
-                            var revInfo = revObj.Value[0].Values || [];
-                            var alarmGroupArr = [];
-                            revInfo.forEach(element => {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
+                            var revInfo = revObj.Value[0].Values || [],
+                                alarmGroupArr = [];
+                            revInfo.forEach(function (element) {
                                 alarmGroupArr.push({
                                     id: element.alarm_gid,
                                     name: element.alarm_group_name
@@ -612,7 +610,7 @@ function createI18nOptions(array, select) {
     var options = "";
     select = typeof (select) != 'undefined' ? select : "";
     options += "<option value=\"\">" + $.i18n.prop('i_select') + "</option>"; //增加預設的空白項
-    for (i = 0; i < array.length; i++) {
+    for (var i = 0; i < array.length; i++) {
         var i18n_value = $.i18n.prop(array[i]);
         if (array[i] == select) {
             options += "<option value=\"" + array[i] + "\" selected=\"selected\">" + i18n_value + "</option>";
@@ -627,7 +625,7 @@ function createOptions(array, select) {
     var options = "";
     select = typeof (select) != 'undefined' ? select : "";
     options += "<option value=\"\">" + $.i18n.prop('i_select') + "</option>";
-    for (i = 0; i < array.length; i++) {
+    for (var i = 0; i < array.length; i++) {
         if (array[i] == select) {
             options += "<option value=\"" + array[i] + "\" selected=\"selected\">" +
                 array[i] + "</option>";
@@ -640,7 +638,7 @@ function createOptions(array, select) {
 
 function displayNameOptions(array, select_id) {
     var options = "";
-    array.forEach(element => {
+    array.forEach(function (element) {
         if (element.id == select_id) {
             options += "<option value=\"" + element.id + "\" selected=\"selected\">" +
                 element.name + "</option>";
@@ -652,9 +650,9 @@ function displayNameOptions(array, select_id) {
 }
 
 function getFileName(src) {
-    var pos1 = src.lastIndexOf("\\");
-    var pos2 = src.lastIndexOf("/");
-    var pos = -1;
+    var pos1 = src.lastIndexOf("\\"),
+        pos2 = src.lastIndexOf("/"),
+        pos = -1;
     if (pos1 < 0) pos = pos2;
     else pos = pos1;
     return src.substring(pos + 1);

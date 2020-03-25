@@ -1,18 +1,20 @@
 'use strict';
-var isStart = false,
-    isStartRef = false,
-    token = "",
+var isStartRef = false,
     pageTimer = 0,
     countDatas = 0;
+
+
 $(function () {
-    token = getToken();
-    /*
-     * Check this page's permission and load navbar
-     */
-    if (!getPermissionOfPage("Reference")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    var h = document.documentElement.clientHeight;
+    $(".table_block").css({
+        "max-height": h - 80 + "px",
+        "height": h - 80 + "px"
+    });
+
+    
+    /* Check this page's permission and load navbar */
+    loadUserData();
+    checkPermissionOfPage("Reference");
     setNavBar("Reference", "Reference");
 
     loadAnchorList();
@@ -26,7 +28,62 @@ $(function () {
             $("#select_source_id").show();
         }
     });
+
+    //---------------- Kalman Filter DOM -------------------
+
+    var slider_arr = ["predict_1", "predict_2", "predict_3", "predict_4", "convergence"];
+    slider_arr.forEach(function (element) {
+        if (element == "convergence")
+            document.getElementById("slider_" + element).value = "8";
+        else
+            document.getElementById("slider_" + element).value = "0.8";
+        document.getElementById("slider_" + element).oninput = function () {
+            document.getElementById("text_" + element).innerText = this.value;
+        }
+    });
 });
+
+function sendKalmanParams() {
+    if (!confirm("在送出Kalman Filter設定值前請先停止定位，確定定位已停止?")) {
+        return;
+    }
+    var requestArray = {
+        "Command_Type": ["Write"],
+        "Command_Name": ["SetPredict"],
+        "Value": {
+            "predict1": document.getElementById("slider_predict_1").value,
+            "predict2": document.getElementById("slider_predict_2").value,
+            "predict3": document.getElementById("slider_predict_3").value,
+            "predict4": document.getElementById("slider_predict_4").value,
+            "convergence": document.getElementById("slider_convergence").value
+        },
+        "api_token": [token]
+    };
+    var xmlHttp = createJsonXmlHttp("sql");
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+            var revObj = JSON.parse(this.responseText);
+            if (checkTokenAlive(revObj)) {
+                if (revObj.Value[0].success) {
+                    alert("Set kalman filter parameter successful!");
+                    if (confirm("修改Kalman Filter參數後必須重啟定位才會使用設定值，請問是否自動重啟定位?")) {
+                        if (!isStart) {
+                            isStart = true;
+                            sendLaunchCmd("Start");
+                            document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\">" +
+                                "</i><span>" + $.i18n.prop('i_stopPositioning') + "</span>";
+                        } else {
+                            restartLaunch();
+                        }
+                    }
+                } else {
+                    alert("Set Kalman filter parameter failed!");
+                }
+            }
+        }
+    };
+    xmlHttp.send(JSON.stringify(requestArray));
+}
 
 function loadAnchorList() {
     var requestArray = {
@@ -38,10 +95,10 @@ function loadAnchorList() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 $("#select_source_id").empty();
                 $("#select_anchor_id").empty();
-                revObj.Value[0].Values.forEach(element => {
+                revObj.Value[0].Values.forEach(function (element) {
                     if (element.anchor_type == "main") {
                         $("#select_source_id").append("<option" +
                             " value=\"" + element.anchor_id + "\">" +
@@ -68,7 +125,6 @@ function startRefence() {
     }
     if (condition.source_type == "Tag")
         condition.source_id = $("#input_source_id").val();
-    //parseInt($("#input_source_id").val(), 10).toString(16).toUpperCase();
     if (isStartRef) {
         isStartRef = false;
         $("#btn_send").text("Start");
@@ -82,7 +138,7 @@ function startRefence() {
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                     alert("Stop reference successfully!");
                 } else {
                     alert("Stop reference failed!");
@@ -107,7 +163,7 @@ function startRefence() {
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                     var revInfo = revObj.Value[0].Value ? revObj.Value[0].Value : [];
                     revInfo.forEach(function (element, i) {
                         $("#table_reference_tags tbody").append("<tr>" +
@@ -132,12 +188,6 @@ function startRefence() {
     }
 
     function getResult() {
-        console.log("send=>{" +
-            "\n type : " + condition.source_type +
-            "\n source_id : " + condition.source_id +
-            "\n anchor_id : " + condition.anchor_id +
-            "\n}");
-        //return;
         var requestArray = {
             "Command_Type": ["Read"],
             "Command_Name": ["getreferencerecord"],
@@ -147,9 +197,9 @@ function startRefence() {
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                     var revInfo = revObj.Value[0].Value ? revObj.Value[0].Value : [];
-                    revInfo.forEach(element => {
+                    revInfo.forEach(function (element) {
                         countDatas++;
                         $("#table_reference_tags tbody").append("<tr>" +
                             "<td>" + countDatas + "</td>" +
@@ -159,7 +209,7 @@ function startRefence() {
                             "<td>" + element.count + "</td></tr>");
                     });
                     if ($("#chk_latest_items").prop("checked")) {
-                        let div = document.getElementById("reference_block");
+                        var div = document.getElementById("reference_block");
                         div.scrollTop = div.scrollHeight;
                     }
                 }

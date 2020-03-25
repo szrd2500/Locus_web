@@ -1,16 +1,15 @@
-var token = "",
-    size = 10,
+var size = 10,
     default_color = '#2eb82e',
     change = "",
     usertypeNameArray = [];
 
 $(function () {
-    //Check this page's permission and load navbar
-    token = getToken();
-    if (!getPermissionOfPage("Member_Setting")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    var h = document.documentElement.clientHeight;
+    $(".container").css("height", h - 10 + "px");
+
+    /* Check this page's permission and load navbar */
+    loadUserData();
+    checkPermissionOfPage("Member_Setting");
     setNavBar("Member_Setting", "User_Type_Setting");
 
     $("#set_dot_color").change(function () { //設定change事件
@@ -36,7 +35,7 @@ $(function () {
 
         if (change == "add") {
             //因為type儲存為key值，所以必須先檢查是否新的type與舊的重複
-            usertypeNameArray.forEach(v => {
+            usertypeNameArray.forEach(function (v) {
                 if (v == $("#set_type_name").val()) {
                     valid = false;
                     $("#set_type_name").addClass("ui-state-error");
@@ -74,7 +73,7 @@ $(function () {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                         updateTypeList();
                     } else {
                         alert($.i18n.prop('i_alertError_6'));
@@ -129,7 +128,7 @@ function updateTypeList() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values;
                 for (i = 0; i < revInfo.length; i++) {
                     $("#table_type_list tbody").append("<tr>" +
@@ -194,7 +193,7 @@ function deleteType(name) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 updateTypeList();
             } else {
                 alert($.i18n.prop('i_alertError_8'));

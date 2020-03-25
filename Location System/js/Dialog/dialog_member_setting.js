@@ -1,10 +1,7 @@
-var token = "";
 var default_color = '#2eb82e';
 var delete_job_number = "";
 
 $(function () {
-    token = getToken();
-
     var dialog, form,
         main_tid_id = $("#main_tid_id"),
         main_user_id = $("#main_user_id"),
@@ -59,7 +56,7 @@ $(function () {
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0)
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0)
                             UpdateMemberList();
                         else
                             alert($.i18n.prop('i_alertError_3'));
@@ -150,7 +147,7 @@ function selectTagColor() {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                         var revInfo = revObj.Value[0].Values;
                         var nodeArray = [];
                         for (i = 0; i < revInfo.length; i++)
@@ -178,7 +175,7 @@ function selectTagColor() {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                         var revInfo = revObj.Value[0].Values;
                         var nodeArray = [];
                         for (i = 0; i < revInfo.length; i++)
@@ -206,7 +203,7 @@ function selectTagColor() {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                         var revInfo = revObj.Value[0].Values;
                         var nodeArray = [];
                         for (i = 0; i < revInfo.length; i++)

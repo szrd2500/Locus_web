@@ -1,4 +1,3 @@
-var token = "";
 var isAllSelected = false;
 var DeviceCheckbox = document.getElementsByName("checkbox_ipAddr");
 var deviceArray = {};
@@ -11,11 +10,6 @@ var timeDelay = {
     model: null
 }; //restore timeout
 
-
-$(function () {
-    token = getToken();
-});
-
 function Load() {
     var requestArray = {
         "Command_Type": ["Read"],
@@ -27,7 +21,7 @@ function Load() {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var cookie = typeof (Cookies.get("local_ip")) == 'undefined' ? "" : Cookies.get("local_ip");
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj)) {
+            if (checkTokenAlive(revObj)) {
                 var revInfo = revObj.Value[0];
                 document.getElementById("local_ip").value = revInfo[0].ip;
                 var html = "";
@@ -72,7 +66,7 @@ function Search() {
             $("#table_ip_address_info tbody").empty();
             var revObj = JSON.parse(this.responseText);
             networkArray = [];
-            if (!checkTokenAlive(token, revObj))
+            if (!checkTokenAlive(revObj))
                 return;
             var udpInfo = revObj.Value[0];
             document.getElementById("all_check").checked = false;
@@ -151,7 +145,7 @@ function Connect() {
                 }
                 $("#table_ip_address_info tbody").empty();
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj)) {
+                if (checkTokenAlive(revObj)) {
                     var connectedInfo = revObj.Value[0];
                     for (var i in deviceArray) {
                         deviceArray[i].Checked = false;
@@ -159,7 +153,7 @@ function Connect() {
                         deviceArray[i].Anchor_ID = "";
                     }
                     connect_ip_array = [];
-                    check_val.forEach(checkedIP => {
+                    check_val.forEach(function (checkedIP) {
                         if (!deviceArray[checkedIP])
                             return;
                         var connectedData = connectedInfo.find(function (info) {
@@ -193,15 +187,16 @@ function Connect() {
         var static_ip_1 = document.getElementById("static_ip_1").value,
             static_ip_2 = document.getElementById("static_ip_2").value,
             static_ip_3 = document.getElementById("static_ip_3").value,
-            static_ip_4 = document.getElementById("static_ip_4").value;
-        var valid = checkAddressFragment(static_ip_1) && checkAddressFragment(static_ip_2) &&
-            checkAddressFragment(static_ip_3) && checkAddressFragment(static_ip_4);
+            static_ip_4 = document.getElementById("static_ip_4").value,
+            valid = checkAddressFragment(static_ip_1) && checkAddressFragment(static_ip_2) &&
+            checkAddressFragment(static_ip_3) && checkAddressFragment(static_ip_4),
+            static_ip = static_ip_1 + "." + static_ip_2 + "." + static_ip_3 + "." + static_ip_4;
         if (valid) {
-            var Connect_Request = {
+            var send_request = {
                 "Command_Type": ["Read"],
                 "Command_Name": ["Connect"],
                 "Value": {
-                    "IP_address": static_ip_1 + "." + static_ip_2 + "." + static_ip_3 + "." + static_ip_4
+                    "IP_address": [static_ip]
                 },
                 "api_token": [token]
             };
@@ -209,12 +204,73 @@ function Connect() {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj)) {
-                        return true;
+                    if (checkTokenAlive(revObj)) {
+                        var revInfo = revObj.Value[0][0];
+                        connect_ip_array = [static_ip];
+                        deviceArray = {};
+                        deviceArray[static_ip] = {
+                            Checked: true,
+                            Status: true,
+                            Anchor_ID: revInfo.dev_active_ID,
+                            IP_address: revInfo.dev_ip,
+                            MAC_address: "",
+                            Gateway_address: "",
+                            Mask_address: "",
+                            Client_ip_addr: "",
+                            Machine_Number: "",
+                            Model: "",
+                            TCP_Serve_Port: "",
+                            UDP_Serve_Port: "",
+                            TCP_Client_Src_Port: "",
+                            TCP_Client_Des_Port: ""
+                        };
+                        var send_request2 = {
+                            "Command_Type": ["Read"],
+                            "Command_Name": ["Network"],
+                            "Value": {
+                                "IP_address": [static_ip],
+                                "function": [
+                                    /*
+                                    "Client_ip_addr", "Gateway_address", "IP_address", "MAC_address", "Machine_Number", "Mask_address",
+                                    "Model", "TCP_Client_Des_Port", "TCP_Client_Src_Port", "TCP_Serve_Port", "UDP_Serve_Port",
+                                    */
+                                    //Network
+                                    "dev_Mask", "dev_GW", "dev_Client_IP"
+                                ]
+                            },
+                            "api_token": [token]
+                        };
+                        var xmlHttp2 = createJsonXmlHttp("test2");
+                        xmlHttp2.onreadystatechange = function () {
+                            if (xmlHttp2.readyState == 4 || xmlHttp2.readyState == "complete") {
+                                var revObj2 = JSON.parse(this.responseText);
+                                if (checkTokenAlive(revObj2)) {
+                                    var revInfo2 = revObj2.Value[0][0][0];
+                                    resetListenersOfSelects();
+                                    $("#table_ip_address_info tbody").empty();
+                                    if (revInfo2 && revInfo2.Command_status > 0) {
+                                        for (var i = 0; i < 4; i++) {
+                                            var end = (i == 3) ? "" : ".";
+                                            deviceArray[static_ip].Gateway_address += revInfo2.dev_GW[i] + end;
+                                            deviceArray[static_ip].Mask_address += revInfo2.dev_Mask[i] + end;
+                                            deviceArray[static_ip].Client_ip_addr += revInfo2.dev_Client_IP[i] + end;
+                                        }
+                                        inputDataToColumns(deviceArray[static_ip]);
+                                        setCheckboxListeners();
+                                        checked_trans();
+                                        setListenerOfInput();
+                                        RF_setting_read(connect_ip_array);
+                                    } else {
+                                        alert("static connect failed!");
+                                    }
+                                }
+                            }
+                        };
+                        xmlHttp2.send(JSON.stringify(send_request2));
                     }
                 }
             };
-            xmlHttp.send(JSON.stringify(Connect_Request));
+            xmlHttp.send(JSON.stringify(send_request));
         } else {
             alert($.i18n.prop('i_deviceAlert_1'));
         }
@@ -257,8 +313,8 @@ function RF_setting_read(ip_address_array) {
                 return;
             }
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj)) {
-                revObj.Value[0][0].forEach(info => { //Add RF Setting
+            if (checkTokenAlive(revObj)) {
+                revObj.Value[0][0].forEach(function (info) { //Add RF Setting
                     if (typeof (info) != 'undefined' && info.Command_status == 1) {
                         DeviceCheckbox.forEach(function (v, i) {
                             if (v.value == info.TARGET_IP) {
@@ -319,7 +375,7 @@ function submitWriteRequest() {
         if (checked_connections.length > 0) {
             $("#progress_bar").text("0 %");
             $('#progress_block').show();
-            timeDelay["send_network"].forEach(element => {
+            timeDelay["send_network"].forEach(function (element) {
                 clearTimeout(element);
             });
             timeDelay["send_network"] = [];
@@ -407,8 +463,8 @@ function submitWriteRequest() {
                     }
                     return;
                 }
-                let revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0][0]) {
+                var revObj = JSON.parse(this.responseText);
+                if (checkTokenAlive(revObj) && revObj.Value[0][0]) {
                     var revInfo = revObj.Value[0];
                     if (revInfo[0][0].Command_status == 0)
                         result["fail_network"].push(revInfo[0][0].TARGET_IP);

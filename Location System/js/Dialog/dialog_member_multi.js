@@ -1,8 +1,4 @@
-var token = "";
-
 $(function () {
-    token = getToken();
-
     var dialog, form,
         sel_item = $("#multi_edit_item"),
         sel_value = $("#multi_edit_value"),
@@ -78,7 +74,7 @@ $(function () {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0)
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success > 0)
                         UpdateMemberList();
                 }
             };

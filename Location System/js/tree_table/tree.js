@@ -144,7 +144,7 @@ function setTreeArray(dataArray) {
     var treeArray = [];
     $('.tree').empty();
     if (dataArray.length > 0) {
-        dataArray.forEach(data => {
+        dataArray.forEach(function (data) {
             var exist_index = treeArray.findIndex(function (branch) {
                 return branch.name == data.group_id;
             });
@@ -168,49 +168,53 @@ function setTreeArray(dataArray) {
     }
 }
 
-/*var dataTest = [{
-        name: '1', //group_id
-        children: [{
-            name: '65503', //main_anchor_id
-            children: [{
-                    name: '65508' //anchor_id
-                },
-                {
-                    name: '65507'
-                },
-                {
-                    name: '65509'
-                },
-                {
-                    name: '65510'
-                }
-            ]
-        }]
-    },
-    {
-        name: '2',
-        children: [{
-            name: '65503',
-            children: [{
-                    name: '65514'
-                },
-                {
-                    name: '65512'
-                },
-                {
-                    name: '65523'
-                },
-                {
-                    name: '65524'
-                }
-            ]
-        }]
-    }, {
-        name: '3',
-        children: [{
-            name: '65504'
-        }]
-    }
-];*/
 
-//tree.setData('.tree', dataTest);
+/**
+ * 
+ * var dataTest = [{
+ *       name: '1', //group_id
+ *       children: [{
+ *           name: '65503', //main_anchor_id
+ *           children: [{
+ *                   name: '65508' //anchor_id
+ *               },
+ *               {
+ *                   name: '65507'
+ *               },
+ *               {
+ *                   name: '65509'
+ *               },
+ *               {
+ *                   name: '65510'
+ *               }
+ *           ]
+ *       }]
+ *   },
+ *   {
+ *       name: '2',
+ *       children: [{
+ *           name: '65503',
+ *           children: [{
+ *                   name: '65514'
+ *               },
+ *               {
+ *                   name: '65512'
+ *               },
+ *               {
+ *                   name: '65523'
+ *               },
+ *               {
+ *                   name: '65524'
+ *               }
+ *           ]
+ *       }]
+ *   }, {
+ *       name: '3',
+ *       children: [{
+ *           name: '65504'
+ *       }]
+ *   }
+ * ];
+ * 
+ * tree.setData('.tree', dataTest);
+ */

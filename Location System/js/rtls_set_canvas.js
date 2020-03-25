@@ -1,41 +1,41 @@
 'use strict';
 
 function RTLS_Canvas(number) {
-    let cvsBlock = document.getElementById("cvsBlock" + number),
-        canvas = document.getElementById("canvas" + number),
-        ctx = canvas.getContext("2d"),
-        coordinate = {
+    var cvsBlock = document.getElementById("cvsBlock" + number), //綁定畫布外框
+        canvas = document.getElementById("canvas" + number), //綁定畫布
+        ctx = canvas.getContext("2d"), //用來在畫布上渲染圖形的API
+        coordinate = { //用來顯示鼠標在此canvas上的座標
             x: document.getElementById("x" + number),
             y: document.getElementById("y" + number)
         },
-        restore = {
+        restore = { //快速切換符合頁面或原尺寸的按鈕
             btn: document.getElementById("btn_restore" + number),
             label: document.getElementById("label_restore" + number)
         },
-        visibleScale = document.getElementById("scale_visible" + number),
-        visibleMapName = document.getElementById("visible_map_name" + number),
-        inputMapList = document.getElementById("input_map_list" + number),
-        closeMap = document.getElementById("btn_close" + number),
-        serverImg = new Image(),
-        canvasImg = {
+        visibleScale = document.getElementById("scale_visible" + number), //顯示背景地圖的比例尺
+        visibleMapName = document.getElementById("visible_map_name" + number), //顯示背景地圖的名稱
+        inputMapList = document.getElementById("input_map_list" + number), //切換背景地圖的選單(放進地圖列表)
+        closeMap = document.getElementById("btn_close" + number), //關閉地圖
+        serverImg = new Image(), //建立一個圖片物件，儲存載入的地圖
+        canvasImg = { //紀錄已載入地圖的資料與狀態
             isLoad: false,
             width: 0,
             height: 0,
             scale: 1 //預設比例尺為1:1
         },
-        Map_id = "",
-        anchorArray = [],
-        fenceList = {},
-        isFitWindow = true,
-        times = 0,
-        // View parameters
+        Map_id = "", //當前地圖的編號(ID)
+        anchorArray = [], //基站列表(anchor list)
+        fenceList = {}, //圍籬列表(fence list)
+        isFitWindow = true, //是否canvas符合頁面大小
+        times = 0, //現在要繪製第幾幀的畫面
+        //View parameters
         lastX = 0, //滑鼠最後位置的X座標
         lastY = 0, //滑鼠最後位置的Y座標
         xleftView = 0, //canvas的X軸位移(負值向左，正值向右)
         ytopView = 0, //canvas的Y軸位移(負值向上，正值向下)
         Zoom = 1.0, //縮放比例
-        PIXEL_RATIO = (function () {
-            let dpr = window.devicePixelRatio || 1,
+        PIXEL_RATIO = (function () { //獲取瀏覽器像素比
+            var dpr = window.devicePixelRatio || 1,
                 bsr = ctx.webkitBackingStorePixelRatio ||
                 ctx.mozBackingStorePixelRatio ||
                 ctx.msBackingStorePixelRatio ||
@@ -43,18 +43,20 @@ function RTLS_Canvas(number) {
                 ctx.backingStorePixelRatio || 1;
             return dpr / bsr;
         })(),
-        mouse = {
+        mouse = { //記錄滑鼠事件的位移
             canvasLeft: 0,
             canvasTop: 0,
             downX: 0,
             downY: 0
         },
-        panPos = {
+        panPos = { //記錄觸碰事件的位移
             canvasLeft: 0,
             canvasTop: 0
         },
-        adjust = {
-            setCanvas: function (img_src, width, height) {
+        adjust = { //調整畫面
+            setCanvas: function (img_src, width, height) { //設定canvas偏移、大小和背景
+                canvas.style.marginLeft = "0px";
+                canvas.style.marginTop = "0px";
                 canvas.style.backgroundImage = "url(" + img_src + ")";
                 canvas.style.backgroundSize = width + "px " + height + "px";
                 canvas.width = width * PIXEL_RATIO;
@@ -62,8 +64,10 @@ function RTLS_Canvas(number) {
                 canvas.style.width = width + 'px';
                 canvas.style.height = height + 'px';
             },
-            setSize: function () { //縮放canvas與背景圖大小
+            setSize: function () { //縮放canvas與渲染圖形
                 if (canvasImg.isLoad) {
+                    canvas.style.marginLeft = xleftView + "px";
+                    canvas.style.marginTop = ytopView + "px";
                     canvas.style.backgroundSize = (canvasImg.width * Zoom) + "px " + (canvasImg.height * Zoom) + "px";
                     canvas.width = canvasImg.width * PIXEL_RATIO * Zoom;
                     canvas.height = canvasImg.height * PIXEL_RATIO * Zoom;
@@ -75,9 +79,9 @@ function RTLS_Canvas(number) {
                     ctx.translate(0, 0);
                 }
             },
-            restoreCanvas: function () {
+            restoreCanvas: function () { //切換背景符合畫面大小或恢復原尺寸
                 if (canvasImg.isLoad) {
-                    let cvsBlock_width = parseFloat(cvsBlock.clientWidth),
+                    var cvsBlock_width = parseFloat(cvsBlock.clientWidth),
                         cvsBlock_height = parseFloat(cvsBlock.clientHeight);
                     xleftView = 0;
                     ytopView = 0;
@@ -97,24 +101,24 @@ function RTLS_Canvas(number) {
                         restore.label.innerHTML = "<i class=\"fas fa-compress\"" +
                             " style='font-size:20px;' title=\"" + $.i18n.prop('i_restore_scale') + "\"></i>";
                     }
-                    canvas.style.marginLeft = "0px";
-                    canvas.style.marginTop = "0px";
                     draw();
                 }
             },
-            focusCenter: function (x, y) {
+            focusCenter: function (x, y) { //畫面中心鎖定目標標籤移動
                 if (display_setting.lock_window) {
-                    let cvsBlock_width = parseFloat(cvsBlock.clientWidth),
+                    var cvsBlock_width = parseFloat(cvsBlock.clientWidth),
                         cvsBlock_height = parseFloat(cvsBlock.clientHeight),
                         focus_x = cvsBlock_width / 2 - parseFloat(x) * Zoom,
                         focus_y = cvsBlock_height / 2 - parseFloat(y) * Zoom;
-                    canvas.style.marginLeft = focus_x + "px";
-                    canvas.style.marginTop = focus_y + "px";
+                    xleftView = focus_x;
+                    ytopView = focus_y;
+                    canvas.style.marginLeft = xleftView + "px";
+                    canvas.style.marginTop = ytopView + "px";
                 }
             },
-            unlockFocusCenter: function () { //解除定位
+            unlockFocusCenter: function () { //解除鎖定
                 if (display_setting.lock_window) {
-                    let cvsBlock_width = parseFloat(cvsBlock.clientWidth),
+                    var cvsBlock_width = parseFloat(cvsBlock.clientWidth),
                         cvsBlock_height = parseFloat(cvsBlock.clientHeight);
                     xleftView = 0; //恢復原比例
                     ytopView = 0;
@@ -122,8 +126,6 @@ function RTLS_Canvas(number) {
                     ctx.restore();
                     ctx.save();
                     isFitWindow = false;
-                    canvas.style.marginLeft = "0px";
-                    canvas.style.marginTop = "0px";
                     if ((serverImg.width / serverImg.height) > (cvsBlock_width / cvsBlock_height)) //原圖比例寬邊較長
                         Zoom = (cvsBlock_width / serverImg.width).toFixed(2);
                     else
@@ -131,7 +133,7 @@ function RTLS_Canvas(number) {
                     adjust.setSize();
                 }
             },
-            resetCanvas_Anchor: function () {
+            resetCanvas_Anchor: function () { //將canvas完全重置，包括背景圖和大小等
                 cvsBlock.style.background = 'rgb(185, 185, 185)';
                 canvasImg.isLoad = false;
                 canvasImg.width = 0;
@@ -152,10 +154,10 @@ function RTLS_Canvas(number) {
             }
         },
         get = {
-            anchors: function (map_id) {
+            anchors: function (map_id) { //取得基站(anchor)的資料
                 anchorArray = [];
                 //get anchor
-                const jr = JSON.stringify({
+                var jr = JSON.stringify({
                     "Command_Type": ["Read"],
                     "Command_Name": ["GetAnchorsInMap"],
                     "Value": {
@@ -163,14 +165,14 @@ function RTLS_Canvas(number) {
                     },
                     "api_token": [token]
                 });
-                let jxh = createJsonXmlHttp("sql");
+                var jxh = createJsonXmlHttp("sql");
                 jxh.onreadystatechange = function () {
                     if (jxh.readyState == 4 || jxh.readyState == "complete") {
-                        let revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
-                            let anchorList = revObj.Value[0].Values,
+                        var revObj = JSON.parse(this.responseText);
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
+                            var anchorList = revObj.Value[0].Values,
                                 x, y;
-                            for (let i in anchorList) {
+                            for (var i in anchorList) {
                                 x = parseFloat(anchorList[i].set_x);
                                 y = canvasImg.height - parseFloat(anchorList[i].set_y); //因為Server回傳的座標為左下原點
                                 anchorArray.push({
@@ -186,7 +188,7 @@ function RTLS_Canvas(number) {
                 };
                 jxh.send(jr);
                 //get main anchor
-                const jr_main = JSON.stringify({
+                var jr_main = JSON.stringify({
                     "Command_Type": ["Read"],
                     "Command_Name": ["GetMainAnchorsInMap"],
                     "Value": {
@@ -194,14 +196,14 @@ function RTLS_Canvas(number) {
                     },
                     "api_token": [token]
                 });
-                let jxh_main = createJsonXmlHttp("sql");
+                var jxh_main = createJsonXmlHttp("sql");
                 jxh_main.onreadystatechange = function () {
                     if (jxh_main.readyState == 4 || jxh_main.readyState == "complete") {
-                        let revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
-                            let anchorList = revObj.Value[0].Values,
+                        var revObj = JSON.parse(this.responseText);
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
+                            var anchorList = revObj.Value[0].Values,
                                 x, y;
-                            for (let i in anchorList) {
+                            for (var i in anchorList) {
                                 x = parseFloat(anchorList[i].set_x);
                                 y = canvasImg.height - parseFloat(anchorList[i].set_y);
                                 anchorArray.push({
@@ -217,9 +219,9 @@ function RTLS_Canvas(number) {
                 };
                 jxh_main.send(jr_main);
             },
-            fences: function (map_id) {
+            fences: function (map_id) { //取得所有在此地圖上的圍籬編號和名稱
                 fenceList = {};
-                const json_request = JSON.stringify({
+                var json_request = JSON.stringify({
                     "Command_Type": ["Read"],
                     "Command_Name": ["GetFencesInMap"],
                     "Value": {
@@ -227,13 +229,13 @@ function RTLS_Canvas(number) {
                     },
                     "api_token": [token]
                 });
-                let jxh = createJsonXmlHttp("sql");
+                var jxh = createJsonXmlHttp("sql");
                 jxh.onreadystatechange = function () {
                     if (jxh.readyState == 4 || jxh.readyState == "complete") {
-                        let revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
-                            let revInfo = revObj.Value[0].Values || [];
-                            for (let i = 0; i < revInfo.length; i++) {
+                        var revObj = JSON.parse(this.responseText);
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
+                            var revInfo = revObj.Value[0].Values || [];
+                            for (var i = 0; i < revInfo.length; i++) {
                                 fenceList[revInfo[i].fence_id] = {
                                     name: revInfo[i].fence_name,
                                     dots: []
@@ -247,8 +249,8 @@ function RTLS_Canvas(number) {
                 };
                 jxh.send(json_request);
             },
-            fencePointArray: function (fence_id) {
-                const json_request = JSON.stringify({
+            fencePointArray: function (fence_id) { //取得此圍籬的所有座標點
+                var json_request = JSON.stringify({
                     "Command_Type": ["Read"],
                     "Command_Name": ["GetFence_point"],
                     "Value": {
@@ -256,13 +258,13 @@ function RTLS_Canvas(number) {
                     },
                     "api_token": [token]
                 });
-                let jxh = createJsonXmlHttp("sql");
+                var jxh = createJsonXmlHttp("sql");
                 jxh.onreadystatechange = function () {
                     if (jxh.readyState == 4 || jxh.readyState == "complete") {
-                        let revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
-                            let revInfo = revObj.Value[0].Values || [];
-                            for (let i = 0; i < revInfo.length; i++)
+                        var revObj = JSON.parse(this.responseText);
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
+                            var revInfo = revObj.Value[0].Values || [];
+                            for (var i = 0; i < revInfo.length; i++)
                                 fenceList[fence_id].dots.push(revInfo[i]);
                         } else {
                             alert($.i18n.prop('i_alarmAlert_30'));
@@ -271,9 +273,8 @@ function RTLS_Canvas(number) {
                 };
                 jxh.send(json_request);
             },
-            pointOnCanvas: function (x, y) {
-                //獲取滑鼠在Canvas物件上座標(座標起始點從左上換到左下)
-                let BCR = canvas.getBoundingClientRect(),
+            pointOnCanvas: function (x, y) { //獲取滑鼠在Canvas物件上座標(座標起始點從左上換到左下)
+                var BCR = canvas.getBoundingClientRect(),
                     pos_x = (x - BCR.left) / Zoom,
                     pos_y = (y - BCR.top) / Zoom;
                 lastX = pos_x;
@@ -286,21 +287,21 @@ function RTLS_Canvas(number) {
                 }
             }
         },
-        setMapList = function () {
-            let html = "";
-            for (let id in MapList) {
+        setMapList = function () { //設定選擇地圖的下拉清單
+            var html = "";
+            for (var id in MapList) {
                 html += "<a style=\"color:#000000;\" " +
                     "href=\"javascript: selectMap(\'" + number + "\',\'" + id + "\');\">" +
                     MapList[id].name + "</a>";
             }
             inputMapList.innerHTML = html;
         },
-        createFences = function () {
-            for (let i in fenceList) {
-                let fence = new Fence(ctx, 1 / Zoom),
+        createFences = function () { //繪製所有在此地圖上的圍籬
+            for (var i in fenceList) {
+                var fence = new Fence(ctx, 1 / Zoom),
                     fence_name = fenceList[i].name,
                     count = 0;
-                fenceList[i].dots.forEach(dot_info => {
+                fenceList[i].dots.forEach(function (dot_info) {
                     count++;
                     fence.setFenceDot(
                         fence_name,
@@ -312,16 +313,18 @@ function RTLS_Canvas(number) {
                     fence.drawFence();
             }
         },
-        draw = function () {
-            if (Map_id == "") //reset canvas map
+        draw = function () { //每隔一段時間刷新並繪製下一幀
+            if (Map_id == "") //if reset the canvas map
                 return;
-
-            pageTimer["draw_frame"]["canvas" + number].forEach(timeout => {
+            pageTimer["draw_frame"]["canvas" + number].forEach(function (timeout) {
                 clearTimeout(timeout);
             });
             pageTimer["draw_frame"]["canvas" + number] = [];
+            for (var t = 0; t < frames; t++) {
+                setDF(t);
+            }
 
-            for (let t = 0; t < frames; t++) {
+            function setDF(t) {
                 pageTimer["draw_frame"]["canvas" + number].push(
                     setTimeout(function () {
                         drawFrame(t);
@@ -329,7 +332,7 @@ function RTLS_Canvas(number) {
                 );
             }
         },
-        drawFrame = function (i) {
+        drawFrame = function (i) { //繪出新的一幀畫面
             times = i;
             //console.log("draw time[" + i + "] : " + new Date().getTime());
             adjust.setSize();
@@ -338,18 +341,19 @@ function RTLS_Canvas(number) {
             anchorArray.forEach(function (v) {
                 drawAnchor(ctx, v.id, v.type, v.x, v.y, dot_size.anchor, 1 / Zoom);
             });
-            for (let tag_id in tagArray) {
-                let v = tagArray[tag_id];
+            for (var tag_id in TagList) {
+                var v = TagList[tag_id];
                 if (groupfindMap[v.point[i].group_id] == Map_id)
                     drawTags(ctx, v.id, v.point[i].x, canvasImg.height - v.point[i].y, v.color, dot_size.tag, 1 / Zoom);
             }
-            alarmArray.forEach(function (v) {
+            for (var tag_id in AlarmList) {
+                var v = AlarmList[tag_id];
                 if (groupfindMap[v.point[i].group_id] == Map_id)
-                    drawAlarmTags(ctx, v.id, v.point[i].x, canvasImg.height - v.point[i].y, v.status, dot_size.alarm, 1 / Zoom);
-            });
+                    drawAlarmTags(ctx, v.id, v.point[i].x, canvasImg.height - v.point[i].y, v.alarm_type, dot_size.alarm, 1 / Zoom);
+            }
             //Focus the position of this locating tag.
-            if (isFocus && locating_id in tagArray) {
-                let target = tagArray[locating_id],
+            if (isFocus && locating_id in TagList) {
+                var target = TagList[locating_id],
                     target_map = groupfindMap[target.point[i].group_id] || "",
                     x = target.point[i].x,
                     y = canvasImg.height - target.point[i].y;
@@ -372,7 +376,7 @@ function RTLS_Canvas(number) {
                 //抓取在物件上的點擊位置用clientX和clientY比較準確(位置不受滾動條影響)
             },
             handleMouseWheel: function (e) { //滑鼠滾輪事件
-                let BCR = canvas.getBoundingClientRect(),
+                var BCR = canvas.getBoundingClientRect(),
                     pos_x = e.clientX - BCR.left,
                     pos_y = e.clientY - BCR.top,
                     scale = 1.0;
@@ -380,22 +384,19 @@ function RTLS_Canvas(number) {
                     if (Zoom > 0.1)
                         scale = 0.9;
                 } else {
-                    scale = 1.1;
+                    if (Zoom < 2.0)
+                        scale = 1.1;
                 }
                 Zoom = (Zoom * scale).toFixed(2); //縮放比例
                 if (display_setting.lock_window && isFocus)
                     return;
-                draw();
-                let Next_x = lastX * Zoom, //縮放後滑鼠位移後的位置(x坐標)
+                var Next_x = lastX * Zoom, //縮放後滑鼠位移後的位置(x坐標)
                     Next_y = (canvasImg.height - lastY) * Zoom; //縮放後滑鼠位移後的位置(y坐標)
-                //let canvas_left = parseFloat(canvas.style.marginLeft); //canvas目前相對於div的位置(x坐標)
-                //let canvas_top = parseFloat(canvas.style.marginTop); //canvas目前相對於div的位置(y坐標)
                 xleftView += pos_x - Next_x;
                 ytopView += pos_y - Next_y;
-                canvas.style.marginLeft = xleftView + "px";
-                canvas.style.marginTop = ytopView + "px";
+                draw();
             },
-            handleCanvasDown: function (e) {
+            handleCanvasDown: function (e) { //按下滑鼠時的事件
                 if (display_setting.lock_window && isFocus)
                     return;
                 e.preventDefault();
@@ -411,7 +412,7 @@ function RTLS_Canvas(number) {
                     canvas.removeEventListener("mousemove", event.handleCanvasMove);
                 });
             },
-            handleCanvasMove: function (e) {
+            handleCanvasMove: function (e) { //按下滑鼠後移動的事件
                 //e.pageX, e.pageY:獲取滑鼠移動後的坐標 
                 xleftView = e.pageX - mouse.downX + mouse.canvasLeft;
                 ytopView = e.pageY - mouse.downY + mouse.canvasTop;
@@ -420,98 +421,77 @@ function RTLS_Canvas(number) {
                 canvas.style.marginTop = ytopView + "px";
             },
             handleMouseClick: function (e) { //滑鼠點擊事件
-                let p = {
-                    x: lastX,
-                    y: lastY
-                };
-                for (let tag_id in tagArray) {
-                    let v = tagArray[tag_id],
-                        point = v.point[times];
-                    if (v.type == "normal" && groupfindMap[point.group_id] == Map_id) {
-                        let radius = dot_size.tag / Zoom,
-                            distance = Math.sqrt(Math.pow(point.x - p.x, 2) + Math.pow(point.y - (p.y - radius * 2), 2));
-                        if (distance <= radius) {
-                            setTagDialog(v);
+                var p = {
+                        x: lastX,
+                        y: lastY
+                    },
+                    radius = dot_size.tag / Zoom;
+                for (var tag_id in TagList) {
+                    var point = TagList[tag_id].point[times];
+                    if (TagList[tag_id].type == "normal" && groupfindMap[point.group_id] == Map_id) {
+                        //判斷點擊位置到座標點位置的距離是否<=半徑長度
+                        if (Math.pow(radius, 2) >= Math.pow(point.x - p.x, 2) + Math.pow(point.y - (p.y - radius * 2), 2)) {
+                            setTagDialog(TagList[tag_id]);
                         }
                     }
                 }
-                alarmArray.forEach(function (v) {
-                    let point = v.point[times];
+                radius = dot_size.alarm / Zoom;
+                for (var tag_id in AlarmList) {
+                    var point = AlarmList[tag_id].point[times];
                     if (groupfindMap[point.group_id] == Map_id) {
-                        let radius = dot_size.alarm / Zoom,
-                            distance = Math.sqrt(Math.pow(point.x - p.x, 2) + Math.pow(point.y - (p.y - radius * 2), 2));
-                        if (distance <= radius) {
-                            setAlarmDialog({
-                                id: v.id,
-                                number: v.id in MemberList ? MemberList[v.id].number : "",
-                                name: v.id in MemberList ? MemberList[v.id].name : "",
-                                status: v.status,
-                                alarm_time: v.alarm_time
-                            });
+                        if (Math.pow(radius, 2) >= Math.pow(point.x - p.x, 2) + Math.pow(point.y - (p.y - radius * 2), 2)) {
+                            setAlarmDialog(AlarmList[tag_id]);
                         }
                     }
-                });
+                }
             },
             handleMobileTouch: function (e) { //手指觸碰事件
                 if (canvasImg.isLoad) {
-                    let x = e.changedTouches[0].pageX,
-                        y = e.changedTouches[0].pageY,
-                        p = get.pointOnCanvas(x, y);
-                    for (let each in tagArray) {
-                        let v = tagArray[each],
-                            point = v.point[times];
-                        if (v.type == "normal" && groupfindMap[point.group_id] == Map_id) {
-                            let radius = dot_size.tag / Zoom,
-                                distance = Math.sqrt(Math.pow(point.x - p.x, 2) + Math.pow(point.y - (p.y - radius * 2), 2));
-                            if (distance <= radius) {
-                                document.getElementById("member_dialog_tag_id").innerText = parseInt(v.id.substring(8), 16);
-                                document.getElementById("member_dialog_number").innerText = v.number;
-                                document.getElementById("member_dialog_name").innerText = v.name;
-                                setMemberPhoto("member_dialog_image", "member_dialog_number", v.number);
-                                $("#member_dialog").dialog("open");
+                    var x = e.changedTouches[0].clientX,
+                        y = e.changedTouches[0].clientY,
+                        p = get.pointOnCanvas(x, y),
+                        radius = dot_size.tag / Zoom;
+                    for (var tag_id in TagList) {
+                        var point = TagList[tag_id].point[times];
+                        if (TagList[tag_id].type == "normal" && groupfindMap[point.group_id] == Map_id) {
+                            if (Math.pow(radius, 2) >= Math.pow(point.x - p.x, 2) + Math.pow(point.y - (p.y - radius * 2), 2)) {
+                                setTagDialog(TagList[tag_id]);
                             }
                         }
                     }
-                    alarmArray.forEach(function (v) {
-                        let point = v.point[times];
+                    radius = dot_size.alarm / Zoom;
+                    for (var tag_id in AlarmList) {
+                        var point = AlarmList[tag_id].point[times];
                         if (groupfindMap[point.group_id] == Map_id) {
-                            let radius = dot_size.alarm / Zoom,
-                                distance = Math.sqrt(Math.pow(point.x - p.x, 2) + Math.pow(point.y - (p.y - radius * 2), 2));
-                            if (distance <= radius) {
-                                setAlarmDialog({
-                                    id: v.id,
-                                    number: v.id in MemberList ? MemberList[v.id].number : "",
-                                    name: v.id in MemberList ? MemberList[v.id].name : "",
-                                    status: v.status,
-                                    alarm_time: v.alarm_time
-                                });
+                            if (Math.pow(radius, 2) >= Math.pow(point.x - p.x, 2) + Math.pow(point.y - (p.y - radius * 2), 2)) {
+                                setAlarmDialog(AlarmList[tag_id]);
                             }
                         }
-                    });
+                    }
                 }
             }
         },
-        setMobileEvents = function () {
-            const hammer_pan = new Hammer(canvas); //Canvas位移
-            const hammer_pinch = new Hammer(canvas); //Canvas縮放
+        setMobileEvents = function () { //設定手勢觸發事件(與滑鼠的功能相同)
+            var hammer_pan = new Hammer(canvas); //Canvas位移
+            var hammer_pinch = new Hammer(canvas); //Canvas縮放
             hammer_pan.get('pan').set({
                 direction: Hammer.DIRECTION_ALL
             });
             hammer_pinch.get('pinch').set({
                 enable: true
             });
-            hammer_pan.on('panstart', ev => {
+            hammer_pan.on('panstart', function (ev) {
                 panPos.canvasLeft = parseInt(canvas.style.marginLeft);
                 panPos.canvasTop = parseInt(canvas.style.marginTop);
             });
-            hammer_pan.on('panmove', ev => {
+            hammer_pan.on('panmove', function (ev) {
                 xleftView = panPos.canvasLeft + ev.deltaX;
                 ytopView = panPos.canvasTop + ev.deltaY;
                 canvas.style.marginLeft = xleftView + "px";
                 canvas.style.marginTop = ytopView + "px";
             });
-            hammer_pinch.on('pinchstart pinchmove', ev => {
-                let BCR = canvas.getBoundingClientRect(),
+            hammer_pinch.on('pinchstart pinchmove', function (ev) {
+                var BCR = canvas.getBoundingClientRect(),
                     pos_x = ev.center.x - BCR.left,
                     pos_y = ev.center.y - BCR.top,
                     scale = 1;
@@ -525,39 +505,37 @@ function RTLS_Canvas(number) {
                 Zoom *= scale; //縮放比例
                 if (display_setting.lock_window && isFocus)
                     return;
-                draw();
-                let Next_x = pos_x * scale, //縮放後的位置(x坐標)
+                var Next_x = pos_x * scale, //縮放後的位置(x坐標)
                     Next_y = pos_y * scale; //縮放後的位置(y坐標)
                 xleftView += pos_x - Next_x;
                 ytopView += pos_y - Next_y;
-                canvas.style.marginLeft = xleftView + "px";
-                canvas.style.marginTop = ytopView + "px";
+                draw();
             });
             canvas.addEventListener("touchstart", event.handleMobileTouch, { //手指點擊畫布中座標，跳出tag的訊息框
                 passive: true
             });
         };
 
-    closeMap.addEventListener("click", adjust.resetCanvas_Anchor, false);
-    restore.btn.addEventListener("click", adjust.restoreCanvas, false);
+    closeMap.addEventListener("click", adjust.resetCanvas_Anchor, false); //綁定關閉地圖事件
+    restore.btn.addEventListener("click", adjust.restoreCanvas, false); //綁定快速切換canvas大小的事件
     canvas.addEventListener("mousemove", event.handleMouseMove, false); //滑鼠在畫布中移動的座標
     canvas.addEventListener("mousedown", event.handleCanvasDown, false); //滑鼠按住畫布綁定畫布拖移事件
     canvas.addEventListener("DOMMouseScroll", event.handleMouseWheel, false); // 畫面縮放(for Firefox)
-    canvas.addEventListener('click', event.handleMouseClick, false); //點擊地圖上的tag，跳出tag的訊息框
+    canvas.addEventListener("click", event.handleMouseClick, false); //點擊地圖上的tag，跳出tag的訊息框
     canvas.addEventListener("mousewheel", event.handleMouseWheel, { //畫布縮放
         passive: true
     });
     setMobileEvents(); //Hammer.js
 
-    this.Map_id = function () {
+    this.adjust = adjust; //從外部也可以使用此物件內的調整方法
+
+    this.draw = draw; //讓外部也可以使用此物件內的繪製方法
+
+    this.getNowMap = function () { //從外部取得此物件的當前地圖ID
         return Map_id;
     };
 
-    this.adjust = adjust;
-
-    this.draw = draw;
-
-    this.inputMap = function (map_id) {
+    this.inputMap = function (map_id) { //從外部也可以載入地圖到此物件內
         Map_id = map_id;
         setMapList();
         if (map_id == "") return;
@@ -570,7 +548,7 @@ function RTLS_Canvas(number) {
             canvasImg.height = serverImg.height;
             canvasImg.scale = MapList[map_id].scale;
             visibleScale.innerText = MapList[map_id].scale;
-            visibleMapName.innerText = "[" + MapList[map_id].name + "]";
+            visibleMapName.innerText = "【" + MapList[map_id].name + "】";
             adjust.setCanvas(this.src, serverImg.width, serverImg.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             pageTimer["draw_frame"]["canvas" + number] = []; //smooth display
@@ -580,7 +558,7 @@ function RTLS_Canvas(number) {
             ctx.save(); //紀錄原比例
             canvas.style.marginLeft = "0px";
             canvas.style.marginTop = "0px";
-            let serImgSize = serverImg.width / serverImg.height,
+            var serImgSize = serverImg.width / serverImg.height,
                 cvsBlock_width = parseFloat(cvsBlock.clientWidth),
                 cvsBlock_height = parseFloat(cvsBlock.clientHeight),
                 cvsSize = cvsBlock_width / cvsBlock_height;
@@ -600,40 +578,34 @@ function RTLS_Canvas(number) {
 }
 
 function canvasMode(blocks) {
-    let content = document.getElementById("content");
-    let h = document.documentElement.clientHeight - 43; //window_height - nav_bar
-    //console.log("h : " + h);
-    let number = 1;
+    var content = document.getElementById("content");
+    var h = Math.ceil((document.documentElement.clientHeight - 43) * 0.96); //window_height - nav_bar
+    var number = 1;
     content.innerHTML = "";
     switch (blocks) {
         case "1":
             number = 1;
             content.innerHTML += createCanvasHtml(1, "100%", h - 40 + "px");
-            //page_height-(bar_height(20)*1 + space(20)) = h - 40
             break;
         case "2_v": //vertical
             number = 2;
-            for (let i = 1; i < 3; i++)
+            for (var i = 1; i < 3; i++)
                 content.innerHTML += createCanvasHtml(i, "100%", (h - 60) / 2 + "px");
-            //page_height-(bar_height(20)*2 + space(20)) = h - 60
             break;
         case "2_h": //horizontal
             number = 2;
-            for (let i = 1; i < 3; i++)
+            for (var i = 1; i < 3; i++)
                 content.innerHTML += createCanvasHtml(i, "50%", h - 40 + "px");
-            //page_height-(bar_height(20)*1 + space(20)) = h - 40
             break;
         case "4":
             number = 4;
-            for (let i = 1; i < 5; i++)
+            for (var i = 1; i < 5; i++)
                 content.innerHTML += createCanvasHtml(i, "50%", (h - 60) / 2 + "px");
-            //page_height-(bar_height(20)*2 + space(20)) = h - 60
             break;
         case "6":
             number = 6;
             content.innerHTML += createCanvasHtml(1, "66.6%", (h - 80) * 2 / 3 + 22 + "px");
-            //page_height-(bar_height(20)*3 + space(20)) = h - 80
-            for (let i = 2; i < 7; i++)
+            for (var i = 2; i < 7; i++)
                 content.innerHTML += createCanvasHtml(i, "33.3%", (h - 80) * 1 / 3 + "px");
             break;
         default:
@@ -643,7 +615,7 @@ function canvasMode(blocks) {
     }
     pageTimer["draw_frame"] = {};
     canvasArray = [];
-    for (let j = 0; j < number; j++)
+    for (var j = 0; j < number; j++)
         canvasArray.push(new RTLS_Canvas(j + 1));
 }
 

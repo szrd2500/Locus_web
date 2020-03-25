@@ -1,13 +1,8 @@
-var token = "";
 var datafield = ["number", "tag_id", "card_id", "Name", "lastName", "firstName", "EnglishName", "gender", "status",
     "department", "department_id", "department_color", "jobTitle", "jobTitle_id", "jobTitle_color", "type",
     "color_type", "color", "alarm_group_id", "phoneJob", "phoneSelf", "mail", "address", "education", "school",
     "grade", "tech_grade", "birthday", "dateEntry", "dateLeave", "note"
 ];
-
-$(function () {
-    token = getToken();
-});
 
 function arrayKeyTranslate(array) {
     var resultArray = [];
@@ -49,9 +44,9 @@ function arrayKeyTranslate(array) {
     });
 
     //input data rows
-    array.forEach(value => {
+    array.forEach(function (value) {
         var obj = {};
-        datafield.forEach(key => {
+        datafield.forEach(function (key) {
             if (key == "tag_id") {
                 obj["tid_id"] = parseInt(value[key].substring(0, 8), 16);
                 obj["user_id"] = parseInt(value[key].substring(8), 16);
@@ -66,68 +61,42 @@ function arrayKeyTranslate(array) {
 
 
 function excelImportTable(jsonData) {
-    if (jsonData) {
-        var coverArr = [];
-        var addArr = [];
-        var overwriteArr = []
-        var successNumber = {
+    var coverArr = [],
+        addArr = [],
+        overwriteArr = [],
+        successNumber = {
             add: [],
             edit: []
-        }
-        var submitNumber = [];
-        var submitCount = 0;
-        var allCover = false;
-        var allDelete = false;
-        var isStop = false;
-        var update_delay = 0;
+        },
+        submitNumber = [],
+        submitCount = 0,
+        allCover = false,
+        allDelete = false,
+        isStop = false,
+        update_delay = 0;
+    if (jsonData) {
         var getXmlHttp = createJsonXmlHttp("sql"); //getMemberList
         getXmlHttp.onreadystatechange = function () {
             if (getXmlHttp.readyState == 4 || getXmlHttp.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
-                    /*if (!revObj.Value[0].Values)
-                        return;
-                        var memberArray =[];
-                    revObj.Value[0].Values.forEach(element=>{
-                        var obj
-                        datafield.forEach(key => {
-                            if (key == "tag_id") {
-                                obj["tid_id"] = parseInt(value[key].substring(0, 8), 16);
-                                obj["user_id"] = parseInt(value[key].substring(8), 16);
-                            } else {
-                                obj[key] = value[key];
-                            }
-                        });
-                        memberArray.push("")
-                    })*/
-                    var memberArray = revObj.Value[0].Values || [];
-                    var dataArray = JSON.parse(jsonData) || [];
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
+                    var memberArray = revObj.Value[0].Values || [],
+                        dataArray = JSON.parse(jsonData) || [];
                     dataArray.forEach(function (element, index) {
                         if (index == 0 || isStop || !element.number)
                             return;
                         var repeat_number = memberArray.findIndex(function (info) {
-                            return info.number == element.number;
-                        });
-                        var repeat_tagid = memberArray.findIndex(function (info) {
-                            return parseInt(info.tag_id.substring(8), 16) == element.user_id;
-                        });
+                                return info.number == element.number;
+                            }),
+                            repeat_tagid = memberArray.findIndex(function (info) {
+                                return parseInt(info.tag_id.substring(8), 16) == element.user_id;
+                            });
                         if (repeat_number > -1) { //工號重複
                             if (allDelete) return; //全部略過 
                             if (allCover) { //全部覆蓋
-                                question(repeat_number, repeat_tagid, element);
+                                question2(repeat_number, repeat_tagid, element);
                             } else { //不全部覆蓋(一筆筆詢問)
-                                if (confirm($.i18n.prop('i_confirm_2') + element.number + $.i18n.prop('i_confirm_3'))) {
-                                    if (confirm($.i18n.prop('i_confirm_4')))
-                                        allCover = true;
-                                    question(repeat_number, repeat_tagid, element);
-                                } else {
-                                    if (confirm($.i18n.prop('i_confirm_5'))) {
-                                        if (confirm($.i18n.prop('i_confirm_6')))
-                                            allDelete = true;
-                                    } else {
-                                        question(repeat_number, repeat_tagid, element);
-                                    }
-                                }
+                                question1(repeat_number, repeat_tagid, element);
                             }
                         } else if (element.number != "") {
                             if (repeat_tagid > -1) {
@@ -153,7 +122,7 @@ function excelImportTable(jsonData) {
                         }
                         if (addArr.length > 0) {
                             successNumber.add = [];
-                            addArr.forEach(element => {
+                            addArr.forEach(function (element) {
                                 delay++;
                                 setTimeout(function () {
                                     sendMemberData("AddStaff", element);
@@ -162,7 +131,7 @@ function excelImportTable(jsonData) {
                         }
                         if (coverArr.length > 0) {
                             successNumber.edit = [];
-                            coverArr.forEach(element => {
+                            coverArr.forEach(function (element) {
                                 delay++;
                                 setTimeout(function () {
                                     sendMemberData("EditStaff", element);
@@ -186,7 +155,26 @@ function excelImportTable(jsonData) {
         }));
     }
 
-    function question(repeat_index1, repeat_index2, data) {
+    function question1(repeat_index1, repeat_index2, data) {
+        if (confirm($.i18n.prop('i_confirm_2') + data.number + $.i18n.prop('i_confirm_3'))) {
+            if (confirm($.i18n.prop('i_confirm_4')))
+                allCover = true;
+            question2(repeat_index1, repeat_index2, data);
+        } else {
+            if (confirm($.i18n.prop('i_confirm_5'))) {
+                if (confirm($.i18n.prop('i_confirm_6')))
+                    allDelete = true;
+            } else {
+                if (confirm($.i18n.prop('i_confirm_13')))
+                    isStop = true;
+                else {
+                    question1(repeat_index1, repeat_index2, data)
+                }
+            }
+        }
+    }
+
+    function question2(repeat_index1, repeat_index2, data) {
         if (repeat_index2 > -1) {
             if (repeat_index2 == repeat_index1) {
                 //工號且使用者編號皆重複==>可覆蓋重複工號者
@@ -194,14 +182,14 @@ function excelImportTable(jsonData) {
                 update_delay++;
             } else {
                 //工號重複但使用者編號與其他已存在的人員重複==>必須略過
-                if (confirm($.i18n.prop('I_confirm_11') + data.number + $.i18n.prop('I_confirm_12'))) {
+                if (confirm($.i18n.prop('i_confirm_11') + data.number + $.i18n.prop('i_confirm_12'))) {
                     if (confirm($.i18n.prop('i_confirm_6')))
                         allDelete = true;
                 } else {
-                    if (confirm($.i18n.prop('I_confirm_13')))
+                    if (confirm($.i18n.prop('i_confirm_13')))
                         isStop = true;
                     else
-                        question(repeat_index1, repeat_index2, data);
+                        question2(repeat_index1, repeat_index2, data);
                 }
             }
         } else {
@@ -255,7 +243,7 @@ function excelImportTable(jsonData) {
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                     submitNumber.splice(submitNumber.indexOf(number), 1);
                     if (operate == "AddStaff")
                         successNumber.add.push(number);
@@ -294,7 +282,7 @@ function deleteMemberData(number_array) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 return;
             }
         }
@@ -310,7 +298,7 @@ function fullOf4Byte(id) {
     id = parseInt(id).toString(16).toUpperCase();
     var length = id.length;
     if (length > 0 && length < 9) {
-        for (i = 0; i < 8 - length; i++) {
+        for (var i = 0; i < 8 - length; i++) {
             id = "0" + id;
         }
         return id;

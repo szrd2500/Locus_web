@@ -1,13 +1,10 @@
-var token = "";
 $(function () {
-    token = getToken();
-    /**
-     * Check this page's permission and load navbar
-     */
-    if (!getPermissionOfPage("Member_Setting")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    var h = document.documentElement.clientHeight;
+    $("#chart-container").css("height", h - 150 + "px");
+    
+    /* Check this page's permission and load navbar */
+    loadUserData();
+    checkPermissionOfPage("Member_Setting");
     setNavBar("Member_Setting", "Job_Title_Setting");
 
     var size = 10;
@@ -38,7 +35,7 @@ $(function () {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                 datascource.children = revObj.Value[0].Values;
             } else {
                 datascource.children = null;
@@ -147,7 +144,7 @@ $(function () {
                         addXmlHttp.onreadystatechange = function () {
                             if (addXmlHttp.readyState == 4 || addXmlHttp.readyState == "complete") {
                                 var revObj = JSON.parse(this.responseText);
-                                if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                                if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                                     oc.addSiblings($node, nodeVals.map(function (item) {
                                         return {
                                             'name': item,
@@ -170,7 +167,7 @@ $(function () {
                         addXmlHttp.onreadystatechange = function () {
                             if (addXmlHttp.readyState == 4 || addXmlHttp.readyState == "complete") {
                                 var revObj = JSON.parse(this.responseText);
-                                if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                                if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                                     var hasChild = $node.parent().attr('colspan') > 0 ? true : false;
                                     if (!hasChild) {
                                         var rel = nodeVals.length > 1 ? '110' : '100';
@@ -235,7 +232,7 @@ $(function () {
                 deleteXmlHttp.onreadystatechange = function () {
                     if (deleteXmlHttp.readyState == 4 || deleteXmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                             oc.removeNodes($node);
                             $('#selected-node').val('').data('node', null);
                         }
@@ -307,7 +304,7 @@ $(function () {
                     editXmlHttp.onreadystatechange = function () {
                         if (editXmlHttp.readyState == 4 || editXmlHttp.readyState == "complete") {
                             var revObj = JSON.parse(this.responseText);
-                            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                            if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                                 var nodeTitle = $node.children('.title');
                                 if ($node.find('.symbol').length) {
                                     nodeTitle.text(editName).css('background-color', editColor)

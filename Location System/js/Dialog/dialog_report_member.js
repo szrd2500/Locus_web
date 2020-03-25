@@ -1,6 +1,6 @@
 'use strict';
 
-const RowsList = {
+var RowsList = {
     "number": {
         i18n: "i_number",
         timeline: true,
@@ -104,7 +104,7 @@ const RowsList = {
 };
 
 function setMembersDialog() {
-    let dialog,
+    var dialog,
         return_table = $("#table_members tbody"),
         search_num = $("#search_number"),
         search_tag = $("#search_tag_id"),
@@ -113,23 +113,23 @@ function setMembersDialog() {
         allFields = $([]).add(search_num).add(search_tag).add(search_name);
 
     function inputMembers() {
-        let add_number_arr = [],
+        var add_number_arr = [],
             count = document.getElementsByName("select_members").length,
             chk_members = document.getElementsByName("chk_members");
         if (chk_members.length == 0)
             return alert("請至少選擇一個人員!");
-        chk_members.forEach(chk => {
+        chk_members.forEach(function (chk) {
             if (chk.checked) {
-                let exist = sel_members_number.findIndex(function (number) {
+                var exist = selectNumberArray.findIndex(function (number) {
                     return number == chk.value;
                 });
                 if (exist == -1) {
-                    sel_members_number.push(chk.value);
+                    selectNumberArray.push(chk.value);
                     add_number_arr.push(chk.value);
                 }
             }
         });
-        add_number_arr.forEach(number => {
+        add_number_arr.forEach(function (number) {
             count++;
             return_table.append("<tr>" +
                 "<td><input type='checkbox' name=\"select_members\" value=\"" + number + "\" /> " +
@@ -156,13 +156,25 @@ function setMembersDialog() {
             allFields.val("").removeClass("ui-state-error");
             $("#search_dept option").eq(0).prop("selected", true);
             $("#search_member_list tbody").empty();
-            let item = 0;
-            for (let number in memberList) {
+            var item = 0;
+            for (var number in memberList) {
                 item++;
                 addMemberRow(item, memberList[number]);
             }
             $("#chk_all_search_member").prop("checked", false);
         }
+    });
+
+    $("#btn_reset_member").on("click", function () {
+        allFields.val("").removeClass("ui-state-error");
+        $("#search_dept option").eq(0).prop("selected", true);
+        $("#search_member_list tbody").empty();
+        var item = 0;
+        for (var number in memberList) {
+            item++;
+            addMemberRow(item, memberList[number]);
+        }
+        $("#chk_all_search_member").prop("checked", false);
     });
 
     $("#btn_add_members").on("click", function () {
@@ -171,7 +183,7 @@ function setMembersDialog() {
     });
 
     $("#btn_search_member").on("click", function () {
-        let result = memberList,
+        var result = memberList,
             target = {
                 user_id: search_tag.val(),
                 number: search_num.val(),
@@ -179,23 +191,23 @@ function setMembersDialog() {
                 department_id: search_dept.val()
             };
 
-        for (let condition in target) {
+        for (var condition in target) {
             result = membersFilter(result, condition, "");
         }
 
         $("#search_member_list tbody").empty();
-        let item = 0;
-        for (let number in result) {
+        var item = 0;
+        for (var number in result) {
             item++;
             addMemberRow(item, result[number]);
         }
 
         function membersFilter(list, condition, null_str) {
-            let temp = {};
+            var temp = {};
             if (target[condition] == null_str) {
                 temp = list;
             } else {
-                for (let number in list) {
+                for (var number in list) {
                     if (list[number][condition] == target[condition])
                         temp[number] = list[number];
                 }
@@ -207,20 +219,21 @@ function setMembersDialog() {
     getMemberData();
 
     function getMemberData() {
-        const json_request = JSON.stringify({
+        var json_request = JSON.stringify({
             "Command_Type": ["Read"],
             "Command_Name": ["GetStaffs"],
             "api_token": [token]
         });
-        let jxh = createJsonXmlHttp("sql");
+        var jxh = createJsonXmlHttp("sql");
         jxh.onreadystatechange = function () {
             if (jxh.readyState == 4 || jxh.readyState == "complete") {
-                let revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
-                    let revInfo = revObj.Value[0].Values || [];
+                var revObj = JSON.parse(this.responseText);
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
+                    var revInfo = revObj.Value[0].Values || [];
                     $("#search_member_list tbody").empty();
                     revInfo.forEach(function (member, i) {
-                        member.user_id = parseInt(member.tag_id.substring(8), 16);
+                        member["user_id"] = parseInt(member.tag_id.substring(8), 16);
+                        member["tid_id"] = parseInt(member.tag_id.substring(0, 8), 16);
                         addMemberRow(i + 1, member);
                         memberList[member.number] = member;
                     });
@@ -231,7 +244,7 @@ function setMembersDialog() {
     }
 
     function addMemberRow(item, data) {
-        let tr_id = "member_index_" + item;
+        var tr_id = "member_index_" + item;
         $("#search_member_list tbody").append("<tr id=\"" + tr_id + "\">" +
             "<td><input type='checkbox' name=\"chk_members\" value=\"" + data.number + "\"" +
             " onchange=\"selectCheckbox(\'" + tr_id + "\')\" /> " + item + "</td>" +
@@ -239,17 +252,6 @@ function setMembersDialog() {
             "<td>" + data.user_id + "</td>" +
             "<td>" + data.Name + "</td>" +
             "<td>" + data.department + "</td></tr>");
-
-        /*$("#" + tr_id).on("click", function () {
-            let checkbox = $(this).find("td:eq(0) input[type='checkbox']");
-            if (checkbox.prop("checked")) {
-                checkbox.prop("checked", false);
-                $(this).removeClass("selected");
-            } else {
-                checkbox.prop("checked", true);
-                $(this).addClass("selected");
-            }
-        });*/
     }
 }
 
@@ -278,7 +280,7 @@ function convertTableToArray(table_id) {
 }
 
 function selectCheckbox(tr_id) {
-    let tr = document.getElementById(tr_id);
+    var tr = document.getElementById(tr_id);
     if (tr.classList.contains("selected"))
         tr.classList.remove("selected");
     else
@@ -286,15 +288,15 @@ function selectCheckbox(tr_id) {
 }
 
 function setDisplayRowsDialog() {
-    let dialog;
+    var dialog;
 
     function submitDisplayRows() {
-        let chk_display_rows = document.getElementsByName("chk_display_rows"),
+        var chk_display_rows = document.getElementsByName("chk_display_rows"),
             chk_person_data = document.getElementsByName("chk_person_data"),
             tr_member_attendance = "",
             tr_person_timeline = "";
 
-        for (let i = 0; i < chk_display_rows.length; i++) {
+        for (var i = 0; i < chk_display_rows.length; i++) {
             if (chk_display_rows[i].checked) {
                 RowsList[chk_display_rows[i].value].attendance = true;
                 tr_member_attendance += "<th>" + $.i18n.prop(RowsList[chk_display_rows[i].value].i18n) + "</th>";
@@ -305,13 +307,13 @@ function setDisplayRowsDialog() {
         $("#table_member_attendance thead").html("<tr><th>" + $.i18n.prop("i_item") + "</th>" +
             tr_member_attendance +
             "<th>" + $.i18n.prop('i_clockIn') + "</th>" +
-            "<th>" + $.i18n.prop('i_clockOut') + "</th></tr>");
+            "<th>" + $.i18n.prop('i_clockOut') + "</th>");
 
-        let count_data = 0;
-        for (let j = 0; j < chk_person_data.length; j++) {
+        var count_data = 0;
+        for (var j = 0; j < chk_person_data.length; j++) {
             if (chk_person_data[j].checked) {
                 RowsList[chk_person_data[j].value].timeline = true;
-                let id = "report_person_" + chk_person_data[j].value;
+                var id = "report_person_" + chk_person_data[j].value;
                 if (count_data / 4 > 0 && count_data % 4 == 0) //4 datas => 1 column
                     tr_person_timeline += "</tr><tr>";
                 tr_person_timeline += "<td>" + $.i18n.prop(RowsList[chk_person_data[j].value].i18n) + "</td>" +
@@ -353,12 +355,12 @@ function setDisplayRowsDialog() {
         document.getElementById("table_display_rows").innerHTML = createTbody("chk_display_rows", "attendance");
 
         function createTbody(checkbox_name, type) {
-            let html = "",
+            var html = "",
                 count_row = 0,
                 title_arr = Object.keys(RowsList),
                 integer = parseInt(title_arr.length / 2, 10);
-            for (let i = 0; i < title_arr.length; i++) {
-                let check = "";
+            for (var i = 0; i < title_arr.length; i++) {
+                var check = "";
                 if (i == 0)
                     check = "checked disabled";
                 else if (RowsList[title_arr[i]][type] == true)
@@ -376,5 +378,212 @@ function setDisplayRowsDialog() {
             }
             return html;
         }
+    }
+}
+
+var arraysToExcel = {
+    timeline: function (array, wbname, appname) {
+        var ctx = "";
+        var workbookXML = "";
+        var worksheetsXML = "";
+        var rowsXML = "";
+        var uri = 'data:application/vnd.ms-excel;base64,',
+            tmplWorkbookXML = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>' +
+            '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">' +
+            '<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Author>Axel Richter</Author>' +
+            '<Created>{created}</Created></DocumentProperties>' +
+            '<Styles>' +
+            '<Style ss:ID="Currency"><NumberFormat ss:Format="Currency"></NumberFormat></Style>' +
+            '<Style ss:ID="Date"><NumberFormat ss:Format="Medium Date"></NumberFormat></Style>' +
+            '</Styles>' +
+            '{worksheets}</Workbook>',
+            tmplWorksheetXML = '<Worksheet ss:Name="{nameWS}"><Table>{rows}</Table></Worksheet>',
+            tmplCellXML = '<Cell{attributeStyleID}{attributeFormula}><Data ss:Type="{nameType}">{data}</Data></Cell>',
+            base64 = function (s) {
+                return window.btoa(unescape(encodeURIComponent(s)));
+            },
+            format = function (s, c) {
+                return s.replace(/{(\w+)}/g, function (m, p) {
+                    return c[p];
+                });
+            };
+
+        var titleText = '<Row>';
+        for (var title in array[0]) {
+            ctx = {
+                attributeStyleID: '',
+                nameType: 'String',
+                data: title,
+                attributeFormula: ''
+            };
+            titleText += format(tmplCellXML, ctx);
+        }
+        titleText += '</Row>';
+
+        var wsnames = "";
+        var count = 0;
+
+        while (array.length > 0) {
+            wsnames = (count + 1) + "~";
+
+            //標題列
+            rowsXML = titleText;
+
+            //內容列 
+            for (var i = 0; i < 5000; i++) {
+                if (array[i]) {
+                    count++;
+                    rowsXML += '<Row>';
+                    for (var title in array[i]) {
+                        ctx = {
+                            attributeStyleID: '',
+                            nameType: 'String',
+                            data: array[i][title],
+                            attributeFormula: ''
+                        };
+                        rowsXML += format(tmplCellXML, ctx);
+                    }
+                    rowsXML += '</Row>';
+                }
+            }
+
+            ctx = {
+                rows: rowsXML,
+                nameWS: wsnames + count
+            };
+            worksheetsXML += format(tmplWorksheetXML, ctx);
+
+            if (array.length < 5000)
+                array = [];
+            else
+                array = array.slice(5000);
+        }
+
+        ctx = {
+            created: (new Date()).getTime(),
+            worksheets: worksheetsXML
+        };
+        workbookXML = format(tmplWorkbookXML, ctx);
+
+        //查看后台的打印输出
+        //console.log(workbookXML);
+
+        var link = document.createElement("A");
+        link.href = uri + base64(workbookXML);
+        link.download = wbname || 'Workbook.xls';
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    },
+
+    attendance: function (arrays, wsnames, wbname, appname) {
+        var ctx = "";
+        var workbookXML = "";
+        var worksheetsXML = "";
+        var rowsXML = "";
+        var titlesList = {};
+        var uri = 'data:application/vnd.ms-excel;base64,',
+            tmplWorkbookXML = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>' +
+            '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">' +
+            '<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Author>Axel Richter</Author>' +
+            '<Created>{created}</Created></DocumentProperties>' +
+            '<Styles>' +
+            '<Style ss:ID="Currency"><NumberFormat ss:Format="Currency"></NumberFormat></Style>' +
+            '<Style ss:ID="Date"><NumberFormat ss:Format="Medium Date"></NumberFormat></Style>' +
+            '</Styles>' +
+            '{worksheets}</Workbook>',
+            tmplWorksheetXML = '<Worksheet ss:Name="{nameWS}"><Table>{rows}</Table></Worksheet>',
+            tmplCellXML = '<Cell{attributeStyleID}{attributeFormula}><Data ss:Type="{nameType}">{data}</Data></Cell>',
+            base64 = function (s) {
+                return window.btoa(unescape(encodeURIComponent(s)));
+            },
+            format = function (s, c) {
+                return s.replace(/{(\w+)}/g, function (m, p) {
+                    return c[p];
+                });
+            };
+
+        titlesList["item"] = $.i18n.prop('i_item');
+        for (var title in RowsList) {
+            if (RowsList[title]["attendance"] == true)
+                titlesList[title] = $.i18n.prop(RowsList[title]["i18n"]);
+        }
+        titlesList["clockIn"] = $.i18n.prop('i_clockIn');
+        titlesList["clockOut"] = $.i18n.prop('i_clockOut');
+
+        for (var i = 0; i < arrays.length; i++) {
+            //標題列
+            rowsXML += '<Row>';
+            for (var title in titlesList) {
+                ctx = {
+                    attributeStyleID: '',
+                    nameType: 'String',
+                    data: titlesList[title],
+                    attributeFormula: ''
+                };
+                rowsXML += format(tmplCellXML, ctx);
+            }
+            rowsXML += '</Row>';
+
+            //內容列
+            var count = 0;
+            targetArray.forEach(function (target) {
+                var member_info = memberList[target.number],
+                    attend_from = historyData[i][target.tag_id].first,
+                    attend_end = historyData[i][target.tag_id].last;
+                count++;
+                rowsXML += '<Row>';
+                for (var title in titlesList) {
+                    var value = null;
+                    switch (title) {
+                        case "item":
+                            value = count;
+                            break;
+                        case "clockIn":
+                            value = (attend_from ? attend_from.time.split(" ")[1] : "缺席");
+                            break;
+                        case "clockOut":
+                            value = (attend_end ? attend_end.time.split(" ")[1] : "缺席");
+                            break;
+                        default:
+                            value = member_info[title] ? member_info[title] : "";
+                            break;
+                    }
+                    ctx = {
+                        attributeStyleID: '',
+                        nameType: 'String',
+                        data: value,
+                        attributeFormula: ''
+                    };
+                    rowsXML += format(tmplCellXML, ctx);
+                }
+                rowsXML += '</Row>';
+            });
+
+            ctx = {
+                rows: rowsXML,
+                nameWS: wsnames[i] || 'Sheet' + i
+            };
+            worksheetsXML += format(tmplWorksheetXML, ctx);
+            rowsXML = "";
+        }
+
+        ctx = {
+            created: (new Date()).getTime(),
+            worksheets: worksheetsXML
+        };
+        workbookXML = format(tmplWorkbookXML, ctx);
+
+        //查看后台的打印输出
+        //console.log(workbookXML);
+
+        var link = document.createElement("A");
+        link.href = uri + base64(workbookXML);
+        link.download = wbname || 'Workbook.xls';
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 }

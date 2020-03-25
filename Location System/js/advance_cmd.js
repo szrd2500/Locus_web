@@ -1,18 +1,15 @@
 'use strict';
-var isStart = false;
-var command_map = {};
-var command_name = "";
-var ipPortList = {};
-var token = "";
+var command_name = "",
+    command_map = {},
+    ipPortList = {};
+
 $(function () {
-    token = getToken();
-    /*
-     * Check this page's permission and load navbar
-     */
-    if (!getPermissionOfPage("Reference")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    var h = document.documentElement.clientHeight;
+    $(".table_block").css("max-height", h - 80 + "px");
+
+    /* Check this page's permission and load navbar */
+    loadUserData();
+    checkPermissionOfPage("Reference");
     setNavBar("Reference", "Advance_cmd");
 
     $("#cmd_read").on("change", function () {
@@ -30,8 +27,8 @@ $(function () {
         if (result && result["Cmd Name"]) {
             command_map = result["Cmd Name"];
             $("#table_advance_cmd tbody").empty();
-            let item = 0;
-            for (let i in command_map) {
+            var item = 0;
+            for (var i in command_map) {
                 item++;
                 $("#table_advance_cmd tbody").append("<tr>" +
                     "<td>" + item + "</td>" +
@@ -86,17 +83,17 @@ $(function () {
 });
 
 function submitCommand() {
-    let target_ip = $("#sel_device_ip").val();
+    var target_ip = $("#sel_device_ip").val();
     if (!target_ip || target_ip == "" || $("#send_cmd").val() == "") {
         alert("Please search and select one device, click the command in left list or input the command!");
         return;
     }
-    let xmlHttp = createJsonXmlHttp('advancecmd');
+    var xmlHttp = createJsonXmlHttp('advancecmd');
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            let revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0]) {
-                let revInfo = revObj.Value[0][0][0];
+            var revObj = JSON.parse(this.responseText);
+            if (checkTokenAlive(revObj) && revObj.Value[0]) {
+                var revInfo = revObj.Value[0][0][0];
                 if (revInfo.Command_status == 1 && revInfo.TARGET_IP == target_ip)
                     $("#receive_cmd").val(revInfo.Command_Ack.toUpperCase());
             } else {

@@ -7,23 +7,23 @@
     <meta id="i18n_pagename" content="common">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
+    <!--Jquery-->
+    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
     <!--BootStrap3-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <!--JQuery庫-->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!-- Add icon library -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.4.0.css" />
+    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/import/bootstrap-3.4.0.min.js"></script>
+    <!--Add icon library-->
+    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
     <!-- Icon Navbar-->
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
     <!--編寫css-->
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
     <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
-    <link rel="stylesheet" type="text/css" href="../css/advance_setting.css" />
+    <link rel="stylesheet" type="text/css" href="../css/slider.css" />
+    <link rel="stylesheet" type="text/css" href="../css/advance_setting_style.css" />
     <script type="text/javascript" src="../js/general_functions.js"></script>
     <script type="text/javascript" src="../js/check_permission.js"></script>
     <script type="text/javascript" src="../js/advance_common.js"></script>
@@ -37,60 +37,105 @@
 
         <!-- Web Content -->
         <div class="row">
-            <div class="col-lg-12">
-                <div style="float:right;">
-                    <img class="logo" src="../image/logo/icon.png">
-                    <label class="i18n" name="i_language"></label>
-                    <select id="language" class="select-lang">
-                        <option value="en">English</option>
-                        <option value="zh-TW">繁體中文</option>
-                        <option value="zh-CN">简体中文</option>
-                    </select>
-                    <label id="login_user"></label>
-                </div>
+            <div class="col-lg-12 top_nav">
+                <img class="logo" src="../image/logo/icon.png">
+                <label id="login_user"></label>
+            </div>
+            <div class="tool-bar">
+                <label class="i18n" name="i_language"></label>
+                <select id="language" class="select-lang">
+                    <option value="en">English</option>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="zh-CN">简体中文</option>
+                </select>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-lg-8">
-                <div id="reference_block" style="overflow:auto; margin:5px; height:100%; max-height: 700px;">
-                    <table id="table_reference_tags" class="table-line">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Source ID</th>
-                                <th>Anchor ID</th>
-                                <th>Signal</th>
-                                <th>Source Count</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#tab_kalman_filter" class="i18n" name="i_kalmanFilter"></a></li>
+            <li><a data-toggle="tab" href="#tab_reference" class="i18n" name="i_reference"></a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="tab_kalman_filter" class="tab-pane fade in active">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="title-shadow i18n" name="i_kalmanFilter"></h3>
+                        <div class="slider-block">
+                            <span>Predict 1: </span><label class="slider-text" id="text_predict_1">0.8</label>
+                            <input id="slider_predict_1" type="range" class="slider" min="0" step="0.1" max="1"
+                                value="0.8" />
+                            <br>
+                            <span>Predict 2: </span><label class="slider-text" id="text_predict_2">0.8</label>
+                            <input id="slider_predict_2" type="range" class="slider" min="0" step="0.1" max="1"
+                                value="0.8" />
+                            <br>
+                            <span>Predict 3: </span><label class="slider-text" id="text_predict_3">0.8</label>
+                            <input id="slider_predict_3" type="range" class="slider" min="0" step="0.1" max="1"
+                                value="0.8" />
+                            <br>
+                            <span>Predict 4: </span><label class="slider-text" id="text_predict_4">0.8</label>
+                            <input id="slider_predict_4" type="range" class="slider" min="0" step="0.1" max="1"
+                                value="0.8" />
+                            <br>
+                            <span>Convergence: </span><label class="slider-text" id="text_convergence">8</label>
+                            <input id="slider_convergence" type="range" class="slider" min="2" max="1000" value="8">
+                            <br><br>
+                            <div style="text-align: center !important;">
+                                <button class="btn btn-primary" onclick="sendKalmanParams()">
+                                    Send The Settings</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div style="padding: 20% 0% 20% 20%;">
-                    <label>Source Type : </label>
-                    <select id="select_source_type">
-                        <option value="anchor">Main Anchor</option>
-                        <option value="tag">Tag</option>
-                    </select>
-                    <br><br>
-                    <label>Source ID : </label>
-                    <select id="select_source_id"></select>
-                    <input type="text" id="input_source_id" value="" style="display: none; max-width: 70px;" />
-                    <br><br>
-                    <label>Anchor ID : </label>
-                    <select id="select_anchor_id"></select>
-                </div>
-                <div style="text-align: center;">
-                    <input type="checkbox" id="chk_latest_items" value="true">Latest Items<br><br>
-                    <button class="btn btn-default" id="btn_send" onclick="startRefence()">Start</button>
+            <div id="tab_reference" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <h3 class="title-shadow i18n" name="i_referenceTest"></h3>
+                        <div style="padding: 20px; font-size: 14px;">
+                            <label>Source Type : </label>
+                            <select id="select_source_type">
+                                <option value="anchor">Main Anchor</option>
+                                <option value="tag">Tag</option>
+                            </select>
+                            <br><br>
+                            <label>Source ID : </label>
+                            <select id="select_source_id"></select>
+                            <input type="text" id="input_source_id" value="" style="display: none; max-width: 70px;" />
+                            <br><br>
+                            <label>Anchor ID : </label>
+                            <select id="select_anchor_id"></select>
+                            <br><br>
+                            <div style="margin-top: 50px; padding-left: 40px; font-size: 16px;">
+                                <input type="checkbox" id="chk_latest_items" value="true"> Latest Items<br><br>
+                                <button class="btn btn-default" id="btn_send" onclick="startRefence()"
+                                    style="margin-left: 30px;">Start</button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="col-lg-8">
+                        <div id="reference_block">
+                            <table id="table_reference_tags" class="table-line">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Source ID</th>
+                                        <th>Anchor ID</th>
+                                        <th>Signal</th>
+                                        <th>Source Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
-    <!-- i18n -->
+    <!-- i18n 多語言翻譯 -->
     <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
     <script type="text/javascript" src="../js/i18n/language.js"></script>
 </body>

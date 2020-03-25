@@ -7,16 +7,19 @@
     <meta id="i18n_pagename" content="common">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
-    <!--JQuery-->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--Jquery-->
+    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
     <!--BootStrap3-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.4.0.css" />
+    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/import/bootstrap-3.4.0.min.js"></script>
     <!--Add icon library-->
-    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css'
-        integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
+    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
+    <!--Time picker-->
+    <link rel="stylesheet" href="../css/timepicker/bootstrap-material-datetimepicker.css" />
+    <script type="text/javascript" src="../js/timepicker/moment.js"></script>
+    <script type="text/javascript" src="../js/timepicker/bootstrap-material-datetimepicker.js"></script>
     <!--Icon Navbar-->
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
@@ -25,15 +28,12 @@
     <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
     <link rel="stylesheet" type="text/css" href="../css/timeline.css" />
     <!--Edit js-->
+    <script type="text/javascript" src="../js/hammer/hammer.min.js"></script>
     <script type="text/javascript" src="../js/general_functions.js"></script>
     <script type="text/javascript" src="../js/check_permission.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../js/timeline_get.js"></script>
     <script type="text/javascript" src="../js/timeline_draw.js"></script>
-    <!--Time picker-->
-    <link rel="stylesheet" href="../css/timepicker/bootstrap-material-datetimepicker.css" />
-    <script type="text/javascript" src="http://momentjs.com/downloads/moment-with-locales.js"></script>
-    <script type="text/javascript" src="../js/timepicker/bootstrap-material-datetimepicker.js"></script>
 </head>
 
 <body>
@@ -43,25 +43,25 @@
 
         <!--Web content-->
         <div class="row">
-            <div class="col-lg-12">
-                <div style="float:right;">
-                    <img class="logo" src="../image/logo/icon.png">
-                    <label class="i18n" name="i_language"></label>
-                    <select id="language" class="select-lang">
-                        <option value="en">English</option>
-                        <option value="zh-TW">繁體中文</option>
-                        <option value="zh-CN">简体中文</option>
-                    </select>
-                    <label id="login_user"></label>
-                </div>
+            <div class="col-lg-12 top_nav">
+                <img class="logo" src="../image/logo/icon.png">
+                <label id="login_user"></label>
+            </div>
+            <div class="tool-bar">
+                <label class="i18n" name="i_language"></label>
+                <select id="language" class="select-lang">
+                    <option value="en">English</option>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="zh-CN">简体中文</option>
+                </select>
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" style="margin-top: 10px;">
             <div class="col-lg-3">
                 <div class="sidebar_left">
                     <div class="panel-group" id="accordion">
-                        <div class="panel panel-primary">
+                        <div class="panel">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" class="i18n"
@@ -95,7 +95,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel panel-primary">
+                        <div class="panel">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" class="i18n"
@@ -158,6 +158,8 @@
                                             <thead>
                                                 <tr>
                                                     <th class="i18n" name="i_id"></th>
+                                                    <th class="i18n" name="i_number"></th>
+                                                    <th class="i18n" name="i_name"></th>
                                                     <th class="i18n" name="i_assign" style="max-width:30px;"></th>
                                                 </tr>
                                             </thead>
@@ -178,11 +180,10 @@
                                             <option class="i18n" name="i_electronicFence" value="Fence"></option>
                                         </select>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
-                        <div class="panel panel-primary">
+                        <div class="panel">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" class="i18n"
@@ -205,12 +206,18 @@
                                             <i class="fas fa-compress"></i></button>
                                     </div>
                                     <br>
-                                    <label><span class="i18n" name="i_intervals"></span> : <input type="text"
-                                            id="interval" value="100"
-                                            style="border:0; color:#f6931f; font-weight:bold; width:40px;" />
-                                        <label style="color:#f6931f;">(<span class="i18n" name="i_ms"></span>)</label>
-                                        <div id="interval_slider" style="width:250px"></div>
-                                    </label>
+                                    <input type="checkbox" id="chk_diaplay_alarm" /> <label>在地圖上標示警報紀錄</label>
+                                    <br>
+                                    <input type="checkbox" id="chk_use_input_map" /> <label>使用導入的地圖當底圖(不可切換地圖)</label>
+                                    <label for="btn_input_map" class="btn-add-file"><span class="i18n"
+                                            name="i_input_map"></span> <i class="far fa-image"></i></label>
+                                    <input id="btn_input_map" type="file" accept="image/*" /></li>
+                                    <input type="text" id="input_map_src" style="width: auto;" readonly />
+                                    <br><br>
+                                    <label class="i18n" name="i_intervals"></label> : <label id="interval"
+                                        style="border:0; color:#f6931f; font-weight:bold; width:auto;"></label>
+                                    <span style="color:#f6931f;">(<label class="i18n" name="i_ms"></label>)</span>
+                                    <div id="interval_slider" style="width:250px"></div>
                                 </div>
                             </div>
                         </div>
@@ -226,7 +233,7 @@
                         </canvas>
                     </div>
                     <div id="positionInfo">
-                        <span class="i18n" name="i_posX" style="margin-left:20px;">
+                        <span class="i18n" name="i_posX">
                         </span> : <label id="draw_x"></label>
                         <span class="i18n" name="i_posY" style="margin-left:20px;">
                         </span> : <label id="draw_y"></label>
@@ -252,33 +259,73 @@
             </div>
             <div class="col-lg-3">
                 <div class="sidebar_right">
-                    <div id="statistics_info">
-                        <label>地圖名稱</label>: <label id="current_map"></label><br>
-                        <label>時間</label>: <label id="current_time"></label><br>
-                        <label>區域人數</label>: <label id="current_tags_amount"></label><br>
-                        <label>群組人數</label>: <label id="group_amount"></label>
+                    <div id="statistics_info" class="noborder-block info-block">
+                        <table>
+                            <tr>
+                                <td><label class="i18n" name="i_mapName"></label>: </td>
+                                <td><label id="current_map"></label></td>
+                            </tr>
+                            <tr>
+                                <td><label class="i18n" name="i_date"></label>: </td>
+                                <td><label id="current_date"></label></td>
+                            </tr>
+                            <tr>
+                                <td><label class="i18n" name="i_time"></label>: </td>
+                                <td><label id="current_time"></label></td>
+                            </tr>
+                            <tr>
+                                <td><label class="i18n" name="i_regionalPopulation"></label>: </td>
+                                <td><label id="current_tags_amount"></label></td>
+                            </tr>
+                            <tr>
+                                <td><label>群組人數</label>: </td>
+                                <td><label id="group_amount"></label></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <br>
+                    <div id="alarm_info" class="info-block">
+                        <label>警報紀錄:</label>
+                        <table id="alarm_table">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 60px;"><label class="i18n" name="i_item"></label></th>
+                                    <th style="min-width: 100px;"><label class="i18n" name="i_alarmStatus"></label></th>
+                                    <th style="min-width: 80px;"><label class="i18n" name="i_tagID"></label></th>
+                                    <th style="min-width: 170px;"><label class="i18n" name="i_time"></label></th>
+                                    <th style="min-width: 60px;"><label class="i18n" name="i_locate"></label></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                     <br>
                     <div id="member_info">
                         <div class="thumbnail" id="member_thumb">
                             <table>
                                 <tr>
-                                    <td><img id="thumb_img" src=""></td>
+                                    <td><img id="thumb_img" src="../image/no_image.png" style="height:auto;"></td>
                                     <td>
-                                        <label class="i18n" name="i_number"></label>: <span
-                                            id="thumb_number"></span><br>
+                                        <label class="i18n" name="i_number"></label>: <span id="thumb_number"></span>
+                                        <br>
                                         <label class="i18n" name="i_name"></label>: <span class="i18n"
-                                            id="thumb_name"></span><br>
+                                            id="thumb_name"></span>
+                                        <br>
                                         <label class="i18n" name="i_userID"></label>: <span class="i18n"
-                                            id="thumb_user_id"></span><br>
-                                        <label class="i18n" name="i_dept"></label>:
-                                        <span id="thumb_dept"></span><br>
+                                            id="thumb_user_id"></span>
+                                        <br>
+                                        <label class="i18n" name="i_dept"></label>: <span id="thumb_dept"></span>
+                                        <br>
                                         <label class="i18n" name="i_date"></label>: <span class="i18n"
-                                            id="thumb_date"></span><br>
-                                        <label class="i18n" name="i_time"></label>:
-                                        <span id="thumb_time"></span><br>
-                                        <label class="i18n" name="i_position"></label>:
-                                        <span id="thumb_position"></span><br>
+                                            id="thumb_date"></span>
+                                        <br>
+                                        <label class="i18n" name="i_time"></label>: <span id="thumb_time"></span>
+                                        <br>
+                                        <label class="i18n" name="i_map"></label>: <span id="thumb_map"></span>
+                                        <br>
+                                        <label class="i18n" name="i_position"></label>: <span
+                                            id="thumb_position"></span>
+                                        <br>
                                         <div id="display_status" style="display: none;">
                                             <label class="i18n" name="i_status">: <span id="thumb_status"></span>
                                             </label>
@@ -292,41 +339,18 @@
             </div>
         </div>
     </div>
-
-    <!--Hidden Dialog-->
     <!--Modal-->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!--<div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
-                    </button>
-                </div>-->
-                <label><i class="fas fa-spinner fa-pulse"></i>
-                    <apan class="i18n" name="i_searchingBar"></apan>
-                    <span id="progress_bar"></span>
-                </label><br>
-                <label id="wait_time"></label>
-            </div>
-        </div>
+    <div class="alert_block" id="alert_window">
+        <label>此警報無座標位置紀錄!</label>
     </div>
-
-    <div id="timeline_dialog" class="dialog" title="Timeline">
-        <span style="display:block;">
-            <label class="i18n" name="i_tagID"></label> :
-            <label id="timeline_dialog_tag_id"></label>
-            <br>
-            <label class="i18n" name="i_time"></label> :
-            <label id="timeline_dialog_time"></label>
-            <br>
-            <label class="i18n" name="i_posX"></label> :
-            <label id="timeline_dialog_x"></label>
-            <br>
-            <label class="i18n" name="i_posY"></label> :
-            <label id="timeline_dialog_y"></label>
-        </span>
+    <!--progress bar-->
+    <div class="progress" id="progress_block">
+        <label>
+            <i class="fas fa-spinner fa-pulse"></i> <span class="i18n" name="i_searchingBar"></span>
+            <span id="progress_bar"></span>
+        </label>
     </div>
-
+    <!--Hidden Dialog-->
     <div id="add_target_dialog" class="dialog" title="Add a target">
         <table class="noborder-block">
             <tr>

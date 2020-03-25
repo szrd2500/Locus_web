@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title class="i18n" name='i_pageTitle'>Location System</title>
+    <meta id="i18n_pagename" content="common">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
+    <!--JQuery庫-->
+    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
+    <!--BootStrap3-->
+    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.3.7.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/import/bootstrap-3.3.7.min.js"></script>
+    <!-- Add icon library -->
+    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
+    <!-- Icon Navbar-->
+    <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
+    <!--編寫css-->
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
+    <link rel="stylesheet" type="text/css" href="../css/advance_setting_style.css" />
+    <script type="text/javascript" src="../js/import/js.cookie.min.js"></script>
+    <script type="text/javascript" src="../js/general_functions.js"></script>
+    <script type="text/javascript" src="../js/check_permission.js"></script>
+    <script type="text/javascript" src="../js/advance_common.js"></script>
+    <script type="text/javascript" src="../js/advance_db_backup.js"></script>
+    <!--JQuery UI - Dialog-->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js">
+    </script>
+
+<body>
+    <div class="container">
+        <!--icon navbar-->
+        <div id="icon_navbar"></div>
+
+        <!-- Web Content -->
+        <div class="row">
+            <div class="col-lg-12 top_nav">
+                <img class="logo" src="../image/logo/icon.png">
+                <label id="login_user"></label>
+            </div>
+            <div class="tool-bar">
+                <label class="i18n" name="i_language"></label>
+                <select id="language" class="select-lang">
+                    <option value="en">English</option>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="zh-CN">简体中文</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="title-shadow">Database Backup</h3>
+                <div class="backup-btns">
+                    <button type="button" class="btn btn-default" id="btn_backup_db" onclick="backupDB()">備份資料庫</button>
+                    <button type="button" class="btn btn-default" id="btn_clear_db" onclick="clearDB()">清除資料庫</button>
+                    <button type="button" class="btn btn-default" id="btn_restore_db"
+                        onclick="restoreDB()">還原資料庫</button>
+                </div>
+                <br>
+                <h3 class="title-shadow">Backup File List</h3>
+                <div class="db-filelist-bar">
+                    <span style="float: right;">
+                        <label for="btn_delete_file" class="btn-label label-delete" title="Delete The File">
+                            <i class="fas fa-trash-alt"></i></label>
+                        <input id="btn_delete_file" type="button" class="btn-hidden" onclick="deleteDB_file()" />
+
+                        <label for="btn_refresh" class="btn-label label-refresh" title="Refresh the folder">
+                            <i class="fas fa-sync-alt"></i></label>
+                        <input id="btn_refresh" type="button" class="btn-hidden" onclick=" getFileList()" />
+                    </span>
+                    <!--buttons to upload files-->
+                    <label>Selected Local File</label> : <input type="text" id="sel_local_file" readonly />
+                    <span>
+                        <label for="btn_open_file" class="btn-label label-openfile" title="Open The Local File">
+                            <i class="fas fa-folder-open"></i></label>
+                        <input id="btn_open_file" type="file" accept=".sql" onchange="openFile_SQL(this.files)" />
+
+                        <label for="btn_upload_file" class="btn-label label-upload" title="Upload The File Datas">
+                            <i class="fas fa-file-upload"></i></label>
+                        <input id="btn_upload_file" type="button" class="btn-hidden" onclick="uploadDB_file()" />
+                    </span>
+                    <br>
+                    <!--buttons to download files-->
+                    <label>Selected Backup File</label> : <input type="text" id="sel_db_file_name" readonly />
+                    <span>
+                        <label for="btn_view_file" class="btn-label label-view" title="View The File Datas">
+                            <i class="fas fa-eye"></i></label>
+                        <input id="btn_view_file" type="button" class="btn-hidden" onclick="viewDB_file()" />
+
+                        <label for="btn_download_file" class="btn-label label-download" title="Download The File">
+                            <i class="fas fa-file-download"></i></label>
+                        <input id="btn_download_file" type="button" class="btn-hidden"
+                            onclick="downloadDB_file('save')" />
+                    </span>
+
+                </div>
+                <div id="database_files_list"></div>
+            </div>
+        </div>
+        <!--使用的圖檔版權聲明-->
+        <div style="text-align: center; margin: 5px 0px;">Icons made by <a
+                href="https://www.flaticon.com/authors/iconixar" title="iconixar">iconixar</a> from <a
+                href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+    </div>
+    <div class="hidden_dialog">
+        <!--dialog_progress-->
+        <div class="dialog_progress" id="progress_block">
+            <label>
+                <i class="fas fa-spinner fa-pulse"></i> <span id="waiting_for"></span>
+                <span>，請稍候</span>
+                <!--<span id="progress_bar"></span>-->
+            </label>
+        </div>
+        <!--View the datas of this backup file(.sql)-->
+        <div id="filedata_dialog" class="dialog" title="DB File Datas">
+            <h4 id="filedata_name"></h4>
+            <table class="table-line" id="table_filedata_dialog">
+                <thead>
+                    <tr>
+                        <th class="i18n" name="i_item" style="min-width: 50px;"></th>
+                        <th>內容</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <!-- i18n 多語言翻譯 -->
+    <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
+    <script type="text/javascript" src="../js/i18n/language.js"></script>
+</body>
+
+</html>
