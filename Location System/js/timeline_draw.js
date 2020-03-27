@@ -153,7 +153,7 @@ function checkInTagsRange(p) {
     };
     switch ($("#target_type").val()) {
         case "Tag":
-            document.getElementsByName("chk_target_id").forEach(function(tag_id ) {
+            document.getElementsByName("chk_target_id").forEach(function (tag_id) {
                 var array = HistoryData[tag_id.value];
                 for (var i = 0; i < times; i++) {
                     if (typeof (array[i].x) == 'undefined') return;
@@ -168,7 +168,7 @@ function checkInTagsRange(p) {
             if (!document.getElementById("chk_is_overlap").checked && times > 0)
                 start = times - 1;
             for (var i = start; i < times; i++) {
-                HistoryData[timeslot_array[i]].forEach(function(info ) {
+                HistoryData[timeslot_array[i]].forEach(function (info) {
                     if (typeof (info.x) == 'undefined') return;
                     if (Math.pow(radius.tag, 2) >= Math.pow(info.x - p.x, 2) + Math.pow(info.y - p.y, 2))
                         inputThumbInfos(parseInt(info.tag_id.substring(8), 16), info);
@@ -180,7 +180,7 @@ function checkInTagsRange(p) {
             return false;
     }
     if (document.getElementById("chk_diaplay_alarm").checked) {
-        displayAlarms.forEach(function(alarm) {
+        displayAlarms.forEach(function (alarm) {
             if (Math.pow(radius.alarm, 2) >= Math.pow(alarm.x - p.x, 2) + Math.pow(alarm.y - (p.y - radius.alarm * 2), 2))
                 inputThumbInfos(alarm.user_id, alarm);
         });
@@ -200,17 +200,17 @@ function setMobileEvents() {
     hammer_pinch.get('pinch').set({
         enable: true
     });
-    hammer_pan.on('panstart', function(ev ) {
+    hammer_pan.on('panstart', function (ev) {
         panPos.canvasLeft = parseInt(canvas.style.marginLeft);
         panPos.canvasTop = parseInt(canvas.style.marginTop);
     });
-    hammer_pan.on('panmove', function(ev ) {
+    hammer_pan.on('panmove', function (ev) {
         xleftView = panPos.canvasLeft + ev.deltaX;
         ytopView = panPos.canvasTop + ev.deltaY;
         canvas.style.marginLeft = xleftView + "px";
         canvas.style.marginTop = ytopView + "px";
     });
-    hammer_pinch.on('pinchstart pinchmove', function(ev ) {
+    hammer_pinch.on('pinchstart pinchmove', function (ev) {
         var BCR = canvas.getBoundingClientRect(),
             pos_x = ev.center.x - BCR.left,
             pos_y = ev.center.y - BCR.top,
@@ -303,18 +303,18 @@ function changeLocateTag(tag_id) {
 }
 
 function locateTag(tag_id) {
-    if (chkUseInputMap.checked)
-        return;
-    if (HistoryData[tag_id])
-        changeFocusMap(HistoryData[tag_id][times].map_id);
-    else
-        alert($.i18n.prop('i_searchError'));
+    if (!chkUseInputMap.checked) {
+        if (HistoryData[tag_id])
+            changeFocusMap(HistoryData[tag_id][times].map_id);
+        else
+            alert($.i18n.prop('i_searchError'));
+    }
 }
 
 function changeFocusMap(map_id) {
     if (map_id == "")
-        alert($.i18n.prop('i_mapAlert_19'));
-    else if (map_id != $("#target_map").val() || inputMapSrc.length > 0) {
+        return alert($.i18n.prop('i_mapAlert_19'));
+    if (map_id != $("#target_map").val() || inputMapSrc.length > 0) {
         if (map_id in MapList) {
             $("#target_map").val(map_id);
             loadImage(MapList[map_id].map_src, MapList[map_id].map_scale);
@@ -364,7 +364,7 @@ function drawNextTimeByTag() {
         });
         document.getElementById("current_tags_amount").innerText = count;
         if (document.getElementById("chk_diaplay_alarm").checked) {
-            displayAlarms.forEach(function(alarm) {
+            displayAlarms.forEach(function (alarm) {
                 drawAlarmTag(ctx, "", alarm.x, canvasImg.height - alarm.y, alarm.alarm_type);
             });
         }
@@ -471,7 +471,7 @@ function reDrawTag() {
                 }
             });
             if (document.getElementById("chk_diaplay_alarm").checked) {
-                displayAlarms.forEach(function(alarm ) {
+                displayAlarms.forEach(function (alarm) {
                     if ((chkUseInputMap.checked && inputMapSrc.length > 0) || (alarm.map_id == locate_map))
                         drawAlarmTag(ctx, "", alarm.x, canvasImg.height - alarm.y, alarm.alarm_type);
                 });
@@ -484,7 +484,7 @@ function reDrawTag() {
             if (!document.getElementById("chk_is_overlap").checked && times > 0)
                 start = times - 1;
             for (var i = start; i < times; i++) {
-                HistoryData[timeslot_array[i]].forEach(function(info) {
+                HistoryData[timeslot_array[i]].forEach(function (info) {
                     if (info.tag_id == locate_tag) {
                         locate_arr.push(info);
                     } else {
@@ -504,11 +504,11 @@ function reDrawTag() {
                     }
                 });
             }
-            locate_arr.forEach(function(info ){
+            locate_arr.forEach(function (info) {
                 drawTag(ctx, info.time, info.x, canvasImg.height - info.y, locateColor);
             });
             if (document.getElementById("chk_diaplay_alarm").checked) {
-                displayAlarms.forEach(function(alarm) {
+                displayAlarms.forEach(function (alarm) {
                     drawAlarmTag(ctx, "", alarm.x, canvasImg.height - alarm.y, alarm.alarm_type);
                 });
             }

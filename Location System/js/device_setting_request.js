@@ -106,7 +106,6 @@ function Search() {
                     "</td><td class=\"row_tcp_client_des_port\">" + udpInfo[i].TCP_Client_Des_Port +
                     "</td><td></td></tr>");
             }
-            //$("input[name=checkbox_ipAddr]").change(checked_trans);
             displaySelectedRows();
             setCheckboxListeners();
         }
@@ -177,7 +176,6 @@ function Connect() {
                         RF_setting_read(connect_ip_array);
                         clearTimeout(timeDelay["connect"]);
                     }, 100);
-                    //$("input[name=checkbox_ipAddr]").change(checked_trans);
                     displaySelectedRows();
                 }
             }
@@ -229,12 +227,7 @@ function Connect() {
                             "Command_Name": ["Network"],
                             "Value": {
                                 "IP_address": [static_ip],
-                                "function": [
-                                    /*
-                                    "Client_ip_addr", "Gateway_address", "IP_address", "MAC_address", "Machine_Number", "Mask_address",
-                                    "Model", "TCP_Client_Des_Port", "TCP_Client_Src_Port", "TCP_Serve_Port", "UDP_Serve_Port",
-                                    */
-                                    //Network
+                                "function": [ //Network
                                     "dev_Mask", "dev_GW", "dev_Client_IP"
                                 ]
                             },
@@ -395,8 +388,6 @@ function submitWriteRequest() {
             "Value": {
                 "IP_address": [ip_addr],
                 "function": [
-                    //"Model_Name",
-                    //"Version_Name",
                     "rf_channel",
                     "rf_datarate",
                     "rf_prf",
@@ -408,7 +399,6 @@ function submitWriteRequest() {
                     "rf_NSD",
                     "rf_SFD_timeout",
                     "rf_SMARTPOWER",
-                    //"rf_MODE",
                     "rf_NTM_value",
                     "rf_PMULT_value",
                     "dev_active_ID"
@@ -444,7 +434,7 @@ function submitWriteRequest() {
             request.Value.dev_Client_IP = $('#conn_client_ip_addr' + ip).val().split(".");
         }
 
-        console.log("Write device:" + new Date().getTime());
+        //console.log("Write device:" + new Date().getTime());
 
         var xmlHttp = GetXmlHttpObject();
         xmlHttp.open("POST", "test2", true);
@@ -497,7 +487,7 @@ function submitWriteRequest() {
         text += result["fail_basic"].length > 0 ? "寫入Basic設定失敗 : " + inputText(result["fail_basic"]) : "";
         text += result["success"].length > 0 ? "寫入設定成功數" + result["success"].length + " : " + inputText(result["success"]) : "";
         alert(text == "" ? "寫入設定失敗，請稍候再試一次" : text);
-        console.log("Re Search:" + new Date().getTime());
+        //console.log("Re Search:" + new Date().getTime());
         timeDelay["send_network"].push(setTimeout(function () {
             Search();
         }, 500));

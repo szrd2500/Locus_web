@@ -188,13 +188,12 @@
  //-------Backup DB File---------
 
  function viewDB_file() {
-     if ($("#sel_db_file_name").val() == "") {
-         return alert("請先點選一個備份檔!");
-     } else if ($("#sel_db_file_name").val() == $("#filedata_name").text()) {
+     if ($("#sel_db_file_name").val() == "")
+         alert("請先點選一個備份檔!");
+     else if ($("#sel_db_file_name").val() == $("#filedata_name").text())
          $("#filedata_dialog").dialog("open");
-     } else {
+     else
          downloadDB_file("view");
-     }
  }
 
  function downloadDB_file(handle_type) {
@@ -238,7 +237,6 @@
                          });
                          console.log(str);
                          downloadFile(str, BackupFile.File_Name, 'text/plain');
-                         //downloadFile(BackupFile.File_Data, BackupFile.File_Name, 'text/plain');
                      }
                      AlarmDialog.hide();
                  }
@@ -285,17 +283,7 @@
              var fr = new FileReader();
              fr.onloadend = function (e) {
                  var result = e.target.result;
-                 /*fileArray = result.split(";");
-                 fileArray.splice(fileArray.length - 1, 1);
-                 for (var i = 0; i < fileArray.length; i++) {
-                     fileArray[i] += ";";
-                 }*/
                  fileArray = result.split("\n");
-                 /*while (result.length > 1 && result.indexOf(";") != -1) {
-                     var index = result.indexOf("\n");
-                     fileArray.push(result.slice(0, index + 1));
-                     result = result.slice(index + 1);
-                 }*/
                  console.log(fileArray);
              };
              fr.readAsText(file);

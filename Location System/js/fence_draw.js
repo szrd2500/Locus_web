@@ -45,25 +45,23 @@ function setupCanvas() {
     cvsBlock.addEventListener("mousewheel", handleMouseWheel, false); // mousewheel duplicates dblclick function
     cvsBlock.addEventListener("DOMMouseScroll", handleMouseWheel, false); // for Firefox  
 
-    $(function () {
-        $("#menu_fence_info").on('click', function () {
-            resetBlockDisplay();
-            $("#label_fence_info").addClass("opened");
-            $("#block_fence_info").show();
-        });
-        $("#menu_fence_alarm_group").on('click', function () {
-            resetBlockDisplay();
-            $("#label_fence_alarm_group").addClass("opened");
-            $("#block_fence_alarm_group").show();
-        });
-        $("#menu_fence_info").click();
-        $("#menu_resize").on('click', resizeCanvas);
-        $("#select_map").on('change', function () {
-            setMapById($(this).val());
-        });
-        $("#btn_fence_dot_position").on('click', startFencePosition);
-        loadMaps();
+    $("#menu_fence_info").on('click', function () {
+        resetBlockDisplay();
+        $("#label_fence_info").addClass("opened");
+        $("#block_fence_info").show();
     });
+    $("#menu_fence_alarm_group").on('click', function () {
+        resetBlockDisplay();
+        $("#label_fence_alarm_group").addClass("opened");
+        $("#block_fence_alarm_group").show();
+    });
+    $("#menu_fence_info").click();
+    $("#menu_resize").on('click', resizeCanvas);
+    $("#select_map").on('change', function () {
+        setMapById($(this).val());
+    });
+    $("#btn_fence_dot_position").on('click', startFencePosition);
+    loadMaps();
 }
 
 function resetBlockDisplay() {

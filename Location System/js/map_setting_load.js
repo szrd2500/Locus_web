@@ -314,7 +314,7 @@ $(function () {
     MapGroupFunc.Dialog.init();
     AnchorListFunc.Dialog.init();
     GroupAnchorFunc.Dialog.init();
-
+    setupCanvas();
     /* Map Draw */
     $("#map_info_scale").on("change", function () {
         canvasImg.scale = $(this).val();

@@ -1,6 +1,6 @@
-var noImagePng = "../image/no_image.png";
-var leftSide_isOpen = false;
-var rightSide_isOpen = false;
+var noImagePng = "../image/no_image.png",
+    leftSide_isOpen = false,
+    rightSide_isOpen = false;
 
 function alarmSidebarMove() {
     $(function () {

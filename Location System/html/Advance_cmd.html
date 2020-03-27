@@ -21,7 +21,6 @@
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
     <!--編寫css-->
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
-    <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
     <link rel="stylesheet" type="text/css" href="../css/advance_setting_style.css" />
     <script type="text/javascript" src="../js/import/js.cookie.min.js"></script>
     <script type="text/javascript" src="../js/general_functions.js"></script>
@@ -55,36 +54,27 @@
             <div class="col-lg-4">
                 <h3 class="title-shadow">發送指令到裝置</h3>
                 <br>
-                <label style="margin-left: 5px;">Network interface card :&nbsp;</label>
-                <select id="interface_card"></select>
-                <br><br>
+                <h5 style="margin-left: 5px;">Network interface card : <select id="interface_card"></select></h5>
                 <table class="cmd-send-bar">
                     <tr>
-                        <td style="width: 100px;">Local IP :&nbsp;</td>
-                        <td>
-                            <input type="text" id="local_ip" style="margin-right: 10px;" readonly>
+                        <td style="width: 100px;">Local IP : </td>
+                        <td><input type="text" id="local_ip" style="margin-right: 10px;" readonly>
                             <label for="search_devices" class="btn-label label-search" title="Search Devices">
                                 <i class="fas fa-search"></i></label>
                             <input id="search_devices" type="button" onclick="searchDevices()" class="btn-hidden" />
                         </td>
                     </tr>
                     <tr>
-                        <td>Device IP :&nbsp;</td>
-                        <td>
-                            <select id="sel_device_ip"></select>
-                        </td>
+                        <td>Device IP : </td>
+                        <td><select id="sel_device_ip"></select></td>
                     </tr>
                     <tr>
-                        <td>OUT :&nbsp;</td>
-                        <td>
-                            <input type="text" id="send_cmd" style="width: 100%"><br>
-                        </td>
+                        <td>OUT : </td>
+                        <td><input type="text" id="send_cmd" style="width: 100%"><br></td>
                     </tr>
                     <tr>
-                        <td>IN :&nbsp;</td>
-                        <td>
-                            <input type="text" id="receive_cmd" style="width: 100%"><br>
-                        </td>
+                        <td>IN : </td>
+                        <td><input type="text" id="receive_cmd" style="width: 100%"><br></td>
                     </tr>
                 </table>
                 <br><br><br>
@@ -113,7 +103,6 @@
                     </table>
                 </div>
             </div>
-
         </div>
     </div>
     <!-- i18n 多語言翻譯 -->

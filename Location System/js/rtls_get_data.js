@@ -1,6 +1,6 @@
 //'use strict';
-var ALARM_TYPE = ["low_power", "help", "still", "active", "Fence", "stay", "hidden"];
-var PIXEL_RATIO, // 獲取瀏覽器像素比
+var ALARM_TYPE = ["low_power", "help", "still", "active", "Fence", "stay", "hidden"],
+    PIXEL_RATIO, // 獲取瀏覽器像素比
     MapList = {}, //[map_id]{ map_name, map_file & map_file_ext, map_scale }
     groupfindMap = {},
     MemberList = {},
@@ -52,7 +52,7 @@ $(function () {
     checkPermissionOfPage("index"); //判斷是否達到使用此頁面的權限，若無則強制返回
     setNavBar("index", ""); //設定左側的頁面導航欄
 
-    //預設彈跳視窗載入後隱藏
+    //設定監聽動作
     document.getElementById("member_dialog_btn_unlock").onclick = function () {
         unlockFocusAlarm();
         $("#member_dialog").dialog("close");
@@ -61,20 +61,15 @@ $(function () {
         unlockFocusAlarm();
         $("#alarm_dialog").dialog("close");
     };
-    document.getElementById("search_start").onclick = search;
-    setDialog.displaySetting();
-    setDialog.displaySize();
-    setDialog.separateCanvas();
-    $("#member_dialog").dialog({
-        autoOpen: false
-    });
-    $("#alarm_dialog").dialog({
-        autoOpen: false
-    });
-    $('#myModal').modal({
-        backdrop: false,
-        show: false
-    });
+    document.getElementById("search_select_type").onchange = function () {
+        if (this.value == "map") {
+            document.getElementById("search_input_target").style.display = "none";
+            document.getElementById("search_sel_maps").style.display = "inline-block";
+        } else {
+            document.getElementById("search_input_target").style.display = "inline-block";
+            document.getElementById("search_sel_maps").style.display = "none";
+        }
+    }
     canvas_mode.forEach(function (mode, i) {
         document.getElementById("btn_sel_mode" + (i + 1)).onclick = function () {
             document.getElementById("select_canvas_mode").value = mode;
@@ -87,14 +82,25 @@ $(function () {
                 document.getElementById("btn_sel_mode" + (i + 1)).click();
         });
     };
+    //載入彈跳視窗設定
+    setDialog.displaySetting();
+    setDialog.displaySize();
+    setDialog.separateCanvas();
+    //預設彈跳視窗載入後不自動開啟
+    $("#member_dialog").dialog({
+        autoOpen: false
+    });
+    $("#alarm_dialog").dialog({
+        autoOpen: false
+    });
     setup();
 });
 
 function setup() {
-    dot_size = getSizeFromCookie();
-    display_setting = getFocusSetFromCookie();
-    var separate_canvas = Cookies.get("separate_canvas");
-    canvasMode(separate_canvas);
+    dot_size = getSizeFromCookie(); //載入存放在Cookie的anchor & tag & alarm tag尺寸
+    display_setting = getFocusSetFromCookie(); //載入存放在Cookie的所有顯示設定
+    var separate_canvas = Cookies.get("separate_canvas"); //載入存放在Cookie的多地圖設定
+    canvasMode(separate_canvas); //創建多地圖
     if (token != "") {
         getMemberData();
         getMapGroup();
@@ -208,6 +214,7 @@ function getMaps() {
         if (jxh.readyState == 4 || jxh.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
             if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
+                $("#search_sel_maps").empty();
                 var revInfo = revObj.Value[0].Values || [];
                 revInfo.forEach(function (v) {
                     MapList[v.map_id] = {
@@ -215,6 +222,7 @@ function getMaps() {
                         src: "data:image/" + v.map_file_ext + ";base64," + v.map_file,
                         scale: typeof (v.map_scale) != 'undefined' && v.map_scale != "" ? v.map_scale : 1
                     };
+                    $("#search_sel_maps").append("<option value=\"" + v.map_id + "\">" + v.map_name + "</option>");
                 });
                 loadMapToCanvas(); //接收並載入Server的地圖設定到按鈕
             } else {
@@ -617,12 +625,11 @@ function showAlertDialog() {
 }
 
 function search() {
-    var html = "";
-    var key = $("#search_select_type").val();
-    var value = $("#search_input_target").val();
+    var html = "",
+        key = document.getElementById("search_select_type").value;
     if (key == "map") {
         for (var map_id in MapList) {
-            if (map_id == value || MapList[map_id].name == value) {
+            if (map_id == document.getElementById("search_sel_maps").value) {
                 var group_arr = [];
                 for (var i in groupfindMap) {
                     if (groupfindMap[i] == map_id)
@@ -654,7 +661,8 @@ function search() {
             }
         }
     } else {
-        var memberArray = [];
+        var memberArray = [],
+            value = document.getElementById("search_input_target").value;
         for (var each in MemberList) { //each : 'user_id'
             if (key == "user_id") {
                 if (each == value)

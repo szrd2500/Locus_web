@@ -1,0 +1,29 @@
+h4 {
+    font-family: 'Microsoft JhengHei', 'sans-serif';
+    color: black;
+}
+
+span {
+    font-family: 'Microsoft JhengHei', 'sans-serif';
+}
+
+.block {
+    position: relative;
+    margin: auto;
+    max-width: 350px;
+    width: auto;
+    height: 240px;
+    background: lightgray;
+    border-radius: 2px;
+    box-shadow: 0px 0px 4px 2px rgb(41, 41, 41) inset;
+    padding: 5px;
+}
+
+.input-group {
+    margin: 10px;
+}
+
+.btn-submit {
+    float: right;
+    margin: 5px 10px;
+}

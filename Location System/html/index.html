@@ -21,7 +21,6 @@
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
     <!--Edit css-->
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
-    <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
     <link rel="stylesheet" type="text/css" href="../css/index_style.css" />
     <link rel="stylesheet" type="text/css" href="../css/index_data_sidebar.css" />
     <link rel="stylesheet" type="text/css" href="../css/index_alarm_sidebar.css" />
@@ -84,10 +83,6 @@
                         <button id="btn_sort_alarm" class="btn btn-default i18n-input" selectattr="title"
                             selectname="i_lastestTop" onclick="sortAlarm();"><i class="fas fa-sort-amount-up"></i>
                         </button>
-                        <!--<button class="btn btn-default i18n-input" selectattr="title" selectname="i_releasePosition"
-                                onclick="unlockFocusAlarm();" style="width:30px; padding:3px !important;">
-                                <img class="icon-image" src="../image/release_position.png">
-                            </button>-->
                     </div>
                     <div class="sideBar-left">
                         <div class="thumbnail_columns"></div>
@@ -105,8 +100,8 @@
                                 <li class="active">
                                     <a href="#sidebar_right_member" data-toggle="tab" class="i18n" name="i_member"></a>
                                 </li>
-                                <li><a href="#sidebar_right_alarm" data-toggle="tab" class="i18n"
-                                        name="i_alarmHandle"></a>
+                                <li><a href="#sidebar_right_alarm" data-toggle="tab" class="i18n" name="i_alarmHandle">
+                                    </a>
                                 </li>
                                 <li><a href="#sidebar_right_search" data-toggle="tab" class="i18n" name="i_search"></a>
                                 </li>
@@ -167,11 +162,12 @@
                                     </select>
                                     <br>
                                     <label class="i18n" name="i_inputData" style="margin-top:10px;"></label> :
-                                    <input type="text" id="search_input_target">
+                                    <input type="text" id="search_input_target" style="display: none;" />
+                                    <select id="search_sel_maps"></select>
                                     <br><br>
                                     <div style="text-align: center;">
-                                        <input type="button" id="search_start" class="btn btn-primary i18n-input"
-                                            selectattr="value" selectname="i_search">
+                                        <input type="button" class="btn btn-primary i18n-input" selectattr="value"
+                                            selectname="i_search" onclick="search()">
                                     </div>
                                     <br><br>
                                     <div class="sidebar-table search-table" style="max-height: 500px;">
@@ -209,14 +205,11 @@
         <div id="member_dialog" class="dialog" title="Tag Infomation" style="background:rgb(195, 228, 230);">
             <img id="member_dialog_image" class="member_photo" src="" style="margin-right: 10px;">
             <span style="display: block;">
-                <label class="i18n" name="i_number"></label> :
-                <label id="member_dialog_number"></label>
+                <label class="i18n" name="i_number"></label> : <label id="member_dialog_number"></label>
                 <br>
-                <label class="i18n" name="i_name"></label> :
-                <label id="member_dialog_name"></label>
+                <label class="i18n" name="i_name"></label> : <label id="member_dialog_name"></label>
                 <br>
-                <label class="i18n" name="i_userID"></label> :
-                <label id="member_dialog_tag_id"></label>
+                <label class="i18n" name="i_userID"></label> : <label id="member_dialog_tag_id"></label>
             </span>
             <br>
             <div style="text-align: center;">
@@ -238,20 +231,15 @@
                     </td>
                     <td>
                         <span style="display: block; color: black;">
-                            <label class="i18n" name="i_number"></label> :
-                            <label id="alarm_dialog_number"></label>
+                            <label class="i18n" name="i_number"></label> : <label id="alarm_dialog_number"></label>
                             <br>
-                            <label class="i18n" name="i_name"></label> :
-                            <label id="alarm_dialog_name"></label>
+                            <label class="i18n" name="i_name"></label> : <label id="alarm_dialog_name"></label>
                             <br>
-                            <label class="i18n" name="i_userID"></label> :
-                            <label id="alarm_dialog_id"></label>
+                            <label class="i18n" name="i_userID"></label> : <label id="alarm_dialog_id"></label>
                             <br>
-                            <label class="i18n" name="i_date"></label> :
-                            <label id="alarm_dialog_date"></label>
+                            <label class="i18n" name="i_date"></label> : <label id="alarm_dialog_date"></label>
                             <br>
-                            <label class="i18n" name="i_time"></label> :
-                            <label id="alarm_dialog_time"></label>
+                            <label class="i18n" name="i_time"></label> : <label id="alarm_dialog_time"></label>
                         </span>
                     </td>
                 </tr>

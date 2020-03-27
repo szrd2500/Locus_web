@@ -46,7 +46,7 @@ $(function () {
     var h = document.documentElement.clientHeight;
     //$(".container").css("height", h - 10 + "px");
     $("#cvsBlock").css("height", h - 102 + "px");
-    
+
     /* Check this page's permission and load navbar */
     loadUserData();
     checkPermissionOfPage("Timeline");
@@ -235,6 +235,10 @@ function setup() {
     });
     setMobileEvents();
     getMemberNumber();
+    getMap();
+}
+
+function getMap() {
     /**
      * 接收並載入Server的地圖資訊
      * 取出物件所有屬性的方法，參考網址: 

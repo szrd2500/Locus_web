@@ -89,6 +89,10 @@ input[type="file"] {
     margin-bottom: 10px;
 }
 
+.thumb-block img {
+    background: white;
+}
+
 #main_picture {
     width: 100%;
     background-color: rgb(59, 93, 121);

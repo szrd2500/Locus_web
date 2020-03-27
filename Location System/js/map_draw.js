@@ -21,8 +21,6 @@ var anchorArray = [];
 var displayMapInfo = true;
 var pageTimer = {}; //定義計時器全域變數
 
-window.addEventListener("load", setupCanvas, false);
-
 function setupCanvas() {
     cvsBlock = document.getElementById("cvsBlock");
     canvas = document.getElementById("canvas_map");

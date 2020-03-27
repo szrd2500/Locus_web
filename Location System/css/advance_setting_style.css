@@ -26,6 +26,11 @@ h4 {
     color: white;
 }
 
+h5 {
+    font-weight: bold;
+    color: black;
+}
+
 #reference_block {
     height: 630px;
     max-height: 630px;
@@ -260,6 +265,7 @@ input[type="file"] {
 
 .cmd-send-bar td {
     padding: 15px 5px;
+    color: #000000;
 }
 
 /* icon navbar */

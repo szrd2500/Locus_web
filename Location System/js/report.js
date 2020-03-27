@@ -1,4 +1,3 @@
-'use strict';
 var mapList = {},
     memberList = {},
     timeDelay = {},
@@ -7,17 +6,17 @@ var mapList = {},
     targetArray = [],
     historyData = [];
 
-
 $(function () {
+    'use strict';
     /* Check this page's permission and load navbar */
     loadUserData();
     checkPermissionOfPage("Report");
     setNavBar("Report", "");
 
     getMap();
-    setMembersDialog();
-    setDisplayRowsDialog();
     getDepts();
+    setDialog.inputMembers();
+    setDialog.displayRows();
 
     $("#select_report_type").on("change", function () {
         switch ($(this).val()) {
@@ -380,7 +379,7 @@ function getPersonTimeline(number) {
                 };
                 xmlHttp.send(JSON.stringify(request));
             }
-        }
+        };
     return func.getCount();
 }
 

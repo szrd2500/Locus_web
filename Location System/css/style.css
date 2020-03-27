@@ -17,14 +17,11 @@ table {
     width: auto;
     height: 100%;
     margin-left: 50px;
-
     /*background: rgb(146, 145, 145);*/
-
     background: linear-gradient(90deg, lightgray 0%, gray 100%);
     background: -moz-linear-gradient(90deg, lightgray 0%, gray 100%);
     background: -webkit-linear-gradient(90deg, lightgray 0%, gray 100%);
     background: -o-linear-gradient(90deg, lightgray 0%, gray 100%);
-
     box-shadow: 0px 0px 2px 3px rgb(255, 255, 255) inset;
     -moz-box-shadow: 0px 0px 2px 3px rgb(255, 255, 255) inset;
     -webkit-box-shadow: 0px 0px 2px 3px rgb(255, 255, 255) inset;
@@ -38,7 +35,6 @@ table {
     }
 }*/
 
-
 .top_nav {
     padding-top: 3px;
     width: auto;
@@ -48,13 +44,11 @@ table {
     box-shadow: 0px 0px 3px 4px rgb(211, 211, 211) inset;
     -moz-box-shadow: 0px 0px 3px 4px rgb(211, 211, 211) inset;
     -webkit-box-shadow: 0px 0px 3px 4px rgb(211, 211, 211) inset;
-
     /*background: linear-gradient(270deg, rgba(0, 227, 255, 1)0%, rgba(47, 149, 255, 1)65%);
     background: -moz-linear-gradient(270deg, rgba(0, 227, 255, 1)0%, rgba(47, 149, 255, 1)65%);
     background: -webkit-linear-gradient(270deg, rgba(0, 227, 255, 1)0%, rgba(47, 149, 255, 1)65%);
     background: -o-linear-gradient(270deg, rgba(0, 227, 255, 1)0%, rgba(47, 149, 255, 1)65%);*/
 }
-
 
 .tool-bar {
     float: right;
@@ -79,8 +73,38 @@ img.logo {
     background: transparent !important;
 }
 
+/* Login User */
+#login_user a,
+#login_user a:hover,
+#login_user a:active,
+#login_user a:focus {
+    text-decoration: none !important;
+}
+
 #login_user {
-    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#login_user .dropdown {
+    display: inline-block;
+    font-size: 14px;
+    text-align: left;
+}
+
+#login_user .dropdown ul {
+    z-index: 2;
+}
+
+#login_user .dropdown button {
+    color: black;
+    font-size: 14px;
+    padding: 2px 8px !important;
+    margin-left: 3px !important;
+}
+
+#login_user .dropdown-content {
+    left: -50px;
+    z-index: 3;
 }
 
 .btn-user {

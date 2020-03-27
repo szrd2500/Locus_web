@@ -15,8 +15,8 @@ var IP_MODE = ["DHCP", "Static"],
     ],
     RF_MULT = ["0", "1", "2", "3", "4", "5", "6", "7"],
     RED_LIGHT = "<img src=\"../image/redLight.png\"/>",
-    GREEN_LIGHT = "<img src=\"../image/greenLight.png\"/>";
-var displayRowArray = {
+    GREEN_LIGHT = "<img src=\"../image/greenLight.png\"/>",
+    displayRowArray = {
         "check_all_net_basic": true,
         "check_all_net_advance": true,
         "check_all_rf_basic": true,
@@ -53,7 +53,6 @@ $(function () { //Load
     //$(".container").css("height", h - 10 + "px");
     $(".middle").css("height", h - 125 + "px");
 
-    
     /* Check this page's permission and load navbar */
     loadUserData();
     checkPermissionOfPage("Anchor_Setting");
@@ -587,8 +586,6 @@ function sortTable(selector, targetType, compFunc) {
         }
     }
     var init = function () {
-        //var $th = $("th" + selector);
-        //var $table = $th.parents("table");
         var $th = table.find('thead tr:eq(0) th').filter(selector);
         $th.on('click', function () {
             var index = $(this).index();

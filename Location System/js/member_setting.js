@@ -11,7 +11,6 @@ var permission = "0",
     genderArr = ['Male', 'Female'],
     educationArr = ['PrimarySchool', 'MiddleSchool', 'HighSchool', 'JuniorSchool', 'College', 'GraduateSchool'];
 
-
 $(function () {
     /* Check this page's permission and load navbar */
     loadUserData();
@@ -21,6 +20,10 @@ $(function () {
     var h = document.documentElement.clientHeight;
     $(".container").css("height", h - 10 + "px");
     $(".member_list").css("max-height", h - 110 + "px");
+
+    setDialog.personData();
+    setDialog.multiEdit();
+    setDialog.treeChart();
 
     sortTable('.row_number', '');
     sortTable('.row_user_id', '');
@@ -309,7 +312,7 @@ function editMemberData(number) {
                 $("#basic_leave_date").val(revInfo.dateLeave);
                 $("#note_text").val(revInfo.note);
                 //開啟編輯框
-                setEditNumber(revInfo.number);
+                delete_job_number = revInfo.number;
                 $("#dialog_edit_member").dialog("open");
             }
         }
@@ -446,7 +449,7 @@ function addMemberData() {
     $("#basic_leave_date").val("");
     $("#note_text").val("");
     //open member dialog
-    setEditNumber("");
+    delete_job_number = "";
     $("#dialog_edit_member").dialog("open");
 }
 
