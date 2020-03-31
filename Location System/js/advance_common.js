@@ -6,7 +6,7 @@ function searchNetworkCards() {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText),
                 cookie = typeof (Cookies.get("local_ip")) == 'undefined' ? "" : Cookies.get("local_ip");
-            if (checkTokenAlive(revObj)) {
+            if (checkTokenAlive(token, revObj)) {
                 var revInfo = revObj.Value[0];
                 document.getElementById("local_ip").value = revInfo[0].ip;
                 var html = "";
@@ -46,7 +46,7 @@ function searchDevices() {
                 return;
             }
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(revObj)) {
+            if (checkTokenAlive(token, revObj)) {
                 var revInfo = revObj.Value ? revObj.Value[0] : [];
                 $("#sel_device_ip").empty();
                 ipPortList = {};
@@ -80,19 +80,20 @@ function StartClick() {
     if (!isStart) {
         isStart = true;
         sendLaunchCmd("Start");
-        document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\">" +
-            "</i><span>" + $.i18n.prop('i_stopPositioning') + "</span>";
+        document.getElementById("btn_start").title = $.i18n.prop('i_stopPositioning');
+        document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\"></i>" +
+            "<span>" + $.i18n.prop('i_stopPositioning') + "</span>";
     } else {
         isStart = false;
         sendLaunchCmd("Stop");
-        document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-play\">" +
-            "</i><span>" + $.i18n.prop('i_startPositioning') + "</span>";
+        document.getElementById("btn_start").title = $.i18n.prop('i_startPositioning');
+        document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-play\"></i>" +
+            "<span>" + $.i18n.prop('i_startPositioning') + "</span>";
     }
-
 }
 
 function sendLaunchCmd(switch_type) {
-    var requestArray = {
+    var request = {
         "Command_Type": ["Write"],
         "Command_Name": ["Launch"],
         "Value": switch_type,
@@ -101,18 +102,22 @@ function sendLaunchCmd(switch_type) {
     var xmlHttp = createJsonXmlHttp("test2");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            if (checkTokenAlive(JSON.parse(this.responseText)))
-                return true;
-            else
-                return false;
+            var revObj = JSON.parse(this.responseText);
+            if (checkTokenAlive(revObj) && revObj.Value) {
+                if (revObj.Value[0].Status == "Start") {
+                    alert("Start positioning successfully!");
+                } else {
+                    alert("Stop positioning successfully!");
+                }
+            }
         }
     };
-    xmlHttp.send(JSON.stringify(requestArray));
+    xmlHttp.send(JSON.stringify(request));
 }
 
 function restartLaunch() {
     isStart = false;
-    var requestArray = {
+    var request = {
         "Command_Type": ["Write"],
         "Command_Name": ["Launch"],
         "Value": "Stop",
@@ -121,15 +126,14 @@ function restartLaunch() {
     var xmlHttp = createJsonXmlHttp("test2");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            if (checkTokenAlive(JSON.parse(this.responseText))) {
+            if (checkTokenAlive(token, JSON.parse(this.responseText))) {
                 isStart = true;
                 sendLaunchCmd("Start");
-                document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\">" +
-                    "</i><span>" + $.i18n.prop('i_stopPositioning') + "</span>";
             }
         }
     };
-    xmlHttp.send(JSON.stringify(requestArray));
-    document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-play\">" +
-        "</i><span>" + $.i18n.prop('i_startPositioning') + "</span>";
+    xmlHttp.send(JSON.stringify(request));
+    document.getElementById("btn_start").title = $.i18n.prop('i_startPositioning');
+    document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-play\"></i>" +
+        "<span>" + $.i18n.prop('i_startPositioning') + "</span>";
 }

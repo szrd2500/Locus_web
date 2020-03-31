@@ -135,7 +135,14 @@ var setDialog = {
         }
     },
     separateCanvas: function () {
-        var dialog;
+        var dialog,
+            sendResult = function () {
+                var mode = $("#select_canvas_mode").val();
+                Cookies.set("separate_canvas", mode);
+                canvasMode(mode);
+                dialog.dialog("close");
+                loadMapToCanvas();
+            };
 
         dialog = $("#separate_canvas_dialog").dialog({
             autoOpen: false,
@@ -151,14 +158,6 @@ var setDialog = {
                 }
             }
         });
-
-        function sendResult() {
-            var mode = $("#select_canvas_mode").val();
-            Cookies.set("separate_canvas", mode);
-            canvasMode(mode);
-            dialog.dialog("close");
-            loadMapToCanvas();
-        }
 
         $("#btn_separate_canvas").on("click", function () {
             var separate_canvas = Cookies.get("separate_canvas"),

@@ -11,7 +11,7 @@ $(function () {
         "height": h - 80 + "px"
     });
 
-    
+
     /* Check this page's permission and load navbar */
     loadUserData();
     checkPermissionOfPage("Reference");
@@ -70,8 +70,9 @@ function sendKalmanParams() {
                         if (!isStart) {
                             isStart = true;
                             sendLaunchCmd("Start");
-                            document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\">" +
-                                "</i><span>" + $.i18n.prop('i_stopPositioning') + "</span>";
+                            document.getElementById("btn_start").title = $.i18n.prop('i_stopPositioning');
+                            document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\"></i>" +
+                                "<span>" + $.i18n.prop('i_stopPositioning') + "</span>";
                         } else {
                             restartLaunch();
                         }

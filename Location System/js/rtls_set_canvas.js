@@ -91,7 +91,7 @@ function RTLS_Canvas(number) {
                         ctx.restore();
                         ctx.save();
                         restore.label.innerHTML = "<i class=\"fas fa-expand\"" +
-                            " style='font-size:20px;' title=\"" + $.i18n.prop('i_fit_window') + "\"></i>";
+                            " title=\"" + $.i18n.prop('i_fit_window') + "\"></i>";
                     } else {
                         isFitWindow = true; //目前狀態:依比例拉伸(Fit in Window)
                         if ((serverImg.width / serverImg.height) > (cvsBlock_width / cvsBlock_height)) //原圖比例寬邊較長
@@ -99,7 +99,7 @@ function RTLS_Canvas(number) {
                         else
                             Zoom = (cvsBlock_height / serverImg.height).toFixed(2);
                         restore.label.innerHTML = "<i class=\"fas fa-compress\"" +
-                            " style='font-size:20px;' title=\"" + $.i18n.prop('i_restore_scale') + "\"></i>";
+                            " title=\"" + $.i18n.prop('i_restore_scale') + "\"></i>";
                     }
                     draw();
                 }
@@ -579,7 +579,7 @@ function RTLS_Canvas(number) {
 
 function canvasMode(blocks) {
     var content = document.getElementById("content");
-    var h = Math.ceil((document.documentElement.clientHeight - 43) * 0.96); //window_height - nav_bar
+    var h = Math.ceil((document.documentElement.clientHeight - 80)); //window_height - nav_bar
     var number = 1;
     content.innerHTML = "";
     switch (blocks) {
@@ -630,11 +630,11 @@ function createCanvasHtml(num, width, height) {
         "<label class='i18n' name='i_posY' style='margin-left:10px;'>" + $.i18n.prop("i_posY") + "</label> : " +
         "<label type='text' id=\"y" + num + "\" class='coordinate'></label>" +
         "<div style='float: right;'><div class='dropdown'>" +
-        "<label class='btn-set i18n-input' selectattr='title' selectname='i_input_map' title=\"" + $.i18n.prop("i_input_map") +
+        "<label class='btn-map i18n-input' selectattr='title' selectname='i_input_map' title=\"" + $.i18n.prop("i_input_map") +
         "\" style='margin-right: 5px;'><i class='far fa-image'></i></label>" +
-        "<div class='dropdown-content' style='left:-120px;' id=\"input_map_list" + num + "\"></div>" +
+        "<div class='dropdown-content' style='left:-130px;' id=\"input_map_list" + num + "\"></div>" +
         "</div>" +
-        "<label for=\"btn_restore" + num + "\" id=\"label_restore" + num + "\" class='btn-icon i18n-input' selectattr='title'" +
+        "<label for=\"btn_restore" + num + "\" id=\"label_restore" + num + "\" class='btn-resize i18n-input' selectattr='title'" +
         " selectname='i_restore_scale' title=\"" + $.i18n.prop("i_restore_scale") + "\" style='margin-right: 5px;'>" +
         "<i class='fas fa-compress'></i></label>" +
         "<input id=\"btn_restore" + num + "\" type='button' class='btn-hidden' />" +

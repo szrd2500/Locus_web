@@ -1,4 +1,3 @@
-//'use strict';
 var ALARM_TYPE = ["low_power", "help", "still", "active", "Fence", "stay", "hidden"],
     PIXEL_RATIO, // 獲取瀏覽器像素比
     MapList = {}, //[map_id]{ map_name, map_file & map_file_ext, map_scale }
@@ -42,11 +41,7 @@ var ALARM_TYPE = ["low_power", "help", "still", "active", "Fence", "stay", "hidd
 
 
 $(function () {
-    //https://www.minwt.com/webdesign-dev/js/16298.html
-    var h = document.documentElement.clientHeight,
-        w = document.documentElement.clientWidth;
-    $("#content").css("height", h - 88 + "px");
-
+    'use strict';
     /* Check this page's permission and load navbar */
     loadUserData(); //確定登入狀態
     checkPermissionOfPage("index"); //判斷是否達到使用此頁面的權限，若無則強制返回

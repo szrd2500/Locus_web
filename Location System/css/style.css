@@ -1,6 +1,12 @@
 body {
-    background: black;
-    padding: 5px;
+    /*padding: 5px;*/
+    background: #e8e8e8;
+    /*box-shadow: 0px 0px 2px 3px rgb(0, 0, 0);
+    -moz-box-shadow: 0px 0px 2px 3px rgb(0, 0, 0);
+    -webkit-box-shadow: 0px 0px 2px 3px rgb(0, 0, 0);
+    border: 1px solid black;
+    border-radius: 8px;*/
+    font-family: 'Microsoft JhengHei', 'sans-serif';
 }
 
 table {
@@ -17,18 +23,20 @@ table {
     width: auto;
     height: 100%;
     margin-left: 50px;
-    /*background: rgb(146, 145, 145);*/
-    background: linear-gradient(90deg, lightgray 0%, gray 100%);
-    background: -moz-linear-gradient(90deg, lightgray 0%, gray 100%);
-    background: -webkit-linear-gradient(90deg, lightgray 0%, gray 100%);
-    background: -o-linear-gradient(90deg, lightgray 0%, gray 100%);
-    box-shadow: 0px 0px 2px 3px rgb(255, 255, 255) inset;
-    -moz-box-shadow: 0px 0px 2px 3px rgb(255, 255, 255) inset;
-    -webkit-box-shadow: 0px 0px 2px 3px rgb(255, 255, 255) inset;
-    border-radius: 8px;
-    font-family: 'Microsoft JhengHei', 'sans-serif';
+    min-width: 380px;
 }
 
+.dropdown-content {
+    box-shadow: 0px 0px 3px 1px rgb(162, 162, 162) !important;
+}
+
+.copyright-notice-text {
+    text-align: center;
+    margin-top: 5px;
+    color: lightcyan;
+}
+
+/*依照不同的螢幕比例設計*/
 /*@media screen and (max-height: 600px) {
     .container {
         height: 600px;
@@ -36,14 +44,16 @@ table {
 }*/
 
 .top_nav {
-    padding-top: 3px;
-    width: auto;
-    border-radius: 5px;
-    background: black;
-    color: white;
-    box-shadow: 0px 0px 3px 4px rgb(211, 211, 211) inset;
-    -moz-box-shadow: 0px 0px 3px 4px rgb(211, 211, 211) inset;
-    -webkit-box-shadow: 0px 0px 3px 4px rgb(211, 211, 211) inset;
+    display: inline-block;
+    padding: 3px 15px;
+    width: 100%;
+    height: auto;
+    background: white;
+    color: black;
+    margin-bottom: 5px;
+    /*border-radius: 5px;*/
+    box-shadow: 0px 1px 3px 1px rgb(104, 104, 104);
+    /*border: 1px solid rgb(140, 140, 140);*/
     /*background: linear-gradient(270deg, rgba(0, 227, 255, 1)0%, rgba(47, 149, 255, 1)65%);
     background: -moz-linear-gradient(270deg, rgba(0, 227, 255, 1)0%, rgba(47, 149, 255, 1)65%);
     background: -webkit-linear-gradient(270deg, rgba(0, 227, 255, 1)0%, rgba(47, 149, 255, 1)65%);
@@ -51,26 +61,20 @@ table {
 }
 
 .tool-bar {
+    margin: 8px 0px;
     float: right;
-    margin: 8px;
-}
-
-.tool-bar label {
-    color: white;
 }
 
 .select-lang {
-    margin-top: 5px;
-    margin-right: 10px;
     background: white;
     color: black;
 }
 
 img.logo {
-    max-height: 40px;
-    max-width: 40px;
-    margin: 3px 0px 6px 0px;
-    background: transparent !important;
+    max-height: 38px;
+    max-width: 38px;
+    margin: 3px 0px;
+    background: transparent;
 }
 
 /* Login User */
@@ -121,12 +125,6 @@ img.logo {
     color: rgb(90, 158, 236) !important;
 }
 
-.content-blocks {
-    float: left;
-    /*border:5px rgb(119, 119, 119) solid;*/
-    padding: 1px;
-}
-
 .cvsBlock {
     -webkit-flex: 1;
     -ms-flex: 1;
@@ -136,25 +134,6 @@ img.logo {
     position: relative;
     border: none;
     width: 100%;
-}
-
-.canvas-control-bar {
-    padding: 0px 5px 0px 5px;
-    float: left;
-    background: lightgray;
-    width: 100%;
-    height: 20px;
-    max-height: 20px;
-    color: black;
-}
-
-.canvas-visible-map-name {
-    color: rgb(0, 63, 238);
-    margin-right: 10px !important;
-}
-
-.canvas-control-bar label {
-    margin: 0px;
 }
 
 canvas {
@@ -266,5 +245,5 @@ canvas {
 .title-shadow {
     margin-left: 10px;
     color: white;
-    text-shadow: 2px 2px 4px #000000;
+    text-shadow: 1px 1px 9px #000000;
 }

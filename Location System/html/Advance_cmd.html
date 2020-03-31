@@ -37,22 +37,23 @@
         <!-- Web Content -->
         <div class="row">
             <div class="col-lg-12 top_nav">
-                <img class="logo" src="../image/logo/icon.png">
+                <a href="../About.html" class="i18n-input" selectattr="title" selectname="i_companyName">
+                    <img class="logo" src="../image/logo/icon.png"></a>
                 <label id="login_user"></label>
-            </div>
-            <div class="tool-bar">
-                <label class="i18n" name="i_language"></label>
-                <select id="language" class="select-lang">
-                    <option value="en">English</option>
-                    <option value="zh-TW">繁體中文</option>
-                    <option value="zh-CN">简体中文</option>
-                </select>
+                <div class="tool-bar">
+                    <label class="i18n" name="i_language"></label>
+                    <select id="language" class="select-lang">
+                        <option value="en">English</option>
+                        <option value="zh-TW">繁體中文</option>
+                        <option value="zh-CN">简体中文</option>
+                    </select>
+                </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-4">
-                <h3 class="title-shadow">發送指令到裝置</h3>
+                <h3 class="title-shadow i18n" name="i_sendCmdToDevices"></h3>
                 <br>
                 <h5 style="margin-left: 5px;">Network interface card : <select id="interface_card"></select></h5>
                 <table class="cmd-send-bar">

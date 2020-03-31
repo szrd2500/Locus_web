@@ -54,7 +54,7 @@ input[type="file"] {
 
 .table-line th {
     border: 1px solid rgb(82, 82, 82);
-    background: rgb(112, 112, 112);
+    background: rgb(121, 120, 120);
     color: white;
     text-align: center;
 }
@@ -389,8 +389,8 @@ input[type=radio]:not(old).beauty:checked+label {
     height: 38px;
     position: relative;
     float: left;
-    background-color: rgb(104, 104, 104);
-    border: 1px solid rgb(163, 163, 163);
+    background-color: rgb(109, 109, 109);
+    border: 1px solid lightgray;
 }
 
 .sidebar-menu .nav-li:before {
@@ -420,7 +420,7 @@ input[type=radio]:not(old).beauty:checked+label {
 }
 
 .btn-sidebar.opened {
-    background-color: rgb(255, 96, 22);
+    background-color: rgb(49, 147, 251);
     color: rgb(0, 0, 0);
 }
 

@@ -14,37 +14,56 @@
     <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.3.7.min.css" />
     <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="../js/import/bootstrap-3.3.7.min.js"></script>
-    <!--Add icon library-->
+    <!-- Add icon library -->
     <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
+    <!-- Icon Navbar-->
+    <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
     <!--Edit css-->
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
     <style>
+        .company-name {
+            font-size: 28px;
+        }
+
+        .company-name img {
+            max-height: 38px;
+            max-width: 38px;
+            margin-right: 10px;
+        }
+
         .center {
             margin: auto;
             width: 400px;
             padding: 20px;
             text-align: left;
         }
+
+        .center a {
+            font-size: 28px;
+        }
+
+        .tool-bar {
+            margin: 10px 15px;
+        }
     </style>
     <!--Cookie-->
     <script type="text/javascript" src="../js/import/js.cookie.min.js"></script>
     <!--Edit js-->
     <script type="text/javascript" src="../js/general_functions.js"></script>
+    <script type="text/javascript" src="../js/check_permission.js"></script>
     <script type="text/javascript">
-
+        $(function () {
+            setNavBar("", ""); //設定左側的頁面導航欄
+        });
     </script>
 </head>
 
 <body>
+    <!--icon navbar-->
+    <div id="icon_navbar"></div>
     <div class="container">
-        <!--icon navbar-->
-        <div id="icon_navbar"></div>
-
         <div class="row">
-            <div class="col-lg-12 top_nav">
-                <img class="logo" src="../image/logo/icon.png">
-                <label id="login_user"></label>
-            </div>
             <div class="tool-bar">
                 <label class="i18n" name="i_language"></label>
                 <select id="language" class="select-lang">
@@ -58,12 +77,15 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="center">
-                    <h4>製造商:</h4>
-                    <a href="http://www.sf-tek.com.tw/" target="_blank" title="http://www.sf-tek.com.tw/">富華國際實業有限公司</a>
-                    <h4>官方網站:</h4>
-                    <a href="http://www.sf-tek.com.tw/" target="_blank"
-                        title="http://www.sf-tek.com.tw/">http://www.sf-tek.com.tw/</a>
-                    <h4>版本:</h4>
+                    <br>
+                    <h3><span class="i18n" name="i_manufacturer"></span> : </h3>
+                    <label class="company-name">
+                        <img src="../image/logo/icon.png">
+                        <span class="i18n" name="i_companyName"></span>
+                    </label>
+                    <h3><span class="i18n" name="i_officialWebsite"></span> : </h3>
+                    <a href="http://www.sf-tek.com.tw/" target="_blank" class="i18n-input" selectattr="title"
+                        selectname="i_companyName">http://www.sf-tek.com.tw/</a>
                 </div>
             </div>
         </div>

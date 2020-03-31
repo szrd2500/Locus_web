@@ -180,6 +180,8 @@ function editType(name, color) {
 
 
 function deleteType(name) {
+    if (!confirm("請確定是否要刪除此類別?"))
+        return;
     name = typeof (name) != 'undefined' ? name : "";
     var request_delete = {
         "Command_Type": ["Read"],

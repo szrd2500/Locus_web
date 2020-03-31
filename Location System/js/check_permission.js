@@ -31,17 +31,16 @@ function checkTokenAlive(response) {
         if (response.msg == "Without token access") {
             /*login overtime*/
             alert($.i18n.prop('i_loginTimeout'));
-            setCookie("login_user", null);
+            setCookie("login_user", null); //將登入資訊清空
             location.reload();
         } else if (response.msg == "Account is not exist") {
             /*other user use the account login successfully*/
             alert($.i18n.prop('i_loginRepeat'));
-            setCookie("login_user", null);
+            setCookie("login_user", null); //將登入資訊清空
             location.reload();
         }
         return false;
     }
-
 }
 
 function loadUserData() {
@@ -132,49 +131,65 @@ function setNavBar(parent_page, child_page) {
         var get = {
                 FirstFloor: function () { //設定第一層導航欄(第一條白線以上)
                     var html = "",
-                        li_active = "<li class=\"active\"><a href=\"#\">";
+                        title = "";
                     for (var page_name in MinimumPermission) {
                         if (permission >= MinimumPermission[page_name]) {
                             switch (page_name) {
                                 case "index":
-                                    html += (page_name == parent_page ? li_active : "<li><a href=\"../index.html\">") +
-                                        "<i class=\"fas fa-satellite-dish\"></i>" +
-                                        "<span>" + $.i18n.prop('homePage') + "</span></a></li>";
+                                    title = $.i18n.prop('homePage');
+                                    html += (page_name == parent_page ?
+                                            "<li class=\"active\"><a href=\"#\"" : "<li><a href=\"../index.html\"") +
+                                        " title=\"" + title + "\"><i class=\"fas fa-satellite-dish\"></i>" +
+                                        "<span>" + title + "</span></a></li>";
                                     break;
                                 case "Member_Setting":
-                                    html += (page_name == parent_page ? li_active : "<li><a href=\"../Member_Setting.html\">") +
-                                        "<i class=\"fas fa-user-cog\"></i>" +
-                                        "<span>" + $.i18n.prop('member_settingPage') + "</span></a></li>";
+                                    title = $.i18n.prop('member_settingPage');
+                                    html += (page_name == parent_page ?
+                                            "<li class=\"active\"><a href=\"#\"" : "<li><a href=\"../Member_Setting.html\"") +
+                                        " title=\"" + title + "\"><i class=\"fas fa-user-cog\"></i>" +
+                                        "<span>" + title + "</span></a></li>";
                                     break;
                                 case "Timeline":
-                                    html += (page_name == parent_page ? li_active : "<li><a href=\"../Timeline.html\">") +
-                                        "<i class=\"fas fa-route\"></i>" +
-                                        "<span>" + $.i18n.prop('timelinePage') + "</span></a></li>";
+                                    title = $.i18n.prop('timelinePage');
+                                    html += (page_name == parent_page ?
+                                            "<li class=\"active\"><a href=\"#\"" : "<li><a href=\"../Timeline.html\"") +
+                                        " title=\"" + title + "\"><i class=\"fas fa-route\"></i>" +
+                                        "<span>" + title + "</span></a></li>";
                                     break;
                                 case "Map_Setting":
-                                    html += (page_name == parent_page ? li_active : "<li><a href=\"../Map_Setting.html\">") +
-                                        "<i class=\"fas fa-map\"></i>" +
-                                        "<span>" + $.i18n.prop('map_settingPage') + "</span></a></li>";
+                                    title = $.i18n.prop('map_settingPage');
+                                    html += (page_name == parent_page ?
+                                            "<li class=\"active\"><a href=\"#\"" : "<li><a href=\"../Map_Setting.html\"") +
+                                        " title=\"" + title + "\"><i class=\"fas fa-map\"></i>" +
+                                        "<span>" + title + "</span></a></li>";
                                     break;
                                 case "Anchor_Setting":
-                                    html += (page_name == parent_page ? li_active : "<li><a href=\"../Anchor_Setting.html\">") +
-                                        "<i class=\"fas fa-anchor\"></i>" +
-                                        "<span>" + $.i18n.prop('anchor_settingPage') + "</span></a></li>";
+                                    title = $.i18n.prop('anchor_settingPage');
+                                    html += (page_name == parent_page ?
+                                            "<li class=\"active\"><a href=\"#\"" : "<li><a href=\"../Anchor_Setting.html\"") +
+                                        " title=\"" + title + "\"><i class=\"fas fa-anchor\"></i>" +
+                                        "<span>" + title + "</span></a></li>";
                                     break;
                                 case "Alarm_Setting":
-                                    html += (page_name == parent_page ? li_active : "<li><a href=\"../Alarm_Setting.html\">") +
-                                        "<i class=\"fas fa-bell\" style=\"padding-left:2px;\"></i>" +
-                                        "<span>" + $.i18n.prop('alarm_settingPage') + "</span></a></li>";
+                                    title = $.i18n.prop('alarm_settingPage');
+                                    html += (page_name == parent_page ?
+                                            "<li class=\"active\"><a href=\"#\"" : "<li><a href=\"../Alarm_Setting.html\"") +
+                                        " title=\"" + title + "\"><i class=\"fas fa-bell\"></i>" +
+                                        "<span>" + title + "</span></a></li>";
                                     break;
                                 case "Report":
-                                    html += (page_name == parent_page ? li_active : "<li><a href=\"../Report.html\">") +
-                                        "<i class=\"far fa-file-alt\" style=\"padding-left:3px;\"></i>" +
-                                        "<span>" + $.i18n.prop('report') + "</span></a></li>";
+                                    title = $.i18n.prop('report');
+                                    html += (page_name == parent_page ?
+                                            "<li class=\"active\"><a href=\"#\"" : "<li><a href=\"../Report.html\"") +
+                                        " title=\"" + title + "\"><i class=\"far fa-file-alt\"></i>" +
+                                        "<span>" + title + "</span></a></li>";
                                     break;
                                 case "Reference":
-                                    html += (page_name == parent_page ? li_active : "<li><a href=\"../Reference.html\">") +
-                                        "<i class=\"fas fa-cogs\"></i>" +
-                                        "<span>" + $.i18n.prop('advance_settingPage') + "</span></a></li>";
+                                    title = $.i18n.prop('advance_settingPage');
+                                    html += (page_name == parent_page ?
+                                            "<li class=\"active\"><a href=\"#\"" : "<li><a href=\"../Reference.html\"") +
+                                        " title=\"" + title + "\"><i class=\"fas fa-cogs\"></i>" +
+                                        "<span>" + title + "</span></a></li>";
                                     break;
                                 default:
                                     break;
@@ -184,87 +199,99 @@ function setNavBar(parent_page, child_page) {
                     return html;
                 },
                 SecondFloor: function () { //設定第二層導航欄(第二條白線以上)
-                    var li_active = "<li class=\"setting-type active\"><a href=\"#\">",
-                        getChildren = { //KEY => parent_page
-                            "index": function () {
-                                return "<hr><li class=\"alarmlist\"><a href=\"javascript: alarmSidebarMove();\">" +
-                                    "<i class=\"fas fa-exclamation-circle\" id=\"alarmSideBar_icon\"></i>" +
-                                    "<span>" + $.i18n.prop('i_alarmList') + "</span></a></li>" +
-                                    "<li class=\"taglist\"><a href=\"javascript: tagSidebarMove();\">" +
-                                    "<i class=\"fas fa-map-marker-alt\" style=\"padding-left:2px;\"></i>" +
-                                    "<span>" + $.i18n.prop('i_tagList') + "</span></a></li>";
-                            },
-                            "Member_Setting": function () {
-                                var html = "<hr>",
-                                    children_pages = ["Member_Setting", "Dept_Setting", "Job_Title_Setting", "User_Type_Setting", "Preview_Color_Setting"];
-                                children_pages.forEach(function (page_name) {
-                                    switch (page_name) {
-                                        case "Member_Setting":
-                                            html += (page_name == child_page ?
-                                                    li_active : "<li class=\"setting-type\"><a href=\"../Member_Setting.html\">") +
-                                                "<i class=\"fas fa-users\"></i><span>" + $.i18n.prop('i_memberSetting') + "</span></a></li>";
-                                            break;
-                                        case "Dept_Setting":
-                                            html += (page_name == child_page ?
-                                                    li_active : "<li class=\"setting-type\"><a href=\"../Dept_Setting.html\">") +
-                                                "<i class=\"fas fa-sitemap\"></i><span>" + $.i18n.prop('i_deptSetting') + "</span></a></li>";
-                                            break;
-                                        case "Job_Title_Setting":
-                                            html += (page_name == child_page ?
-                                                    li_active : "<li class=\"setting-type\"><a href=\"../Job_Title_Setting.html\">") +
-                                                "<i class=\"fas fa-id-card\"></i><span>" + $.i18n.prop('i_titleSetting') + "</span></a></li>";
-                                            break;
-                                        case "User_Type_Setting":
-                                            html += (page_name == child_page ?
-                                                    li_active : "<li class=\"setting-type\"><a href=\"../User_Type_Setting.html\">") +
-                                                "<i class=\"fas fa-user-tag\"></i><span>" + $.i18n.prop('i_usertypeSetting') + "</span></a></li>";
-                                            break;
-                                        case "Preview_Color_Setting":
-                                            html += (page_name == child_page ?
-                                                    li_active : "<li class=\"setting-type\"><a href=\"../Preview_Color_Setting.html\">") +
-                                                "<i class=\"fas fa-map-marker-alt\" style=\"padding-left:2px;\"></i>" +
-                                                "<span>" + $.i18n.prop('i_previewColorSetting') + "</span></a></li>";
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                });
-                                return html;
-                            },
-                            "Reference": function () {
-                                var html = "<hr>",
-                                    children_pages = ["Reference", "Advance_cmd", "Update", "DB_Backup"];
-                                children_pages.forEach(function (page_name) {
-                                    switch (page_name) {
-                                        case "Reference":
-                                            html += (page_name == child_page ?
-                                                    li_active : "<li class=\"setting-type\"><a href=\"../Reference.html\">") +
-                                                "<i class=\"fas fa-satellite-dish\"></i><span>" + $.i18n.prop('i_reference') + "</span></a></li>";
-                                            break;
-                                        case "Advance_cmd":
-                                            html += (page_name == child_page ?
-                                                    li_active : "<li class=\"setting-type\"><a href=\"../Advance_cmd.html\">") +
-                                                "<i class=\"fas fa-code\"></i><span>" + $.i18n.prop('i_advance_cmd') + "</span></a></li>";
-                                            break;
-                                        case "Update":
-                                            html += (page_name == child_page ?
-                                                    li_active : "<li class=\"setting-type\"><a href=\"../Update.html\">") +
-                                                "<i class=\"fas fa-download\"></i><span>" + $.i18n.prop('i_update') + "</span></a></li>";
-                                            break;
-                                        case "DB_Backup":
-                                            html += (page_name == child_page ?
-                                                    li_active : "<li class=\"setting-type\"><a href=\"../DB_Backup.html\">") +
-                                                "<i class=\"fas fa-database\"></i><span>" + $.i18n.prop('i_dbBackup') + "</span></a></li>";
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                });
-                                return html + "<li class=\"start\"><a href=\"javascript: StartClick();\" id=\"btn_start\">" +
-                                    "<i class=\"fas fa-play\" style=\"padding-left:2px;\"></i>" +
-                                    "<span>" + $.i18n.prop('i_startPositioning') + "</span></a></li>";
-                            }
-                        };
+                    var getChildren = { //KEY => parent_page
+                        "index": function () {
+                            return "<hr><li class=\"alarmlist\">" +
+                                "<a href=\"javascript: alarmSidebarMove();\" title=\"" + $.i18n.prop('i_alarmList') + "\">" +
+                                "<i class=\"fas fa-exclamation-circle\" id=\"alarmSideBar_icon\"></i>" +
+                                "<span>" + $.i18n.prop('i_alarmList') + "</span></a></li>" +
+                                "<li class=\"taglist\">" +
+                                "<a href=\"javascript: tagSidebarMove();\" title=\"" + $.i18n.prop('i_tagList') + "\">" +
+                                "<i class=\"fas fa-map-marker-alt\"></i>" +
+                                "<span>" + $.i18n.prop('i_tagList') + "</span></a></li>";
+                        },
+                        "Member_Setting": function () {
+                            var title = "",
+                                html = "<hr>",
+                                children_pages = ["Member_Setting", "Dept_Setting", "Job_Title_Setting", "User_Type_Setting", "Preview_Color_Setting"];
+                            children_pages.forEach(function (page_name) {
+                                switch (page_name) {
+                                    case "Member_Setting":
+                                        title = $.i18n.prop('i_memberSetting');
+                                        html += "<li class=\"setting-type" +
+                                            (page_name == child_page ? " active\"><a href=\"#\"" : "\"><a href=\"../Member_Setting.html\"") +
+                                            " title=\"" + title + "\"><i class=\"fas fa-users\"></i><span>" + title + "</span></a></li>";
+                                        break;
+                                    case "Dept_Setting":
+                                        title = $.i18n.prop('i_deptSetting');
+                                        html += "<li class=\"setting-type" +
+                                            (page_name == child_page ? " active\"><a href=\"#\"" : "\"><a href=\"../Dept_Setting.html\"") +
+                                            " title=\"" + title + "\"><i class=\"fas fa-sitemap\"></i><span>" + title + "</span></a></li>";
+                                        break;
+                                    case "Job_Title_Setting":
+                                        title = $.i18n.prop('i_titleSetting');
+                                        html += "<li class=\"setting-type" +
+                                            (page_name == child_page ? " active\"><a href=\"#\"" : "\"><a href=\"../Job_Title_Setting.html\"") +
+                                            " title=\"" + title + "\"><i class=\"fas fa-id-card\"></i><span>" + title + "</span></a></li>";
+                                        break;
+                                    case "User_Type_Setting":
+                                        title = $.i18n.prop('i_usertypeSetting');
+                                        html += "<li class=\"setting-type" +
+                                            (page_name == child_page ? " active\"><a href=\"#\"" : "\"><a href=\"../User_Type_Setting.html\"") +
+                                            " title=\"" + title + "\"><i class=\"fas fa-user-tag\"></i><span>" + title + "</span></a></li>";
+                                        break;
+                                    case "Preview_Color_Setting":
+                                        title = $.i18n.prop('i_previewColorSetting');
+                                        html += "<li class=\"setting-type" +
+                                            (page_name == child_page ? " active\"><a href=\"#\"" : "\"><a href=\"../Preview_Color_Setting.html\"") +
+                                            " title=\"" + title + "\"><i class=\"fas fa-map-marker-alt\"></i><span>" + title + "</span></a></li>";
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            });
+                            return html;
+                        },
+                        "Reference": function () {
+                            var title = "",
+                                html = "<hr>",
+                                children_pages = ["Reference", "Advance_cmd", "Update", "DB_Backup"];
+                            children_pages.forEach(function (page_name) {
+                                switch (page_name) {
+                                    case "Reference":
+                                        title = $.i18n.prop('i_reference');
+                                        html += "<li class=\"setting-type" +
+                                            (page_name == child_page ? " active\"><a href=\"#\"" : "\"><a href=\"../Reference.html\"") +
+                                            " title=\"" + title + "\"><i class=\"fas fa-satellite-dish\"></i><span>" + title + "</span></a></li>";
+                                        break;
+                                    case "Advance_cmd":
+                                        title = $.i18n.prop('i_advance_cmd');
+                                        html += "<li class=\"setting-type" +
+                                            (page_name == child_page ? " active\"><a href=\"#\"" : "\"><a href=\"../Advance_cmd.html\"") +
+                                            " title=\"" + title + "\"><i class=\"fas fa-code\"></i><span>" + title + "</span></a></li>";
+                                        break;
+                                    case "Update":
+                                        title = $.i18n.prop('i_update');
+                                        html += "<li class=\"setting-type" +
+                                            (page_name == child_page ? " active\"><a href=\"#\"" : "\"><a href=\"../Update.html\"") +
+                                            " title=\"" + title + "\"><i class=\"fas fa-download\"></i><span>" + title + "</span></a></li>";
+                                        break;
+                                    case "DB_Backup":
+                                        title = $.i18n.prop('i_dbBackup');
+                                        html += "<li class=\"setting-type" +
+                                            (page_name == child_page ? " active\"><a href=\"#\"" : "\"><a href=\"../DB_Backup.html\"") +
+                                            " title=\"" + title + "\"><i class=\"fas fa-database\"></i><span>" + title + "</span></a></li>";
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            });
+                            title = $.i18n.prop('i_startPositioning');
+                            return html + "<li class=\"start\">" +
+                                "<a href=\"javascript: StartClick();\" id=\"btn_start\" title=\"" + title + "\">" +
+                                "<i class=\"fas fa-play\"></i><span>" + title + "</span></a></li>";
+                        }
+                    };
                     return getChildren[parent_page] ? getChildren[parent_page]() : "";
                 }
             },
@@ -272,23 +299,25 @@ function setNavBar(parent_page, child_page) {
 
         $("#icon_navbar").html("<aside class=\"menu\"><div class=\"menu-left" + (lock_stste == "locked" ? " locked" : "") + "\">" +
             "<nav class=\"sidebar\"><ul class=\"nav\">" + get.FirstFloor() + get.SecondFloor() +
-            "<hr><li class=\"lock\"><a href=\"javascript: lockLeftMemu();\">" + (lock_stste == "unlocked" ?
-                "<i class=\"fas fa-lock-open\"></i><span>" + $.i18n.prop('i_lock') + "</span>" :
-                "<i class=\"fas fa-lock\"></i><span>" + $.i18n.prop('i_unlock') + "</span>") +
+            "<hr><li class=\"lock\"><a href=\"javascript: lockLeftMemu();\" title=\"" + (lock_stste == "unlocked" ?
+                $.i18n.prop('i_lock') + "\"><i class=\"fas fa-lock-open\"></i><span>" + $.i18n.prop('i_lock') + "</span>" :
+                $.i18n.prop('i_unlock') + "\"><i class=\"fas fa-lock\"></i><span>" + $.i18n.prop('i_unlock') + "</span>") +
             "</a></li></ul></nav></div></aside>");
     });
 }
 
 function lockLeftMemu() { //控制展開/收合導航欄
     var menu_left = document.getElementsByClassName("menu-left")[0];
-    var lock = document.querySelector("li.lock");
+    var lock = document.querySelector("li.lock a");
     if (menu_left.classList.contains("locked")) { //判斷現在導航欄是否為鎖定狀態
         menu_left.classList.remove("locked"); //解除鎖定狀態
-        lock.firstChild.innerHTML = "<i class=\"fas fa-lock-open\"></i><span>" + $.i18n.prop('i_lock') + "</span></a>";
+        lock.title = $.i18n.prop('i_lock');
+        lock.innerHTML = "<i class=\"fas fa-lock-open\"></i><span>" + $.i18n.prop('i_lock') + "</span>";
         setCookie('lock_state', "unlocked");
     } else {
         menu_left.classList.add("locked"); //啟動鎖定狀態
-        lock.firstChild.innerHTML = "<i class=\"fas fa-lock\"></i><span>" + $.i18n.prop('i_unlock') + "</span></a>"
+        lock.title = $.i18n.prop('i_unlock');
+        lock.innerHTML = "<i class=\"fas fa-lock\"></i><span>" + $.i18n.prop('i_unlock') + "</span>"
         setCookie('lock_state', "locked");
     }
 }

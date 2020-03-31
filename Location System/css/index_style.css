@@ -1,3 +1,7 @@
+.container{
+    min-height: 541px;
+}
+
 th,
 td {
     padding: 4px;
@@ -89,9 +93,33 @@ fieldset {
     padding-left: 305px;
 }
 
-.member_photo {
+.content-blocks {
     float: left;
-    max-width: 120px;
+    padding: 1px;
+}
+
+.canvas-visible-map-name {
+    color: rgb(216, 202, 119);
+    margin-right: 10px !important;
+}
+
+.canvas-control-bar {
+    padding: 0px 5px;
+    float: left;
+    background: #000000;
+    width: 100%;
+    height: 20px;
+    max-height: 20px;
+    color: white;
+    box-shadow: 0px 0px 3px 1px rgb(0, 0, 0) inset;
+}
+
+.canvas-control-bar label {
+    margin: 0px;
+}
+
+.cvsBlock {
+    box-shadow: 0px 0px 3px 1px rgb(162, 162, 162) inset;
 }
 
 canvas:hover {
@@ -242,78 +270,61 @@ input[type="file"] {
 }
 
 .btn-mode.selected {
-
     background: rgb(166, 208, 228);
 }
 
-.btn-set {
-    cursor: pointer;
-    background: transparent !important;
-    color: rgb(0, 0, 0) !important;
-    padding: 0px !important;
-}
-
-.btn-set:hover {
-    background: transparent !important;
-    color: rgb(56, 56, 56) !important;
-}
-
 .btn-set i {
-    font-size: 18px !important;
-    -webkit-filter: drop-shadow(0px 0px 2px rgb(255, 255, 255));
-    filter: drop-shadow(0px 0px 2px rgb(255, 255, 255))
-}
-
-.btn-icon {
+    padding: 0px;
     cursor: pointer;
-    color: rgb(0, 119, 255);
-    margin-right: 5px;
+    font-size: 18px;
+    margin-left: 10px;
+    background: transparent;
+    color: rgb(0, 83, 255);
 }
 
-.btn-icon:hover {
-    color: rgb(90, 158, 236);
+.btn-set:hover i {
+    color: rgb(73, 121, 184);
 }
 
-.btn-icon i {
-    font-size: 16px !important;
+.btn-map {
+    cursor: pointer;
+    padding: 0px !important;
+    margin-left: 10px !important;
+    background: transparent !important;
+}
+
+.btn-map i {
+    font-size: 18px;
+    color: rgb(0, 83, 255);
 }
 
 .btn-delete {
     cursor: pointer;
-    color: rgb(0, 0, 0);
-}
-
-.btn-delete:hover {
-    color: rgb(70, 70, 70);
+    margin-left: 10px !important;
 }
 
 .btn-delete i {
-    font-size: 18px !important;
+    font-size: 18px;
+    color: rgb(190, 0, 0);
 }
 
-.btn-map-tab {
-    border-color: rgb(47, 95, 201);
-    background-color: transparent;
-    color: white;
+.btn-resize {
+    cursor: pointer;
+    margin-left: 10px !important;
 }
 
-.btn-map-tab:hover {
-    border-color: rgb(47, 95, 201);
-    background-color: transparent;
-    color: white;
+.btn-resize i {
+    font-size: 16px;
+    color: rgb(0, 170, 23);
 }
 
-/*.btn-map-tab:focus,
-.btn-map-tab:active {
-    outline: none;
-}*/
-
-.btn-map-tab.selected,
-.btn-map-tab.selected:hover {
-    background-color: rgb(47, 95, 201);
-    color: white;
+.btn-map:hover i,
+.btn-delete:hover i,
+.btn-resize:hover i {
+    color: rgba(255, 255, 255);
+    -webkit-filter: drop-shadow(0px 0px 5px rgba(251, 255, 0, 0.911));
+    filter: drop-shadow(0px 0px 5px rgba(251, 255, 0, 0.849));
 }
-
 
 /**
  *  Dialog內的tr被選取時變色 
@@ -386,4 +397,9 @@ input[type="file"] {
 
 .dialog {
     font-family: 'Microsoft JhengHei', 'sans-serif';
+}
+
+.member_photo {
+    float: left;
+    max-width: 120px;
 }
